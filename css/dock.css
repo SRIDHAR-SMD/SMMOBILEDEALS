@@ -1,0 +1,32 @@
+/* ===== SM Dock — ONE chatbot button (bottom-right). Hover it => GPS, Admin chat, AI assistant, location status ===== */
+#smd-dock{position:fixed;right:18px;bottom:18px;z-index:9100;display:flex;flex-direction:column;align-items:flex-end;pointer-events:none}
+#smd-dock>*{pointer-events:auto}
+#smd-dock .ai-fab{position:relative!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;width:58px;height:58px;margin:0;flex:none}
+.smd-dock-items{display:none;flex-direction:column;align-items:flex-end;gap:10px;padding-bottom:12px}
+#smd-dock.open .smd-dock-items{display:flex}
+#smd-dock.open .smd-dock-items>*{animation:smdDockIn .18s ease both}
+@keyframes smdDockIn{from{opacity:0;transform:translateY(8px) scale(.9)}to{opacity:1;transform:none}}
+/* generic circular action button */
+.smd-dock-btn{position:relative;width:46px;height:46px;border-radius:50%;padding:0;cursor:pointer;display:flex;align-items:center;justify-content:center;background:var(--bg-elevated,#10162a);color:#8ec5ff;border:2px solid #3868d9;box-shadow:0 8px 22px rgba(0,0,0,.35);transition:transform .15s ease}
+.smd-dock-btn:hover{transform:translateY(-2px) scale(1.05)}
+.smd-dock-btn svg{width:22px;height:22px}
+/* text chip to the left of every action */
+.smd-dock-btn::before,#smd-dock .gps-fab::before{position:absolute;right:calc(100% + 10px);top:50%;transform:translateY(-50%);white-space:nowrap;padding:5px 11px;border-radius:99px;font:600 12px var(--font-ui,sans-serif);background:rgba(10,14,26,.92);color:#fff;border:1px solid rgba(255,255,255,.25);pointer-events:none}
+.smd-dock-btn.d-ai::before{content:"AI Assistant"}
+.smd-dock-btn.d-admin::before{content:"Chat with Admin"}
+/* the EXISTING GPS button + location badge are moved into the dock by dock.js */
+#smd-dock .gps-fab{position:relative!important;right:auto!important;bottom:auto!important;left:auto!important;width:46px!important;height:46px!important;flex:none}
+#smd-dock .gps-fab.on::before{content:"GPS ON"}
+#smd-dock .gps-fab.off::before{content:"GPS OFF"}
+#smd-dock #geo-badge{position:relative!important;left:auto!important;bottom:auto!important;right:auto!important;order:1;white-space:nowrap}
+/* chat window opens above the button */
+@media (min-width:641px){#chat-panel,.chat-panel{right:18px!important;left:auto!important;bottom:92px!important}}
+@media (max-width:640px){#smd-dock{right:12px;bottom:12px}#smd-dock .ai-fab{width:52px;height:52px}}
+
+/* each action circle gets its own "+" badge (the chatbot circle has none) */
+.smd-row{position:relative;display:flex;align-items:center;flex:none}
+.smd-row.r-gps{order:2}.smd-row.r-admin{order:3}.smd-row.r-ai{order:4}
+.smd-row-plus{position:absolute;top:-5px;right:-5px;width:19px;height:19px;border-radius:50%;background:#3868d9;color:#fff;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font:700 13px/1 sans-serif;pointer-events:none;z-index:2}
+
+/* no "+" badges on the chatbot circle or the action icons; icons pop up above the circle on cursor hover */
+.smd-row-plus{display:none!important}

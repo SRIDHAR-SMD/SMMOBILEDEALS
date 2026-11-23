@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}try{if(sessionStorage.getItem('smd_splash'))document.documentElement.classList.add('no-splash');}catch(e){}setTimeout(function(){var e=document.getElementById('page-loader');if(e){e.classList.add('hide');setTimeout(function(){e.remove()},400)}},1800);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .contact-layout{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  .social-card{ text-align:center; padding:20px; }
+  .social-card img{ width:120px; height:120px; object-fit:contain; border-radius:14px; border:1px solid var(--border-soft); background:#fff; padding:8px; margin:0 auto 12px; }
+  @media(max-width:860px){ .contact-layout{ grid-template-columns:1fr; } }
+</style>
+    <link rel="stylesheet" href="../css/color-fix.css"><link rel="stylesheet" href="../css/final-fix.css">
+<link rel="stylesheet" href="../css/ultrawide.css">
+<style>
+.pay-icons{display:flex;justify-content:center;gap:16px;margin-top:16px;flex-wrap:wrap}
+.pay-ic{width:58px;height:58px;border-radius:50%;border:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.3);transition:transform .15s}
+.pay-ic:hover{transform:translateY(-2px) scale(1.05)}
+.pay-ic i{color:#fff !important;font-size:26px}
+</style>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Contact</span></div>
+    <h1 class="page-title">Contact Us</h1>
+  </section>
+
+  <section class="section container">
+    <div class="contact-layout">
+      <div class="card" style="padding:26px;">
+        <h3 style="font-family:var(--font-display);margin:0 0 16px;">Send us a message</h3>
+        <form id="contact-form">
+          <div class="field"><label>Your Name</label><input class="input" name="name" required></div>
+          <div class="field"><label>Phone / Email</label><input class="input" name="contact" required></div>
+          <div class="field"><label>Message</label><textarea class="input" name="message" rows="4" required></textarea></div>
+          <button class="btn btn-primary btn-block" type="submit"><i class="fa-solid fa-paper-plane"></i> Send Message</button>
+        </form>
+        <div style="margin-top:22px;border-top:1px solid var(--border-soft);padding-top:18px;">
+          <div class="flex items-center gap-8" style="font-size:14px;margin-bottom:10px;"><i class="fa-solid fa-location-dot" style="color:var(--accent-2);width:18px;"></i> <span id="c-address"></span></div>
+          <div class="flex items-center gap-8" style="font-size:14px;margin-bottom:10px;"><i class="fa-solid fa-clock" style="color:var(--accent-2);width:18px;"></i> <span id="c-timings"></span></div>
+          <div class="flex items-center gap-8" style="font-size:14px;margin-bottom:10px;"><i class="fa-solid fa-phone" style="color:var(--accent-2);width:18px;"></i> <span id="c-phones"></span></div>
+          <div class="flex items-center gap-8" style="font-size:14px;"><i class="fa-solid fa-envelope" style="color:var(--accent-2);width:18px;"></i> <span id="c-email"></span></div>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-family:var(--font-display);margin:0 0 16px;">Find & follow us</h3>
+        <div class="grid grid-2" id="social-cards"></div>
+
+        <h3 id="pay-directly" style="font-family:var(--font-display);margin:26px 0 16px;scroll-margin-top:calc(var(--header-h) + 16px);">Pay us directly</h3>
+        <div class="card social-card" style="margin-bottom:14px;">
+          <div style="font-weight:700;">Tap an app to pay</div>
+          <div class="flex items-center gap-8" style="justify-content:center;font-family:var(--font-mono);font-weight:700;margin-top:6px;font-size:13px;">
+            <span id="pay-upi-id"></span>
+            <button onclick="copyUpiId()" style="background:none;border:none;color:var(--accent-2);cursor:pointer;" aria-label="Copy UPI ID"><i class="fa-regular fa-copy"></i></button>
+          </div>
+          <div id="payment-cards" class="pay-icons"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="../js/vendor/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/webp-manifest.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+<script defer src="../js/smd-v29.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('contact').then(() => {
+  document.getElementById('c-address').textContent = SITE_CONFIG.address;
+  document.getElementById('c-timings').textContent = SITE_CONFIG.timings;
+  document.getElementById('c-phones').textContent = SITE_CONFIG.phones.join('  /  ');
+  document.getElementById('c-email').innerHTML = `<a href="mailto:${SITE_CONFIG.email}" style="color:inherit;overflow-wrap:anywhere;">${SITE_CONFIG.email}</a>`;
+
+  const s = SITE_CONFIG.social;
+  /* Only a neutral action label is shown under each icon — never the
+     account username. The store owner asked that their personal handles
+     (Instagram / Facebook / Threads) not be printed on the site; tapping
+     the card still opens the correct page directly. */
+  const cards = [
+    { name:'Instagram', icon:'fa-instagram', color:'#E1306C', url:s.instagram.url, qr:s.instagram.qr, action:'Follow us' },
+    { name:'WhatsApp', icon:'fa-whatsapp', color:'#25D366', url:s.whatsapp.url, qr:s.whatsapp.qr, action:'Chat with us' },
+    { name:'Threads', icon:'fa-threads', color:'#eee', url:s.threads.url, qr:s.threads.qr, action:'Follow us' }
+  ].filter(c => c.url);
+  if (s.facebook.url) cards.push({ name:'Facebook', icon:'fa-facebook-f', color:'#1877F2', url:s.facebook.url, qr:s.facebook.qr, action:'Visit our page' });
+
+  document.getElementById('social-cards').innerHTML = cards.map(c => `
+    <a href="${c.url}" target="_blank" rel="noopener noreferrer" class="card social-card reveal">
+      ${c.qr ? `<img src="${UI.link(c.qr)}" alt="${c.name} QR">` : `<div style="width:120px;height:120px;border-radius:14px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;"><i class="fa-brands ${c.icon}" style="font-size:38px;color:${c.color};"></i></div>`}
+      <div class="flex items-center gap-8" style="justify-content:center;font-weight:700;"><i class="fa-brands ${c.icon}" style="color:${c.color};"></i> ${c.name}</div>
+      <div class="text-faint" style="font-size:12px;margin-top:2px;">${c.action}</div>
+    </a>`).join('');
+
+  document.getElementById('contact-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    DB.logEvent('contact_message', Object.fromEntries(new FormData(e.target).entries()));
+    Notify.toast('Message sent! We\'ll get back to you soon — or WhatsApp us for an instant reply.', 'success');
+    e.target.reset();
+  });
+
+  // ---- Payment section ----
+  document.getElementById('pay-upi-id').textContent = SITE_CONFIG.upiId;
+  window.copyUpiId = () => { navigator.clipboard?.writeText(SITE_CONFIG.upiId); Notify.toast('UPI ID copied', 'success'); };
+
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+  const upiQs = new URLSearchParams({ pa: SITE_CONFIG.upiId, pn: SITE_CONFIG.upiPayeeName, cu: 'INR' }).toString().replace(/\+/g, '%20');
+  const appLink = (app) => {
+    const ua = navigator.userAgent || '';
+    const pkg = { gpay:'com.google.android.apps.nbu.paisa.user', phonepe:'com.phonepe.app', paytm:'net.one97.paytm' };
+    if (/Android/i.test(ua)) return `intent://pay?${upiQs}#Intent;scheme=upi;package=${pkg[app]};end`;
+    const ios = { gpay:'gpay://upi/pay?', phonepe:'phonepe://pay?', paytm:'paytmmp://pay?' };
+    return (ios[app] || 'upi://pay?') + upiQs;
+  };
+  // Scanner shows in the centre of the screen (tap anywhere / Esc to close)
+  const showScanner = () => {
+    const o = document.createElement('div');
+    o.id = 'qr-lightbox';
+    o.innerHTML = '<div class="qr-lb-box"><img src="' + UI.link(SITE_CONFIG.upiQrImage) + '" alt="Scan to pay"><p>Scan with any UPI app &mdash; tap anywhere to close</p></div>';
+    const close = () => { o.remove(); document.removeEventListener('keydown', esc); };
+    const esc = (ev) => { if (ev.key === 'Escape') close(); };
+    o.addEventListener('click', close);
+    document.addEventListener('keydown', esc);
+    document.body.appendChild(o);
+  };
+  // Mobile -> open that app directly. Laptop/PC -> payment flow (products -> address -> payment).
+  window.payWith = (app) => {
+    if (isMobile) { window.location.href = appLink(app); return; }
+    if (typeof Cart !== 'undefined' && Cart.count() > 0) { window.location.href = UI.link('pages/checkout.html'); }
+    else { Notify.toast('First select your products, then add address & pay', 'info'); setTimeout(() => { window.location.href = UI.link('pages/products.html'); }, 900); }
+  };
+  const paymentApps = [
+    { id:'scan',    name:'Scan QR',  icon:'fa-solid fa-qrcode',        bg:'#0f766e', on:'showScanner()' },
+    { id:'gpay',    name:'GPay',     icon:'fa-brands fa-google-pay',   bg:'#4285F4', on:"payWith('gpay')" },
+    { id:'phonepe', name:'PhonePe',  icon:'fa-solid fa-mobile-screen', bg:'#5F259F', on:"payWith('phonepe')" },
+    { id:'paytm',   name:'Paytm',    icon:'fa-solid fa-wallet',        bg:'#00BAF2', on:"payWith('paytm')" }
+  ];
+  window.showScanner = showScanner;
+  document.getElementById('payment-cards').innerHTML = paymentApps.map(p => `
+    <button type="button" class="pay-ic" onclick="${p.on}" aria-label="${p.name}" title="${p.name}" style="background:${p.bg};">
+      <i class="${p.icon}"></i>
+    </button>`).join('');
+
+  // Re-run scroll-reveal AFTER the sections above inject their own
+  // ".reveal" elements (social QR cards, payment app cards). App.boot()
+  // already called Loader.initReveal() once, but that ran before these
+  // cards existed, so they'd stay invisible without this second pass.
+  Loader.initReveal();
+});
+});
+</script>
+<script src="../js/fast-nav.js"></script>
+</body>
+</html>

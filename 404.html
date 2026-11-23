@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Page not found — SM Mobile Deals</title>
+<style>
+:root{color-scheme:dark light}*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#050812;color:#e8ecf8;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;display:grid;place-items:center;padding:16px}
+@media(prefers-color-scheme:light){body{background:#f4f6fb;color:#0f172a}.card{background:#fff !important}}
+.card{width:100%;max-width:460px;background:#141414;border:1px solid #ffffff33;border-radius:22px;padding:22px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.3)}
+h1{font-size:22px;margin:0 0 4px}p.s{margin:0 0 14px;opacity:.7;font-size:14px}
+#op-stage{height:min(62vh,470px);border-radius:16px;overflow:hidden;background:#000;display:grid;place-items:center;margin-bottom:10px}
+#op-stage iframe{width:100%;height:100%;border:0}.op-off{color:#cbd5e1;font-size:15px;line-height:1.7;padding:20px}
+.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+a.b,button.b{padding:10px 16px;border-radius:12px;border:1px solid #3868d966;background:transparent;color:inherit;font-weight:700;font-size:14px;text-decoration:none;cursor:pointer}
+a.p{background:linear-gradient(90deg,#3868d9,#5c84e0);border:0;color:#fff}
+#op-msg,#op-count{font-size:12px;opacity:.6}
+</style>
+</head><body>
+<main class="card" id="gps-card" style="display:none">
+<svg viewBox="0 0 64 64" width="96" height="96" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3868d9"/><stop offset="1" stop-color="#5c84e0"/></linearGradient></defs><circle cx="32" cy="32" r="31" fill="#1a1030"/><circle cx="32" cy="32" r="24" fill="none" stroke="url(#gg)" stroke-width="3" stroke-dasharray="4 3"/><path d="M32 5v9M32 50v9M5 32h9M50 32h9" stroke="url(#gg)" stroke-width="3.5" stroke-linecap="round"/><path d="M32 17.5c-6.3 0-11.2 4.9-11.2 11 0 8.2 11.2 18.6 11.2 18.6s11.2-10.4 11.2-18.6c0-6.1-4.9-11-11.2-11z" fill="url(#gg)"/><circle cx="32" cy="28.6" r="4.3" fill="#fff"/><path d="M8 8l48 48" stroke="#5c84e0" stroke-width="5" stroke-linecap="round"/></svg>
+<h1 style="margin-top:10px">404 — Location (GPS) is OFF</h1>
+<p class="s" id="gps-msg">SM Mobile Deals work aaga GPS / Location ON-la irukkanum. GPS ON pannunga, website thirumba open aagum.</p>
+<div class="row"><button class="b p" id="gps-on" style="background:linear-gradient(90deg,#3868d9,#5c84e0);border:0;color:#fff">📍 Turn GPS ON</button><a class="b" id="gps-home" href="index.html">🏠 Home</a></div>
+<div id="gps-help" style="font-size:12px;opacity:.65;margin-top:14px;line-height:1.6"></div>
+</main>
+<main class="card" id="normal-card">
+<h1>Oops — that page isn't here</h1><p class="s">Enjoy some real delivery reels while you head back.</p>
+<div id="op-stage"></div>
+<div class="row" style="margin:0 0 4px;align-items:center"><button class="b" id="op-prev" aria-label="Previous reel">◀</button><span id="op-count"></span><button class="b" id="op-next" aria-label="Next reel">▶</button></div>
+<div id="op-msg"></div>
+<div class="row"><a class="b p" href="/index.html">🏠 Home</a><a class="b" href="/pages/products.html">🛍️ Shop</a><button class="b" id="op-retry">↻ Retry</button></div>
+</main>
+<script src="/js/config.js"></script><script>if(!new URLSearchParams(location.search).get("gps")){var sc=document.createElement("script");sc.src="/js/offline-player.js";document.body.appendChild(sc);}</script>
+<script>
+(function(){
+  var q=new URLSearchParams(location.search), why=q.get('gps'); if(!why) return;
+  document.getElementById('normal-card').style.display='none';
+  document.getElementById('gps-card').style.display='block';
+  document.title='404 — GPS OFF · SM Mobile Deals';
+  var back='index.html'; try{ var u=new URL(q.get('back')||'index.html',location.href); if(u.origin===location.origin&&!/404\.html/.test(u.pathname)) back=u.href; }catch(e){}
+  if(why==='denied') document.getElementById('gps-msg').textContent='Location permission block-la irukku. Browser-la 🔒 icon → Site settings → Location → Allow pannunga, appuram "Turn GPS ON" click pannunga.';
+  document.getElementById('gps-help').textContent='Phone-la: Settings → Location ON. Browser prompt vandha "Allow" kudunga.';
+  document.getElementById('gps-on').addEventListener('click',function(){
+    try{localStorage.setItem('smd_gps','on');sessionStorage.removeItem('smd_gps_ok');sessionStorage.removeItem('smd_gps_noted');}catch(e){}
+    var go=function(){location.replace(back);};
+    if(!navigator.geolocation||location.protocol==='file:') return go();
+    navigator.geolocation.getCurrentPosition(function(){try{sessionStorage.setItem('smd_gps_ok',String(Date.now()))}catch(e){}go();},function(e){
+      document.getElementById('gps-msg').textContent=(e&&e.code===1)?'Location Allow pannala. Browser settings-la Location ALLOW pannittu thirumba try pannunga.':'GPS innum OFF-la irukku. Device Location ON pannittu thirumba try pannunga.';
+    },{timeout:9000});
+  });
+})();
+</script>
+<script src="js/fast-nav.js"></script>
+</body></html>

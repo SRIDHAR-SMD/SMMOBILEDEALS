@@ -1,0 +1,1 @@
+const Profile=(()=>{async function t({name:r,phone:e,address:i,city:o,state:a,pincode:n}){return!r||!r.trim()?{ok:!1,error:"Name is required."}:(await Auth.updateProfile({name:r.trim(),phone:(e||"").trim(),address:(i||"").trim(),city:(o||"").trim(),state:(a||"").trim(),pincode:(n||"").trim()}),{ok:!0})}return{save:t}})();

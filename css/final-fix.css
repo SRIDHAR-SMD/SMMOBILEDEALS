@@ -1,0 +1,1192 @@
+/* =====================================================================
+   FINAL FIX  (loaded after color-fix.css on every page)
+   1. Transparent / light background (no heavy dark veil)
+   2. Chatbot: light transparent glass, no red, mic button
+   3. Blue / navy leftovers -> red / neutral
+   4. Overflow guards
+   ===================================================================== */
+
+/* ---------- 1. BACKGROUND: light, transparent ---------- */
+html[data-theme=dark] body,
+html[data-theme=dark] body:has(.hero),
+html[data-theme=dark] body:not(:has(.hero)) {
+    --veil: linear-gradient(rgba(0,0,0,.14), rgba(0,0,0,.14)) !important;
+}
+html[data-theme=light] body,
+html[data-theme=light] body:has(.hero),
+html[data-theme=light] body:not(:has(.hero)) {
+    --veil: linear-gradient(rgba(0,0,0,.14), rgba(0,0,0,.14)) !important;
+}
+html body:has(.hero) { --veil: linear-gradient(rgba(0,0,0,.14), rgba(0,0,0,.14)) !important; }
+html[data-theme=light] body:has(.hero) { --veil: linear-gradient(rgba(0,0,0,.14), rgba(0,0,0,.14)) !important; }
+
+/* page sections never paint a dark box over the background */
+html[data-theme=dark] main .section,
+html[data-theme=light] main .section,
+html[data-theme=dark] .section,
+html[data-theme=light] .section,
+html[data-theme=dark] body:has(.hero) .section:not(.hero),
+html[data-theme=light] body:has(.hero) .section:not(.hero) {
+    background: transparent !important;
+}
+
+/* cards / panels: soft translucent glass instead of solid dark blocks */
+html[data-theme=dark] {
+    --surface: rgba(18,18,18,.55) !important;
+    --surface-2: rgba(32,32,32,.55) !important;
+    --bg-elevated: rgba(18,18,18,.60) !important;
+    --glass-bg: rgba(18,18,18,.50) !important;
+    --glass-bg-strong: rgba(18,18,18,.60) !important;
+    --header-bg: rgba(10,10,10,.55) !important;
+}
+html[data-theme=light] {
+    --surface: rgba(255,255,255,.60) !important;
+    --surface-2: rgba(245,245,245,.62) !important;
+    --bg-elevated: rgba(255,255,255,.66) !important;
+    --glass-bg: rgba(255,255,255,.55) !important;
+    --glass-bg-strong: rgba(255,255,255,.66) !important;
+    --header-bg: rgba(255,255,255,.60) !important;
+}
+.site-header, header.site-header {
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+/* footer: use the same light veil */
+footer.site-footer { background-color: transparent !important; }
+
+/* ---------- 2. CHATBOT: light + transparent, NO red ---------- */
+.chat-panel {
+    background: rgba(255,255,255,.14) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+    backdrop-filter: blur(20px) saturate(150%) !important;
+    border: 1px solid rgba(255,255,255,.35) !important;
+    box-shadow: 0 8px 30px rgba(0,0,0,.18) !important;
+    color: var(--text);
+}
+html[data-theme=light] .chat-panel {
+    background: rgba(255,255,255,.58) !important;
+    border-color: rgba(0,0,0,.12) !important;
+}
+.chat-head,
+html[data-theme=dark] .chat-head,
+html[data-theme=light] .chat-head {
+    background: rgba(255,255,255,.10) !important;
+    border-bottom: 1px solid rgba(255,255,255,.25);
+    color: var(--heading) !important;
+    justify-content: space-between;
+}
+html[data-theme=light] .chat-head { border-bottom-color: rgba(0,0,0,.10); background: rgba(255,255,255,.35) !important; }
+.chat-head, .chat-head * { color: var(--heading) !important; text-shadow: none !important; }
+.chat-head .modal-close {
+    background: rgba(255,255,255,.18) !important;
+    border: 1px solid rgba(255,255,255,.3) !important;
+    box-shadow: none !important;
+}
+html[data-theme=light] .chat-head .modal-close { background: rgba(0,0,0,.06) !important; border-color: rgba(0,0,0,.15) !important; }
+.chat-lang {
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 8px;
+    padding: 4px 6px;
+}
+.chat-lang option { color: #111; background: #fff; }
+
+.chat-body, html[data-theme=dark] .chat-body, html[data-theme=light] .chat-body {
+    background: transparent !important;
+}
+.msg.bot {
+    background: rgba(255,255,255,.14) !important;
+    border: 1px solid rgba(255,255,255,.25) !important;
+    color: var(--text) !important;
+}
+.msg.user {
+    background: rgba(255,255,255,.28) !important;   /* was red */
+    border: 1px solid rgba(255,255,255,.35) !important;
+    color: var(--heading) !important;
+}
+html[data-theme=light] .msg.bot  { background: rgba(255,255,255,.65) !important; border-color: rgba(0,0,0,.10) !important; }
+html[data-theme=light] .msg.user { background: rgba(0,0,0,.08) !important; border-color: rgba(0,0,0,.12) !important; }
+.msg-suggestions button {
+    background: rgba(255,255,255,.14) !important;
+    border: 1px solid rgba(255,255,255,.3) !important;
+    color: var(--text) !important;
+}
+.msg-suggestions button:hover { background: rgba(255,255,255,.28) !important; }
+html[data-theme=light] .msg-suggestions button { background: rgba(255,255,255,.7) !important; border-color: rgba(0,0,0,.12) !important; }
+
+.chat-input-row {
+    background: rgba(255,255,255,.10) !important;
+    border-top: 1px solid rgba(255,255,255,.25) !important;
+    align-items: center;
+}
+html[data-theme=light] .chat-input-row { background: rgba(255,255,255,.4) !important; border-top-color: rgba(0,0,0,.10) !important; }
+.chat-input-row input {
+    min-width: 0;
+    background: rgba(255,255,255,.16) !important;
+    border: 1px solid rgba(255,255,255,.3) !important;
+    color: var(--text) !important;
+}
+html[data-theme=light] .chat-input-row input { background: rgba(255,255,255,.8) !important; border-color: rgba(0,0,0,.15) !important; }
+.chat-input-row input::placeholder { color: var(--text-faint); opacity: .8; }
+.chat-input-row input:focus { outline: none; border-color: rgba(255,255,255,.65) !important; }
+
+/* send + mic buttons: light glass circles (no red) */
+.chat-input-row button,
+.chat-input-row .chat-send-btn,
+.chat-input-row .chat-mic-btn {
+    flex: 0 0 40px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.22) !important;
+    border: 1px solid rgba(255,255,255,.4) !important;
+    color: var(--heading) !important;
+    box-shadow: none;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background .2s, transform .15s;
+}
+html[data-theme=light] .chat-input-row button { background: rgba(0,0,0,.07) !important; border-color: rgba(0,0,0,.15) !important; }
+.chat-input-row button:hover { background: rgba(255,255,255,.38) !important; transform: scale(1.06); }
+html[data-theme=light] .chat-input-row button:hover { background: rgba(0,0,0,.13) !important; }
+/* mic while listening: soft pulsing ring (white, not red) */
+.chat-input-row .chat-mic-btn.listening {
+    background: rgba(255,255,255,.55) !important;
+    animation: micPulse 1.1s ease-in-out infinite;
+}
+html[data-theme=light] .chat-input-row .chat-mic-btn.listening { background: rgba(0,0,0,.20) !important; }
+@keyframes micPulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.55); }
+    50%     { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+}
+
+/* chatbot open button: light transparent too */
+.ai-fab, .ai-fab:hover {
+    background: rgba(255,255,255,.22) !important;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,.45) !important;
+    color: var(--heading) !important;
+    box-shadow: none !important;
+    animation: none !important;
+}
+html[data-theme=light] .ai-fab, html[data-theme=light] .ai-fab:hover { background: rgba(255,255,255,.6) !important; border-color: rgba(0,0,0,.15) !important; }
+.ai-fab .fab-badge { background: #fff !important; border-color: rgba(0,0,0,.2) !important; }
+
+/* chat panel must fit small phones */
+@media (max-width: 480px) {
+    .chat-panel { left: 8px !important; right: 8px !important; width: auto !important; max-width: calc(100vw - 16px) !important; bottom: 84px !important; }
+}
+
+/* ---------- 3. BLUE / NAVY leftovers -> red / neutral ---------- */
+.offer-banner { background: linear-gradient(120deg, #12234a, #0f1b37) !important; }
+.brand-chip.has-logo { background: #f2f2f2 !important; border-color: #d4d4d4 !important; }
+#iv-zoom-label { color: #e5e5e5 !important; }
+.wt-qr i { background: #111 !important; }
+.site-footer a[href^=mailto], .site-footer a[href^="mailto"],
+.site-footer a[href^=mailto] i, .site-footer a[href^="mailto"] i { color: #adc1ef !important; }
+html[data-theme=light] .site-footer a[href^=mailto],
+html[data-theme=light] .site-footer a[href^="mailto"],
+html[data-theme=light] .site-footer a[href^=mailto] i { color: #2555c4 !important; }
+/* purple/blue accent rgb used in glows -> red */
+:root, html[data-theme=dark], html[data-theme=light] { --accent-rgb: 56,104,217 !important; --deal-rgb: 56,104,217 !important; }
+/* default browser blue (links / focus / tap highlight) */
+a:not([class]) { color: inherit; }
+:focus-visible { outline-color: #5c84e0 !important; }
+input, select, textarea, button { accent-color: #3868d9; }
+* { -webkit-tap-highlight-color: transparent; }
+
+/* ---------- 4. OVERFLOW guards ---------- */
+html, body { overflow-x: hidden !important; max-width: 100% !important; }
+img, video, canvas, svg, iframe { max-width: 100%; }
+.container, main, section, .card, .modal, .grid-2, .grid-3, .grid-4 { min-width: 0; max-width: 100%; }
+.card, .product-card, .msg, .msg-card, td, th, p, h1, h2, h3, h4, li, a { overflow-wrap: anywhere; word-break: normal; }
+table { max-width: 100%; }
+.table-wrap, .table-scroll, .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+pre, code { white-space: pre-wrap; word-break: break-word; max-width: 100%; }
+
+/* ---------- 5. FOOTER icons: one colour, fixed size, no overflow ---------- */
+.site-footer, .site-footer .container, .footer-grid, .footer-grid > div, .footer-bottom, .footer-bottom > * { min-width: 0; max-width: 100%; }
+.footer-grid li.contact-row { align-items: flex-start; flex-wrap: nowrap; }
+.footer-grid li.contact-row > span,
+.footer-grid li.contact-row > a { flex: 1 1 0; min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
+.footer-grid .contact-email { white-space: normal !important; overflow-wrap: anywhere !important; word-break: break-all; }
+.site-footer li i,
+.site-footer .payment-icons i,
+.footer-bottom i {
+    flex: 0 0 18px;
+    width: 18px !important; height: 18px !important;
+    min-width: 18px; max-width: 18px;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 0 !important;
+    -webkit-mask-size: contain; mask-size: contain;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: center; mask-position: center;
+    color: #adc1ef !important;            /* dark theme: same soft red for every icon */
+    opacity: 1 !important;
+}
+html[data-theme=light] .site-footer li i,
+html[data-theme=light] .site-footer .payment-icons i,
+html[data-theme=light] .footer-bottom i { color: #2555c4 !important; }
+.site-footer .payment-icons i { width: 24px !important; height: 24px !important; flex-basis: 24px; min-width: 24px; max-width: 24px; }
+.footer-bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.payment-icons { flex: 0 0 auto; flex-wrap: nowrap; }
+.site-footer .social-row { flex-wrap: wrap; }
+.site-footer .social-row a { flex: 0 0 38px; overflow: hidden; }
+.site-footer .social-row a .social-icon, .site-footer .social-row a svg { width: 20px; height: 20px; max-width: 100%; }
+
+/* ---------- 6. LOGO COLOURS (blue + silver, from SM logo) ---------- */
+:root, html[data-theme=dark], html[data-theme=light] {
+    --logo-blue: #1f6bff;
+    --logo-blue-2: #4aa3ff;
+    --logo-blue-dark: #0b4fd6;
+    --logo-silver: #dfe4ea;
+    --logo-rgb: 31,107,255;
+}
+
+/* Shop Now (and every primary button): logo blue, no red */
+.btn-primary, .hero-cta .btn-primary, .btn-primary:visited {
+    background: linear-gradient(135deg, var(--logo-blue), var(--logo-blue-dark)) !important;
+    color: #fff !important;
+    border: 1px solid var(--logo-blue-2) !important;
+    box-shadow: none !important;
+}
+.btn-primary:hover { background: linear-gradient(135deg, var(--logo-blue-2), var(--logo-blue)) !important; }
+
+/* Outlines on every page: logo blue */
+.btn-outline, .btn-deal {
+    background: transparent !important;
+    border: 2px solid var(--logo-blue) !important;
+    color: var(--logo-blue-2) !important;
+}
+html[data-theme=light] .btn-outline, html[data-theme=light] .btn-deal { color: var(--logo-blue-dark) !important; }
+.btn-outline:hover, .btn-deal:hover {
+    background: linear-gradient(135deg, var(--logo-blue), var(--logo-blue-dark)) !important;
+    border-color: var(--logo-blue-2) !important;
+    color: #fff !important;
+}
+:focus-visible { outline: 2px solid var(--logo-blue-2) !important; outline-offset: 2px; }
+input:focus, select:focus, textarea:focus,
+.chat-input-row input:focus {
+    border-color: var(--logo-blue) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(var(--logo-rgb), .25) !important;
+}
+input, select, textarea, button { accent-color: var(--logo-blue); }
+.card:hover, .review-card:hover, .faq-item:hover, .why-card:hover { border-color: var(--logo-blue) !important; }
+.chip:hover, .chip.active { border-color: var(--logo-blue) !important; }
+.filter-opt input:checked { accent-color: var(--logo-blue); }
+.offer-banner { border: 1px solid rgba(var(--logo-rgb), .55) !important; }
+.offer-banner img { border-color: var(--logo-blue) !important; }
+
+/* Handpicked (product cards) + Trending now (charger cards): same hover outline */
+.product-card, .charge-card {
+    position: relative; isolation: isolate;
+    border: 1px solid var(--border-soft);
+    transition: transform var(--med) var(--ease), border-color var(--med), box-shadow var(--med);
+}
+.charge-card::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; opacity: 0; pointer-events: none;
+    background: radial-gradient(600px circle at 50% 0%, rgba(var(--logo-rgb), .18), transparent 55%);
+    transition: opacity var(--med) var(--ease);
+}
+.charge-card > * { position: relative; z-index: 1; }
+.product-card:hover, .charge-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--logo-blue) !important;
+    box-shadow: 0 0 0 1px var(--logo-blue), 0 14px 32px rgba(var(--logo-rgb), .22) !important;
+}
+.product-card:hover::before, .charge-card:hover::before { opacity: 1; }
+.product-card:hover .pc-name { color: var(--logo-blue-2); }
+
+/* Browse / Shop by category: brighter, darkens softly on hover */
+.ct-scrim {
+    background: linear-gradient(180deg, transparent 0%, transparent 55%, rgba(8,12,24,.22) 72%, rgba(8,12,24,.50) 100%) !important;
+    transition: background var(--med) var(--ease);
+}
+.cat-tile:hover .ct-scrim {
+    background: linear-gradient(180deg, rgba(8,12,24,.10) 0%, rgba(8,12,24,.40) 45%, rgba(8,12,24,.80) 78%, rgba(6,10,20,.95) 100%) !important;
+}
+.ct-bg-img { filter: saturate(1.2) brightness(1.12) !important; }
+.cat-tile:hover .ct-bg-img { filter: saturate(1.1) brightness(.95) !important; }
+.cat-tile:hover {
+    border-color: var(--logo-blue) !important;
+    box-shadow: 0 0 0 1px var(--logo-blue), 0 14px 32px rgba(var(--logo-rgb), .22) !important;
+}
+.cat-tile:hover h4 { color: #fff !important; }
+.cat-tile h4, .ct-count { text-shadow: 0 2px 8px rgba(0,0,0,.85) !important; }
+.cat-tile .ct-icon { background: linear-gradient(135deg, var(--logo-blue), var(--logo-blue-dark)) !important; border-color: var(--logo-blue-2) !important; color: #fff !important; }
+
+/* QR big view (Limited time banner) */
+#qr-lightbox {
+    position: fixed; inset: 0; z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,.65);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    cursor: zoom-out; padding: 16px;
+    animation: qrFade .2s ease-out;
+}
+#qr-lightbox .qr-lb-box { text-align: center; max-width: 100%; }
+#qr-lightbox img {
+    width: min(420px, 86vw); height: auto; max-height: 70vh; object-fit: contain;
+    background: #fff; border-radius: 18px; padding: 10px;
+    border: 3px solid var(--logo-blue); display: block; margin: 0 auto;
+}
+#qr-lightbox p { color: #fff; margin: 12px 0 0; font-size: 14px; }
+@keyframes qrFade { from { opacity: 0; } to { opacity: 1; } }
+
+/* ===== QUICK FIX: offer banner overlay was blocking clicks (Grab the deal + QR) and tinting the QR red ===== */
+.offer-banner:after { pointer-events: none !important; z-index: 0 !important; }
+.offer-banner > * { position: relative; z-index: 1; }
+.offer-banner .btn, .offer-banner a { position: relative; z-index: 2; pointer-events: auto !important; cursor: pointer; }
+.offer-banner #offer-qr {
+  width: 140px !important; height: auto; background: #fff; padding: 4px; border-radius: 14px;
+  filter: none !important; opacity: 1 !important; mix-blend-mode: normal !important;
+  position: relative; z-index: 2; cursor: zoom-in; pointer-events: auto !important;
+}
+#qr-lightbox { z-index: 100000 !important; position: fixed !important; inset: 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+#qr-lightbox img { width: min(380px, 88vw) !important; max-height: 82vh !important; padding: 0 !important; }
+
+/* ===== QUICK FIX: footer colour overflow + icons ===== */
+html, body { overflow-x: hidden; max-width: 100%; background-color: #000; }
+footer.site-footer { overflow: hidden !important; width: 100% !important; max-width: 100vw; margin-bottom: 0 !important; padding-bottom: 0 !important; background: transparent !important; box-shadow: none !important; }
+footer.site-footer::before, footer.site-footer::after { inset: 0 !important; width: auto !important; max-width: 100% !important; }
+footer.site-footer *, footer.site-footer *::before, footer.site-footer *::after { box-shadow: none; }
+footer.site-footer .container { max-width: 100%; overflow: hidden; }
+footer.site-footer .footer-grid, footer.site-footer .footer-bottom { background: transparent !important; outline: 0 !important; }
+.site-footer .footer-bottom { gap: 12px; flex-wrap: wrap; padding-left: 0 !important; padding-right: 0 !important; }
+.site-footer li i, .site-footer .payment-icons i { color: #fff !important; opacity: .9 !important; }
+.site-footer li i.fa-location-dot { color: #84a2e8 !important; }
+.site-footer .payment-icons { display: flex; gap: 12px; align-items: center; }
+.site-footer .payment-icons i { width: 24px !important; height: 24px !important; background-color: #fff !important; }
+.site-footer .social-row a { outline: 0 !important; }
+.site-footer a:focus, .site-footer a:active, .site-footer button:focus { outline: 0 !important; -webkit-tap-highlight-color: transparent; }
+@media (max-width: 640px) {
+  .site-footer .footer-bottom { padding-bottom: 76px !important; justify-content: center; text-align: center; }
+}
+.site-footer .footer-bottom > span:first-child { padding-left: 64px; }
+@media (max-width: 640px) { .site-footer .footer-bottom > span:first-child { padding-left: 0; } .site-footer .footer-bottom { padding-bottom: 84px !important; } }
+
+/* ===== QUICK FIX: Privacy Policy + About Us readability (text was sitting directly on the busy photo) ===== */
+#privacy-body, main > section.section.container[style*="max-width:820px"] {
+  background: rgba(0,0,0,.58) !important;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.14) !important;
+  border-radius: 18px !important;
+  padding: 28px 32px !important;
+  margin-bottom: 28px;
+  box-sizing: border-box;
+}
+#privacy-body p, #privacy-body li, main > section.section.container[style*="max-width:820px"] p { color: #f1f1f1 !important; text-shadow: none !important; }
+#privacy-body h3 { margin: 22px 0 8px !important; color: #fff !important; }
+#privacy-body h3 + p, #privacy-body h3 + ul { margin-top: 0 !important; }
+#privacy-body p { margin: 0 0 12px !important; }
+#privacy-body a { color: #adc1ef !important; }
+@media (max-width: 640px) {
+  #privacy-body, main > section.section.container[style*="max-width:820px"] { padding: 18px 16px !important; border-radius: 14px !important; width: calc(100% - 24px); }
+}
+
+/* ===== QUICK FIX: footer centre icons (QR / card / cash) - not red ===== */
+footer.site-footer .footer-bottom .payment-icons i,
+.site-footer .payment-icons i { background-color: #ffffff !important; color: #ffffff !important; opacity: .92 !important; }
+
+/* ===== QUICK FIX: social icons (Instagram / Facebook / WhatsApp / Threads) - clean circles, white glyphs, no colour bleed ===== */
+.social-row a { position: relative; display: inline-flex !important; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50% !important; overflow: hidden !important; border: 0 !important; outline: 0 !important; background-clip: padding-box; box-shadow: 0 2px 8px rgba(0,0,0,.35) !important; text-shadow: none !important; }
+.social-row a, .social-row a:hover, .social-row a:focus, .social-row a:active, .social-row a:visited { color: #fff !important; }
+.social-row a svg, .social-row a .social-icon { color: #fff !important; width: 20px; height: 20px; flex: none; filter: none !important; opacity: 1 !important; }
+.social-row a.social-instagram { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%) !important; }
+.social-row a.social-facebook  { background: #1877f2 !important; }
+.social-row a.social-whatsapp  { background: #25d366 !important; }
+.social-row a.social-threads   { background: #000 !important; box-shadow: 0 0 0 1px rgba(255,255,255,.35), 0 2px 8px rgba(0,0,0,.35) !important; }
+.social-row a::before, .social-row a::after { content: none !important; }
+.social-row a:hover { transform: translateY(-2px); filter: brightness(1.08); }
+html .site-footer .social-row a.social-whatsapp[href], html .site-footer .social-row a.social-whatsapp[href]:hover, html .social-row a.social-whatsapp[href] { color: #fff !important; }
+
+/* =====================================================================
+   ADMIN PANEL - light frosted-glass dashboard (no black background)
+   Page photo shows through; panels are light + translucent; text is dark and clear.
+   Applies in both dark and light theme.
+   ===================================================================== */
+html[data-theme] body.page-admin .admin-layout { background: transparent !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; }
+html[data-theme] body.page-admin .admin-layout,
+html[data-theme] body.page-admin .modal,
+html[data-theme] body.page-admin #inbox-bell-panel,
+html[data-theme] body.page-admin .toast {
+  --text:#0b1220 !important; --text-dim:#1e293b !important; --text-faint:#334155 !important; --heading:#0b1220 !important;
+  --surface:rgba(255,255,255,.82) !important; --surface-2:rgba(255,255,255,.74) !important; --surface-3:rgba(226,232,240,.92) !important; --bg-elevated:rgba(255,255,255,.88) !important;
+  --glass-bg:rgba(255,255,255,.82) !important; --glass-bg-strong:rgba(255,255,255,.9) !important;
+  --border:rgba(15,23,42,.22) !important; --border-soft:rgba(15,23,42,.14) !important;
+  --accent:#1d4ed8 !important; --accent-2:#1e40af !important; --accent-text:#1d4ed8 !important; --eyebrow:#1d4ed8 !important; --accent-soft:rgba(37,99,235,.14) !important;
+  color: #0b1220; color-scheme: light;
+}
+html[data-theme] body.page-admin .admin-nav,
+html[data-theme] body.page-admin .admin-profile-card,
+html[data-theme] body.page-admin .admin-layout .card,
+html[data-theme] body.page-admin .admin-layout > div:not(.admin-sidebar) {
+  background: rgba(255,255,255,.80) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(1.2) !important; backdrop-filter: blur(14px) saturate(1.2) !important;
+  border: 1px solid rgba(255,255,255,.65) !important;
+  box-shadow: 0 8px 28px rgba(0,0,0,.18) !important;
+  color: #0b1220 !important; text-shadow: none !important;
+}
+/* cards nested inside the content panel - slightly lighter so they stand out, not black */
+html[data-theme] body.page-admin .admin-layout > div:not(.admin-sidebar) .card,
+html[data-theme] body.page-admin .admin-layout > div:not(.admin-sidebar) .stat,
+html[data-theme] body.page-admin .admin-stats > * {
+  background: rgba(255,255,255,.92) !important; border: 1px solid rgba(15,23,42,.14) !important; box-shadow: 0 2px 8px rgba(15,23,42,.08) !important; backdrop-filter: none !important;
+}
+html[data-theme] body.page-admin .admin-layout :is(h1,h2,h3,h4,h5,h6,p,li,label,legend,th,td,summary,dt,dd,strong,b,small,span,div):not([style*="color"]):not(.btn):not(.badge):not([class*="pill"]):not([class*="tag"]):not([class*="status"]):not(.admin-role-badge) { color: #0b1220 !important; text-shadow: none !important; }
+html[data-theme] body.page-admin .admin-layout :is(.text-dim,.text-faint,label,small):not([style*="color"]) { color: #334155 !important; }
+html[data-theme] body.page-admin .admin-nav button { color: #1e293b !important; font-weight: 600; }
+html[data-theme] body.page-admin .admin-nav button.active, html[data-theme] body.page-admin .admin-nav button:hover { background: rgba(37,99,235,.14) !important; color: #1d4ed8 !important; }
+html[data-theme] body.page-admin .admin-nav .nav-group-label, html[data-theme] body.page-admin .admin-nav small { color: #475569 !important; }
+html[data-theme] body.page-admin .admin-layout :is(input,select,textarea) { background: #fff !important; color: #0b1220 !important; border: 1px solid rgba(15,23,42,.3) !important; }
+html[data-theme] body.page-admin .admin-layout :is(input,textarea)::placeholder { color: #64748b !important; }
+html[data-theme] body.page-admin .admin-layout .table th { background: rgba(226,232,240,.9) !important; color: #0f172a !important; }
+html[data-theme] body.page-admin .admin-layout .table td { border-color: rgba(15,23,42,.12) !important; }
+html[data-theme] body.page-admin .admin-layout .btn-outline { color: #1d4ed8 !important; border-color: #1d4ed8 !important; background: rgba(255,255,255,.6) !important; }
+html[data-theme] body.page-admin .admin-layout .btn-primary { color: #fff !important; }
+html[data-theme] body.page-admin .admin-layout i { color: inherit; }
+html[data-theme] body.page-admin .modal { background: rgba(255,255,255,.96) !important; border: 1px solid rgba(15,23,42,.2) !important; color: #0b1220 !important; }
+html[data-theme] body.page-admin #inbox-bell-panel { background: rgba(255,255,255,.96) !important; color:#0b1220 !important; }
+
+html[data-theme] body.page-admin .admin-role-badge { background: rgba(37,99,235,.16) !important; color: #1e3a8a !important; border: 1px solid rgba(37,99,235,.4) !important; font-weight: 700; }
+html[data-theme] body.page-admin .admin-layout .badge { font-weight: 700; border: 1px solid rgba(15,23,42,.18); }
+html[data-theme] body.page-admin .admin-layout .badge-pending, html[data-theme] body.page-admin .admin-layout .badge-warning { background: #fef3c7 !important; color: #92400e !important; }
+html[data-theme] body.page-admin .admin-layout .badge-success, html[data-theme] body.page-admin .admin-layout .badge-confirmed { background: #dcfce7 !important; color: #166534 !important; }
+html[data-theme] body.page-admin .admin-layout .badge-danger, html[data-theme] body.page-admin .admin-layout .badge-error, html[data-theme] body.page-admin .admin-layout .badge-cancelled { background: #dce4f8 !important; color: #214aac !important; }
+html[data-theme] body.page-admin .admin-layout .badge-info, html[data-theme] body.page-admin .admin-layout .badge-shipped { background: #dbeafe !important; color: #1e40af !important; }
+html[data-theme] body.page-admin .admin-layout .btn-primary { background-image: linear-gradient(135deg,#2563eb,#0ea5e9) !important; color: #fff !important; border: 0 !important; }
+html[data-theme] body.page-admin .admin-layout .btn-danger { color: #fff !important; }
+/* hard-coded dark preview / upload boxes inside the admin content */
+html[data-theme] body.page-admin .admin-layout [style*="background:#111"], html[data-theme] body.page-admin .admin-layout [style*="background: #111"],
+html[data-theme] body.page-admin .admin-layout [style*="background:#000"], html[data-theme] body.page-admin .admin-layout [style*="background: #000"],
+html[data-theme] body.page-admin .admin-layout [style*="background:#0"], html[data-theme] body.page-admin .admin-layout [style*="background:rgba(0,0,0"],
+html[data-theme] body.page-admin .admin-layout [style*="background:var(--bg"] { background: rgba(241,245,249,.95) !important; color: #0b1220 !important; border: 1px dashed rgba(15,23,42,.3) !important; }
+html[data-theme] body.page-admin .admin-layout .input, html[data-theme] body.page-admin .admin-layout input.input, html[data-theme] body.page-admin .admin-layout select.input, html[data-theme] body.page-admin .admin-layout textarea.input, html[data-theme] body.page-admin .admin-layout .input-group .input, html[data-theme] body.page-admin .admin-layout .input-group input {
+  background: #ffffff !important; background-color: #ffffff !important; color: #0b1220 !important; -webkit-text-fill-color: #0b1220; border: 1px solid rgba(15,23,42,.3) !important; text-shadow: none !important;
+}
+html[data-theme] body.page-admin .admin-layout .input-group { background: transparent !important; border: 0 !important; box-shadow: none !important; }
+html[data-theme] body.page-admin .admin-layout .badge, html[data-theme] body.page-admin .admin-layout .btn, html[data-theme] body.page-admin .admin-role-badge { text-shadow: none !important; }
+@media (max-width: 900px) {
+  html[data-theme] body.page-admin .admin-layout { grid-template-columns: minmax(0,1fr) !important; width: 100% !important; max-width: 100% !important; }
+  html[data-theme] body.page-admin .admin-layout > * { min-width: 0 !important; max-width: 100% !important; }
+  html[data-theme] body.page-admin .admin-layout > div:not(.admin-sidebar) { padding: 14px !important; overflow-x: auto; }
+  html[data-theme] body.page-admin .admin-stats { grid-template-columns: repeat(2, minmax(0,1fr)) !important; gap: 10px !important; }
+  html[data-theme] body.page-admin .admin-stats > * { min-width: 0 !important; padding: 14px !important; }
+  html[data-theme] body.page-admin .admin-layout .table { display: block; overflow-x: auto; max-width: 100%; }
+  html[data-theme] body.page-admin #admin-root { padding-left: 12px; padding-right: 12px; }
+}
+
+/* ===== QUICK FIX: "Get in touch" footer icons - real SVG icons in coloured circles, centred with their text ===== */
+.footer-grid li.contact-row { display: flex !important; align-items: center !important; gap: 12px !important; margin: 0 0 14px !important; line-height: 1.45; }
+.footer-grid li.contact-row > .contact-ic {
+  flex: 0 0 36px !important; width: 36px !important; height: 36px !important; min-width: 36px !important;
+  display: inline-flex !important; align-items: center; justify-content: center; border-radius: 50%;
+  color: #fff !important; box-shadow: 0 2px 8px rgba(0,0,0,.35); overflow: visible;
+}
+.footer-grid li.contact-row > .contact-ic svg { width: 18px !important; height: 18px !important; max-width: none; color: #fff !important; stroke: #fff; flex: none; display: block; }
+.footer-grid .contact-ic.ic-loc   { background: #5c84e0; }
+.footer-grid .contact-ic.ic-time  { background: #f59e0b; }
+.footer-grid .contact-ic.ic-phone { background: #16a34a; }
+.footer-grid .contact-ic.ic-mail  { background: #2563eb; }
+.footer-grid .contact-ic.ic-wa    { background: #25d366; }
+.footer-grid .contact-ic.ic-wa svg { fill: none; stroke: #fff; width: 20px !important; height: 20px !important; }
+.footer-grid li.contact-row > span:not(.contact-ic) { flex: 1 1 0; min-width: 0; font-size: 14.5px; color: #fff; }
+.footer-grid .contact-email { color: #fff !important; text-decoration: none !important; border-bottom: 1px dashed rgba(255,255,255,.55); font-size: 14.5px; }
+.footer-grid .contact-email:hover { color: #93c5fd !important; border-bottom-color: #93c5fd; }
+.footer-grid .contact-wa { color: #4ade80 !important; font-weight: 700; font-size: 15px; text-decoration: none !important; }
+.footer-grid .contact-wa:hover { color: #86efac !important; }
+html[data-theme] .site-footer .footer-grid li.contact-row a.contact-email, html[data-theme] .site-footer .footer-grid li.contact-row a.contact-email:visited { color: #ffffff !important; text-decoration: none !important; border-bottom: 1px dashed rgba(255,255,255,.55); }
+html[data-theme] .site-footer .footer-grid li.contact-row a.contact-email:hover { color: #93c5fd !important; }
+html[data-theme] .site-footer .footer-grid li.contact-row a.contact-wa { color: #4ade80 !important; }
+.footer-grid li.contact-row { margin-bottom: 12px !important; }
+@media (max-width: 640px) {
+  .site-footer .footer-grid > div:last-child { grid-column: 1 / -1 !important; width: 100%; }
+  .footer-grid .contact-email { word-break: normal !important; overflow-wrap: anywhere !important; font-size: 14px; }
+}
+.footer-grid li.contact-row > a.contact-email, .footer-grid li.contact-row > a.contact-wa { flex: 0 1 auto !important; }
+
+/* =====================================================================
+   CHATBOT - BLUE OUTLINE on cursor (hover / focus / click)
+   Default colours of the small circles stay the same; only the outline
+   turns green when the cursor is on them (or when typing in the box).
+   ===================================================================== */
+html[data-theme] .chat-panel .chat-input-row input:hover,
+html[data-theme] .chat-panel .chat-input-row input:focus,
+html[data-theme] .chat-panel .chat-input-row input:focus-visible {
+    border-color: #3b82f6 !important;
+    outline: 2px solid #3b82f6 !important;
+    outline-offset: 1px !important;
+    box-shadow: 0 0 0 3px rgba(59,130,246,.28) !important;
+}
+html[data-theme] .chat-panel .chat-input-row button:hover,
+html[data-theme] .chat-panel .chat-input-row button:focus,
+html[data-theme] .chat-panel .chat-input-row button:focus-visible,
+html[data-theme] .chat-panel .chat-input-row button:active,
+html[data-theme] .chat-panel .chat-head .modal-close:hover,
+html[data-theme] .chat-panel .chat-head .modal-close:focus-visible,
+html[data-theme] .ai-fab:hover,
+html[data-theme] .ai-fab:focus,
+html[data-theme] .ai-fab:focus-visible,
+html[data-theme] .ai-fab:active {
+    border-color: #3b82f6 !important;
+    outline: 2px solid #3b82f6 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 0 3px rgba(59,130,246,.28) !important;
+}
+.chat-panel .msg-suggestions button:hover,
+.chat-panel .msg-suggestions button:focus-visible {
+    border-color: #3b82f6 !important;
+    outline: 2px solid #3b82f6 !important;
+    outline-offset: 1px !important;
+}
+
+/* =====================================================================
+   HOME PAGE BUTTONS (Shop now, Compare, Login, Register, Grab the deal...)
+   Default  = fully transparent, NO outline, NO colour (no blue, no red).
+   Cursor on button (hover / focus / tap) = colour outline + colour fill inside the box.
+   ===================================================================== */
+html[data-theme] body.page-home .btn-primary,
+html[data-theme] body.page-home .btn-outline,
+html[data-theme] body.page-home .btn-deal,
+html[data-theme] body.page-home .hero-auth-btn,
+html[data-theme] body.page-home .hero-cta .btn,
+html[data-theme] body.page-home .hero-cta .btn-primary,
+html[data-theme] body.page-home .hero-cta .btn-outline,
+html[data-theme] body.page-home .hero-cta .btn-deal {
+    background: transparent !important;
+    background-image: none !important;
+    border: 2px solid transparent !important;
+    outline: none !important;
+    color: var(--heading) !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+    transition: background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .15s ease !important;
+}
+html[data-theme] body.page-home .btn-primary i,
+html[data-theme] body.page-home .btn-outline i,
+html[data-theme] body.page-home .btn-deal i,
+html[data-theme] body.page-home .hero-cta .btn i { color: inherit !important; }
+
+/* cursor on the button -> colour outline + colour fill inside the box */
+html[data-theme] body.page-home .btn-primary:hover,
+html[data-theme] body.page-home .btn-outline:hover,
+html[data-theme] body.page-home .btn-deal:hover,
+html[data-theme] body.page-home .hero-auth-btn:hover,
+html[data-theme] body.page-home .hero-cta .btn:hover,
+html[data-theme] body.page-home .btn-primary:focus-visible,
+html[data-theme] body.page-home .btn-outline:focus-visible,
+html[data-theme] body.page-home .btn-deal:focus-visible,
+html[data-theme] body.page-home .hero-cta .btn:focus-visible,
+html[data-theme] body.page-home .btn-primary:active,
+html[data-theme] body.page-home .btn-outline:active,
+html[data-theme] body.page-home .btn-deal:active,
+html[data-theme] body.page-home .hero-cta .btn:active {
+    background-color: var(--logo-blue) !important;
+    background-image: linear-gradient(135deg, var(--logo-blue), var(--logo-blue-dark)) !important;
+    border-color: var(--logo-blue-2) !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 3px rgba(var(--logo-rgb), .28), 0 8px 22px rgba(var(--logo-rgb), .35) !important;
+    transform: translateY(-2px);
+}
+html[data-theme] body.page-home .btn-primary:hover *,
+html[data-theme] body.page-home .btn-outline:hover *,
+html[data-theme] body.page-home .btn-deal:hover *,
+html[data-theme] body.page-home .hero-cta .btn:hover * { color: #fff !important; }
+
+/* =====================================================================
+   HOME HERO (sits on the photo): readable in BOTH light and dark theme
+   ===================================================================== */
+/* "meets trust." gradient text - keep it as clipped text (light theme was showing a solid block) */
+html[data-theme] .hero h1 .accent-word {
+    -webkit-background-clip: text !important; background-clip: text !important;
+    -webkit-text-fill-color: transparent !important; color: transparent !important;
+    background-image: linear-gradient(90deg, #adc1ef, #5c84e0) !important;
+    display: inline-block; padding-bottom: .06em;
+}
+/* hero buttons + stats: white text on the photo, with a soft shadow so nothing disappears */
+html[data-theme] body.page-home .hero-cta .btn,
+html[data-theme] body.page-home .hero-cta .btn i {
+    color: #fff !important; text-shadow: 0 1px 8px rgba(0,0,0,.65);
+}
+html[data-theme] body.page-home .hero-cta .btn:hover,
+html[data-theme] body.page-home .hero-cta .btn:hover i { text-shadow: none; }
+html[data-theme] body.page-home .hero-stats .stat b,
+html[data-theme] body.page-home .hero-stats .stat span {
+    color: #fff !important; text-shadow: 0 1px 8px rgba(0,0,0,.65);
+}
+/* hero buttons wrap neatly instead of overflowing on small screens */
+body.page-home .hero-cta { display: flex; flex-wrap: wrap; gap: 12px; }
+body.page-home .hero-cta .btn { max-width: 100%; white-space: normal; }
+html[data-theme] body.page-home .hero .hero-eyebrow,
+html[data-theme] body.page-home .hero .hero-quote {
+    color: #dbe6ff !important; text-shadow: 0 1px 8px rgba(0,0,0,.65);
+}
+
+/* =====================================================================
+   WHY-US ICONS (100% Genuine / Fast Delivery / Easy UPI Payment / AI Support)
+   Realistic layered icons. Default = WHITE outline only.
+   Colour appears ONLY when the cursor is on the card / icon.
+   ===================================================================== */
+html[data-theme] .why-card .why-icon {
+    width: 68px; height: 68px; border-radius: 18px;
+    display: flex !important; align-items: center; justify-content: center;
+    background: transparent !important;
+    border: 2px solid #fff !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    transition: background .25s ease, border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+.why-card .rl-icon { width: 46px; height: 46px; display: block; overflow: visible; flex: 0 0 auto; transition: transform .25s ease; }
+.why-card .rl-icon .rl-body  { fill: rgba(255,255,255,.10); stroke: #fff; stroke-width: 2; transition: fill .25s ease, stroke .25s ease; }
+.why-card .rl-icon .rl-line  { stroke: #fff; stroke-width: 1.6; fill: none; transition: stroke .25s ease; }
+.why-card .rl-icon .rl-main  { stroke: #fff; stroke-width: 3; fill: none; transition: stroke .25s ease; }
+.why-card .rl-icon .rl-badge { fill: rgba(255,255,255,.10); stroke: #fff; stroke-width: 2; transition: fill .25s ease, stroke .25s ease; }
+.why-card .rl-icon .rl-spark { fill: rgba(255,255,255,.18); stroke: #fff; stroke-width: 1.8; transition: fill .25s ease, stroke .25s ease; }
+.why-card .rl-icon .rl-gloss { opacity: .9; }
+
+/* cursor on the card (or keyboard focus) -> colour comes in */
+html[data-theme] .why-card:hover .why-icon,
+html[data-theme] .why-card:focus-visible .why-icon,
+html[data-theme] .why-card .why-icon:hover {
+    border-color: var(--logo-blue-2) !important;
+    background: rgba(var(--logo-rgb), .22) !important;
+    box-shadow: 0 0 0 3px rgba(var(--logo-rgb), .25), 0 10px 26px rgba(var(--logo-rgb), .38) !important;
+    transform: translateY(-3px);
+}
+.why-card:hover .rl-icon, .why-card:focus-visible .rl-icon { transform: scale(1.06); }
+.why-card:hover .rl-icon .rl-body, .why-card:focus-visible .rl-icon .rl-body,
+.why-card:hover .rl-icon .rl-badge, .why-card:focus-visible .rl-icon .rl-badge { fill: rgba(var(--logo-rgb), .62); stroke: #a9ccff; }
+.why-card:hover .rl-icon .rl-line, .why-card:focus-visible .rl-icon .rl-line { stroke: #a9ccff; }
+.why-card:hover .rl-icon .rl-main, .why-card:focus-visible .rl-icon .rl-main { stroke: #fff; }
+.why-card:hover .rl-icon .rl-spark, .why-card:focus-visible .rl-icon .rl-spark { fill: #7fb2ff; stroke: #fff; }
+
+/* =====================================================================
+   FOOTER: clickable "Get in touch" rows, Shop / Account heading icons,
+   centred popups (Shop Timings / Call Us)
+   ===================================================================== */
+.footer-grid li.contact-act { cursor: pointer; border-radius: 12px; outline: none; transition: transform .18s ease; }
+.footer-grid li.contact-act:hover > .contact-ic, .footer-grid li.contact-act:focus-visible > .contact-ic { transform: scale(1.1); box-shadow: 0 0 0 3px rgba(255,255,255,.22), 0 6px 16px rgba(0,0,0,.4); }
+.footer-grid li.contact-act:hover > span:not(.contact-ic), .footer-grid li.contact-act:focus-visible > span:not(.contact-ic) { text-decoration: underline; text-underline-offset: 3px; }
+.footer-grid li.contact-act:focus-visible { box-shadow: 0 0 0 2px #93c5fd; }
+.footer-grid li.contact-row > .contact-ic { transition: transform .18s ease, box-shadow .18s ease; }
+
+.site-footer h5.foot-h { display: flex; align-items: center; gap: 10px; }
+.head-ic { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+.head-ic svg { width: 20px; height: 20px; display: block; flex: none; overflow: visible; }
+.head-ic.ic-shop { background: linear-gradient(145deg, #5c84e0, #2555c4); }
+.head-ic.ic-acc  { background: linear-gradient(145deg, #6b93ea, #3868d9); }
+
+.info-pop-overlay { position: fixed; inset: 0; z-index: 99999; background: rgba(5,8,18,.72); display: flex; align-items: center; justify-content: center; padding: 16px; animation: popFade .2s ease; }
+@keyframes popFade { from { opacity: 0; } to { opacity: 1; } }
+.info-pop { position: relative; width: 100%; max-width: 420px; max-height: 92vh; overflow-y: auto; text-align: center; background: var(--surface, #111827); color: var(--text, #fff); border: 1px solid var(--border-soft, #334); border-radius: 20px; padding: 26px 22px 22px; box-shadow: 0 24px 70px rgba(0,0,0,.55); }
+.info-pop h3 { margin: 10px 0 2px; font-size: 22px; color: var(--heading, inherit); }
+.info-pop .pop-sub { margin: 0 0 14px; font-size: 13.5px; color: var(--text-dim, inherit); }
+.info-pop .pop-x { position: absolute; top: 10px; right: 12px; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--surface-2, #223); color: inherit; font-size: 22px; line-height: 1; cursor: pointer; }
+.info-pop .pop-ic { width: 56px; height: 56px; margin: 0 auto; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; }
+.info-pop .pop-ic svg { width: 28px; height: 28px; display: block; }
+.info-pop .pop-ic.ic-time { background: #f59e0b; }
+.info-pop .pop-ic.ic-phone { background: #16a34a; }
+.pop-status { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; padding: 5px 12px; border-radius: 999px; margin-bottom: 14px; }
+.pop-status .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.pop-status.is-open { color: #16a34a; background: rgba(22,163,74,.15); }
+.pop-status.is-closed { color: #ef4444; background: rgba(239,68,68,.15); }
+.pop-table { width: 100%; border-collapse: collapse; margin: 0 0 12px; font-size: 14.5px; }
+.pop-table th, .pop-table td { padding: 9px 10px; border-bottom: 1px solid var(--border-soft, #334); text-align: left; }
+.pop-table td { text-align: right; font-weight: 600; white-space: nowrap; }
+.pop-table th { font-weight: 500; }
+.pop-table tr.is-today th, .pop-table tr.is-today td { background: rgba(56,104,217,.2); color: var(--heading, inherit); font-weight: 700; }
+.pop-table tr.is-today th em { font-style: normal; font-size: 11px; background: #3868d9; color: #fff; padding: 2px 7px; border-radius: 999px; margin-left: 6px; }
+.pop-note { font-size: 12.5px; color: var(--text-dim, inherit); margin: 0 0 16px; }
+.call-list { display: grid; gap: 10px; margin: 0 0 16px; }
+.call-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2, #1b2436); border: 1px solid var(--border-soft, #334); text-decoration: none; color: inherit; text-align: left; }
+.call-row:hover { border-color: #16a34a; }
+.call-num small { display: block; font-size: 11.5px; color: var(--text-dim, inherit); }
+.call-num strong { font-size: 17px; letter-spacing: .3px; }
+.call-go { background: #16a34a; color: #fff; font-weight: 700; padding: 8px 18px; border-radius: 999px; font-size: 14px; }
+@media (max-width: 420px) { .info-pop { padding: 24px 16px 18px; } .pop-table { font-size: 13.5px; } }
+
+/* ---------- STAR RATINGS: always yellow (What customers say, product cards, product page) ---------- */
+html[data-theme] .stars, html[data-theme] .stars i, html[data-theme] .stars svg,
+html[data-theme] i.fa-star, html[data-theme] i.fa-star-half-stroke, html[data-theme] i.fa-star-half {
+    color: #fbbf24 !important; fill: #fbbf24;
+}
+.review-card .stars { font-size: 15px; letter-spacing: 2px; }
+
+/* =====================================================================
+   ADMIN PANEL buttons (sidebar tabs Site Content -> Live Customers and
+   every in-panel button): neutral by default, BLUE OUTLINE + glow when the
+   cursor is on them (or keyboard focus). Active tab keeps the blue bar.
+   ===================================================================== */
+html[data-theme] body.page-admin .admin-nav button {
+    border: 1.5px solid var(--border-soft) !important;
+    background: transparent !important;
+    margin-bottom: 4px;
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease, transform .18s ease;
+}
+html[data-theme] body.page-admin .admin-nav button:hover,
+html[data-theme] body.page-admin .admin-nav button:focus-visible {
+    border-color: #3b82f6 !important;
+    background: rgba(59,130,246,.12) !important;
+    box-shadow: 0 0 0 2px rgba(59,130,246,.35) !important;
+    outline: none !important;
+    transform: translateX(2px);
+}
+html[data-theme] body.page-admin .admin-nav button.active {
+    border-color: #3b82f6 !important;
+    background: rgba(59,130,246,.18) !important;
+    box-shadow: inset 3px 0 0 #3b82f6 !important;
+}
+html[data-theme] body.page-admin .admin-nav button.active:hover { box-shadow: inset 3px 0 0 #3b82f6, 0 0 0 2px rgba(59,130,246,.35) !important; }
+
+html[data-theme] body.page-admin .admin-layout .btn-outline {
+    border: 1.5px solid var(--border) !important;
+    color: var(--text) !important;
+    background: transparent !important;
+    transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+html[data-theme] body.page-admin .admin-layout .btn-outline:hover,
+html[data-theme] body.page-admin .admin-layout .btn-outline:focus-visible {
+    border-color: #3b82f6 !important;
+    background: rgba(59,130,246,.12) !important;
+    box-shadow: 0 0 0 2px rgba(59,130,246,.35) !important;
+    outline: none !important;
+}
+html[data-theme] body.page-admin .admin-layout .btn-primary:hover,
+html[data-theme] body.page-admin .admin-layout .btn-primary:focus-visible,
+html[data-theme] body.page-admin .admin-layout .btn-deal:hover {
+    box-shadow: 0 0 0 2px rgba(255,255,255,.55), 0 0 0 4px rgba(59,130,246,.55) !important;
+    outline: none !important;
+}
+
+/* =====================================================================
+   TOAST / NOTIFICATION popups: ALWAYS dark panel + white text, in every
+   theme and on the admin page (fixes dark-blue text on dark-blue panel)
+   ===================================================================== */
+html[data-theme] .toast-stack .toast,
+html[data-theme] body .toast {
+    background: #14213f !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,.28) !important;
+    border-left-width: 6px !important;
+    text-shadow: none !important;
+    --text: #ffffff; --text-dim: #ffffff; --text-faint: #e5e7eb; --heading: #ffffff;
+}
+html[data-theme] .toast-stack .toast *:not(i):not(svg) { color: #ffffff !important; }
+html[data-theme] .toast.success i, html[data-theme] .toast.success svg { color: #4ade80 !important; }
+html[data-theme] .toast.error i,   html[data-theme] .toast.error svg   { color: #93b4ff !important; }
+html[data-theme] .toast.warn i,    html[data-theme] .toast.warn svg    { color: #fbbf24 !important; }
+html[data-theme] .toast.info i,    html[data-theme] .toast.info svg    { color: #93c5fd !important; }
+html[data-theme] .toast.success { border-left-color: #22c55e !important; }
+html[data-theme] .toast.error   { border-left-color: #5c84e0 !important; }
+html[data-theme] .toast.warn    { border-left-color: #f59e0b !important; }
+
+/* popup polish: solid panel + clearly visible Close buttons */
+html[data-theme] .info-pop { background: #14213f !important; color: #fff !important; border: 1px solid rgba(255,255,255,.28) !important; }
+html[data-theme] .info-pop h3, html[data-theme] .info-pop .pop-table th, html[data-theme] .info-pop .pop-table td, html[data-theme] .info-pop .call-num strong { color: #fff !important; }
+html[data-theme] .info-pop .pop-sub, html[data-theme] .info-pop .pop-note, html[data-theme] .info-pop .call-num small { color: #cbd5e1 !important; }
+html[data-theme] .info-pop > .btn { display: inline-flex; min-width: 140px; margin-top: 4px; background: linear-gradient(135deg,#3868d9,#5c84e0) !important; color: #fff !important; border: 1px solid transparent !important; }
+html[data-theme] .info-pop > .btn:hover { box-shadow: 0 0 0 2px rgba(255,255,255,.5), 0 0 0 4px rgba(56,104,217,.6) !important; }
+html[data-theme] .info-pop .call-row { background: rgba(255,255,255,.08) !important; border-color: rgba(255,255,255,.22) !important; }
+html[data-theme] .info-pop .pop-x { background: rgba(255,255,255,.14) !important; color: #fff !important; }
+
+/* Admin page: footer must look the same as every other page (white links, no blue override) */
+html[data-theme] body.page-admin .site-footer .footer-grid ul li:not(.contact-row) a,
+html[data-theme] body.page-admin .site-footer .footer-bottom a { color:#fff !important; text-shadow:none; }
+html[data-theme] body.page-admin .site-footer .footer-grid ul li:not(.contact-row) a:hover,
+html[data-theme] body.page-admin .site-footer .footer-bottom a:hover { color:#fff !important; text-decoration:underline; }
+html[data-theme] body.page-admin .site-footer .footer-grid ul li:not(.contact-row) a { overflow-wrap:anywhere; max-width:100%; }
+
+/* ===== NO BLUE BUTTONS: no fill / glow / shadow. Only a cursor-hover outline appears. ===== */
+html[data-theme] .btn-primary, html[data-theme] .btn-outline, html[data-theme] .btn-ghost,
+html[data-theme] a.btn-primary, html[data-theme] button.btn-primary,
+html[data-theme] .hero-cta .btn-primary, html[data-theme] .hero-cta .btn-outline,
+html[data-theme] body .btn-primary, html[data-theme] body .btn-outline,
+html[data-theme] body.page-admin .admin-layout .btn-primary,
+html[data-theme] body.page-admin .admin-layout .btn-outline,
+html[data-theme] body.page-home .btn-primary, html[data-theme] body.page-home .btn-outline {
+  background: transparent !important; background-image: none !important;
+  color: var(--text, inherit) !important;
+  border: 2px solid transparent !important; box-shadow: none !important; text-shadow: none !important;
+  outline: 0 !important; filter: none !important; max-width: 100%; box-sizing: border-box;
+}
+html[data-theme] .btn-primary i, html[data-theme] .btn-outline i,
+html[data-theme] .btn-primary svg, html[data-theme] .btn-outline svg,
+html[data-theme] body.page-home .btn-primary i, html[data-theme] body.page-home .btn-primary * { color: inherit !important; }
+html[data-theme] .btn-primary:hover, html[data-theme] .btn-outline:hover, html[data-theme] .btn-ghost:hover,
+html[data-theme] .btn-primary:focus-visible, html[data-theme] .btn-outline:focus-visible,
+html[data-theme] body.page-home .btn-primary:hover, html[data-theme] body.page-home .btn-primary:focus-visible,
+html[data-theme] body.page-admin .admin-layout .btn-primary:hover, html[data-theme] body.page-admin .admin-layout .btn-outline:hover {
+  background: transparent !important; background-image: none !important;
+  border: 2px solid #3b82f6 !important; box-shadow: none !important; transform: none !important;
+  color: var(--text, inherit) !important;
+}
+/* active login tab (Password / OTP) keeps a subtle underline instead of blue fill */
+html[data-theme] .btn-primary[data-ltab] { border: 2px solid transparent !important; }
+/* contact page pay icons: white icons, no blue fill, outline only on hover */
+html[data-theme] .pay-ic { background: #1f2937 !important; box-shadow: none !important; border: 2px solid transparent !important; }
+html[data-theme] .pay-ic:hover { border-color: #3b82f6 !important; transform: none !important; }
+
+/* Admin footer: no blue on Shop / Account heading icons or links */
+html[data-theme] body.page-admin .site-footer .head-ic.ic-shop,
+html[data-theme] body.page-admin .site-footer .head-ic.ic-acc { background: #1f2937 !important; box-shadow: none !important; }
+html[data-theme] body.page-admin .site-footer .head-ic svg,
+html[data-theme] body.page-admin .site-footer .head-ic svg * { color:#fff !important; stroke:#fff !important; }
+html[data-theme] body.page-admin .site-footer .footer-grid ul li:not(.contact-row) a,
+html[data-theme] body.page-admin .site-footer .footer-grid ul li:not(.contact-row) a:visited,
+html[data-theme] body.page-admin .site-footer .footer-bottom a { color:#fff !important; border-color:transparent !important; }
+
+/* Chatbot button: big circle stays neutral, only the small badge dot is green */
+html[data-theme] .ai-fab .fab-badge, .ai-fab .fab-badge { background:#22c55e !important; border-color:#fff !important; box-shadow:0 0 0 2px rgba(34,197,94,.35) !important; }
+
+/* every other button type: blue outline on hover/focus too */
+html[data-theme] .btn:hover, html[data-theme] .btn:focus-visible,
+html[data-theme] button.btn:hover, html[data-theme] a.btn:hover { outline: 0 !important; border-color: #3b82f6 !important; box-shadow: none !important; }
+
+/* remaining blue-filled buttons (compare tabs, sri-login go) -> no fill, blue outline on hover */
+html[data-theme] .vs-tab, html[data-theme] .vs-tab.active, html[data-theme] button.go, html[data-theme] .go {
+  background: transparent !important; background-image: none !important; box-shadow: none !important;
+  border: 2px solid transparent !important; color: var(--text, inherit) !important;
+}
+html[data-theme] .vs-tab:hover, html[data-theme] .vs-tab.active, html[data-theme] button.go:hover, html[data-theme] .go:hover { border-color: #3b82f6 !important; }
+
+/* Footer icons (Shop, Account, Get in touch) = same style as the feature-card icons:
+   rounded square, transparent, white outline, white icon; blue glow on cursor hover */
+html[data-theme] .site-footer .head-ic,
+html[data-theme] .site-footer .head-ic.ic-shop,
+html[data-theme] .site-footer .head-ic.ic-acc,
+html[data-theme] body.page-admin .site-footer .head-ic.ic-shop,
+html[data-theme] body.page-admin .site-footer .head-ic.ic-acc {
+  border-radius: 12px !important; background: rgba(255,255,255,.06) !important; background-image: none !important;
+  border: 2px solid #fff !important; box-shadow: none !important; color: #fff !important;
+  transition: background .25s ease, border-color .25s ease, box-shadow .25s ease, transform .25s ease;
+}
+html[data-theme] .site-footer .head-ic { flex: 0 0 38px !important; width: 38px !important; height: 38px !important; box-sizing: border-box; }
+html[data-theme] .site-footer .head-ic svg, html[data-theme] .site-footer .head-ic svg * { color:#fff !important; stroke:#fff !important; }
+html[data-theme] .site-footer .footer-grid > div:hover .head-ic,
+html[data-theme] .site-footer .head-ic:hover {
+  border-color: var(--logo-blue-2, #5c84e0) !important; background: rgba(var(--logo-rgb, 56,104,217), .22) !important;
+  box-shadow: 0 0 0 3px rgba(var(--logo-rgb, 56,104,217), .25), 0 8px 20px rgba(var(--logo-rgb, 56,104,217), .35) !important; transform: translateY(-2px);
+}
+
+/* Limited-time offer banner: dark blue on both sides, soft white sheen mixed in the centre (graphite-metal look) */
+html[data-theme] .offer-banner {
+  background: linear-gradient(100deg, #081533 0%, #0f2a66 22%, #3e5a9e 40%, #c9d6f2 50%, #3e5a9e 60%, #0f2a66 78%, #081533 100%) !important;
+}
+html[data-theme] .offer-banner h3, html[data-theme] .offer-banner p { text-shadow: 0 1px 6px rgba(5,12,35,.75); }
+html[data-theme] .offer-banner .btn, html[data-theme] .offer-banner .btn:hover { color:#fff !important; }
+html[data-theme] body .offer-banner a.btn.btn-deal, html[data-theme] body .offer-banner a.btn.btn-deal:hover, html[data-theme] body .offer-banner a.btn.btn-deal * { color:#fff !important; -webkit-text-fill-color:#fff !important; }
+
+.offer-banner .offer-art{flex:0 0 auto;width:140px;height:140px;position:relative;z-index:2;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+
+/* ===== How it works: brighter phone screen + realistic product icons ===== */
+html[data-theme] .wt-phone { background:#eef3ff !important; border-color:#0b1220 !important; box-shadow:0 10px 30px rgba(0,0,0,.45), 0 0 0 2px rgba(255,255,255,.35) !important; }
+html[data-theme] .wt-notch { background:#0b1220 !important; }
+html[data-theme] .wt-viewport { background:linear-gradient(180deg,#ffffff 0%,#e6eeff 100%);
+  --surface-2:#ffffff; --surface-3:#d5dff5; --text:#0b1730; --text-dim:#2d3c5c; --text-faint:#4a5b7d; --border-soft:#cfd9ef; }
+html[data-theme] .wt-tile { background:#fff !important; box-shadow:0 2px 8px rgba(20,40,90,.12); text-align:center; }
+html[data-theme] .wt-tile-img { height:52px; background:linear-gradient(135deg,#eaf0ff,#f6f9ff) !important; display:flex; align-items:center; justify-content:center; }
+html[data-theme] .wt-tile-img svg { width:46px; height:46px; filter:drop-shadow(0 3px 4px rgba(10,20,60,.3)); }
+.wt-tile-name { font-family:var(--font-ui); font-size:9px; font-weight:700; color:#0b1730; }
+html[data-theme] .wt-hero-img { height:128px; display:flex; align-items:center; justify-content:center; background:radial-gradient(circle at 50% 45%,#dbe6ff,#f4f7ff 70%) !important; }
+html[data-theme] .wt-hero-img svg { width:104px; height:104px; filter:drop-shadow(0 8px 8px rgba(10,20,60,.35)); }
+.wt-pname { font-family:var(--font-ui); font-size:11px; font-weight:700; color:#0b1730; }
+html[data-theme] .wt-chip { color:#0b1730 !important; background:#fff !important; display:inline-flex; align-items:center; gap:4px; }
+.wt-brand { width:8px; height:8px; border-radius:50%; display:inline-block; }
+html[data-theme] .wt-searchbar, html[data-theme] .wt-field { background:#fff !important; color:#0b1730 !important; }
+html[data-theme] .wt-status-title { color:#0b1730; }
+html[data-theme] .wt-status-ok .wt-status-title { color:#15803d; } html[data-theme] .wt-status-wait .wt-status-title { color:#b45309; } html[data-theme] .wt-status-fail .wt-status-title { color:#b91c1c; }
+html[data-theme] .wt-btn { background:#0f2a66 !important; }
+
+/* Login/Register pages: remove the dark band + black border lines across the page */
+html[data-theme] .auth-split, html[data-theme] section.auth-split, html[data-theme] .container.auth-split {
+  background: transparent !important; background-image: none !important; border: 0 !important; box-shadow: none !important; outline: 0 !important;
+}
+html[data-theme] body:has(.auth-split) .site-header { border-bottom: 0 !important; box-shadow: none !important; }
+
+
+/* =====================================================================
+   HOW IT WORKS (login page) — fog / colour fix
+   The status tint used to be a radial gradient painted INSIDE the padded
+   screen, so it showed up as a foggy box floating in the phone. It is now
+   painted on the whole viewport (edge to edge) with a solid, correct colour.
+   ===================================================================== */
+.wt-root { overflow: hidden; box-sizing: border-box; max-width: 100%; }
+.wt-phone { max-width: 100%; box-sizing: content-box; isolation: isolate; }
+html[data-theme] .wt-status, html[data-theme] .wt-status-ok, html[data-theme] .wt-status-wait, html[data-theme] .wt-status-fail { background: none !important; }
+html[data-theme] .wt-viewport.wt-vp-ok   { background: radial-gradient(120% 70% at 50% 42%, #d9f7e4 0%, #eefcf3 55%, #f8fffb 100%) !important; }
+html[data-theme] .wt-viewport.wt-vp-wait { background: radial-gradient(120% 70% at 50% 42%, #ffe9bd 0%, #fff5de 55%, #fffcf3 100%) !important; }
+html[data-theme] .wt-viewport.wt-vp-fail { background: radial-gradient(120% 70% at 50% 42%, #ffd6d6 0%, #ffecec 55%, #fff8f8 100%) !important; }
+.wt-viewport { box-sizing: border-box; }
+.wt-screen { min-width: 0; }
+.wt-status { padding: 0 2px; }
+.wt-status-title { max-width: 100%; overflow-wrap: anywhere; text-wrap: balance; }
+.wt-status-sub { max-width: 100%; overflow-wrap: anywhere; text-wrap: balance; }
+html[data-theme] .wt-status-ok   .wt-status-sub { color: #3b6b4f; }
+html[data-theme] .wt-status-wait .wt-status-sub { color: #7a5a1c; }
+html[data-theme] .wt-status-fail .wt-status-sub { color: #7d3a3a; }
+html[data-theme] .wt-mark-ok   .wt-mark-ring, html[data-theme] .wt-mark-ok   .wt-mark-path { stroke: #16a34a; }
+html[data-theme] .wt-mark-fail .wt-mark-ring, html[data-theme] .wt-mark-fail .wt-mark-path { stroke: #dc2626; }
+html[data-theme] .wt-mark-wait { color: #d97706; border-color: #f59e0b; background: rgba(255,255,255,.55); }
+.wt-mark-ok svg, .wt-mark-fail svg { filter: drop-shadow(0 4px 6px rgba(0,0,0,.18)); }
+.wt-caption { overflow-wrap: anywhere; }
+.wt-legend { flex-wrap: wrap; row-gap: 6px; }
+
+/* =====================================================================
+   FOOTER — "Get in touch" realistic icons (location / time / phone / mail / WhatsApp)
+   Full-colour glossy SVGs with soft shadow instead of flat white outlines.
+   ===================================================================== */
+html[data-theme] .footer-grid li.contact-row > .contact-ic {
+  flex: 0 0 42px !important; width: 42px !important; height: 42px !important; min-width: 42px !important;
+  border: 0 !important; border-radius: 0 !important; background: none !important; background-image: none !important;
+  box-shadow: none !important; padding: 0; display: inline-flex !important; align-items: center; justify-content: center;
+  transition: transform .22s ease, filter .22s ease;
+}
+html[data-theme] .footer-grid li.contact-row > .contact-ic svg.ri {
+  width: 40px !important; height: 40px !important; max-width: none; display: block; flex: none; overflow: visible;
+  stroke: none !important; fill: none; filter: drop-shadow(0 3px 5px rgba(0,0,0,.45));
+}
+html[data-theme] .footer-grid li.contact-row > .contact-ic svg.ri * { stroke-linejoin: round; }
+html[data-theme] .footer-grid li.contact-act:hover > .contact-ic,
+html[data-theme] .footer-grid li.contact-act:focus-visible > .contact-ic {
+  transform: translateY(-3px) scale(1.1) !important; box-shadow: none !important; background: none !important; border: 0 !important;
+  filter: drop-shadow(0 8px 10px rgba(var(--logo-rgb, 56,104,217), .55));
+}
+html[data-theme] .footer-grid li.contact-act:hover > .contact-ic svg.ri { filter: drop-shadow(0 6px 8px rgba(0,0,0,.5)); }
+.footer-grid li.contact-row { gap: 14px !important; }
+
+/* popups (Shop Timings / Call Us) use the same realistic icons */
+.info-pop .pop-ic, .info-pop .pop-ic.ic-time, .info-pop .pop-ic.ic-phone { background: none !important; width: 72px; height: 72px; border-radius: 0; }
+.info-pop .pop-ic svg.ri { width: 68px; height: 68px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.4)); stroke: none; }
+
+/* How-it-works phone: crisp text (global heading text-shadow was smudging it on the light screen) */
+html[data-theme] .wt-viewport, html[data-theme] .wt-viewport * { text-shadow: none !important; }
+
+/* =====================================================================
+   HOME HERO BUTTONS (Shop Now / Compare / Login / Register) + product-page
+   login-gate buttons: NO blue outline/ring at rest, on focus or after click.
+   Blue outline + fill ONLY while the cursor is on the button (hover).
+   ===================================================================== */
+html[data-theme] body.page-home .hero-cta .btn,
+html[data-theme] body.page-home .hero-cta .btn:focus,
+html[data-theme] body.page-home .hero-cta .btn:focus-visible,
+html[data-theme] body.page-home .hero-cta .btn:active,
+html[data-theme] body.page-home .hero-cta .btn:visited,
+html[data-theme] #pd-root .btn-primary,
+html[data-theme] #pd-root .btn-primary:focus,
+html[data-theme] #pd-root .btn-primary:focus-visible,
+html[data-theme] #pd-root .btn-primary:active,
+html[data-theme] #pd-root .btn-outline,
+html[data-theme] #pd-root .btn-outline:focus,
+html[data-theme] #pd-root .btn-outline:focus-visible,
+html[data-theme] #pd-root .btn-outline:active {
+    outline: 0 !important; outline-offset: 0 !important;
+    -webkit-tap-highlight-color: transparent;
+}
+@media (hover: hover) {
+  html[data-theme] body.page-home .hero-cta .btn:not(:hover):focus,
+  html[data-theme] body.page-home .hero-cta .btn:not(:hover):focus-visible,
+  html[data-theme] body.page-home .hero-cta .btn:not(:hover):active,
+  html[data-theme] #pd-root .btn-primary:not(:hover):focus,
+  html[data-theme] #pd-root .btn-outline:not(:hover):focus {
+      background: transparent !important; background-image: none !important;
+      border: 2px solid transparent !important; box-shadow: none !important; transform: none !important;
+  }
+}
+html[data-theme] body.page-home .hero-cta .btn:hover,
+html[data-theme] #pd-root .btn-primary:hover,
+html[data-theme] #pd-root .btn-outline:hover {
+    background: transparent !important; background-image: none !important;
+    border: 2px solid #3b82f6 !important; box-shadow: none !important;
+    color: var(--text, inherit) !important;
+}
+html[data-theme] body.page-home .hero-cta .btn:hover,
+html[data-theme] body.page-home .hero-cta .btn:hover i { color: #fff !important; }
+
+/* =====================================================================
+   BUTTONS (all pages): blue outline is ALWAYS there (default).
+   Cursor on the button (hover) = whole box filled blue, exactly like "Grab the deal".
+   ===================================================================== */
+html[data-theme] body :is(.btn-primary, .btn-outline, .btn-deal, .btn-ghost, .hero-auth-btn, .hero-cta .btn, .vs-tab, button.go, .go):not([data-ltab]):not(#a):not(#b) {
+    background-color: transparent !important; background-image: none !important;
+    border: 2px solid var(--logo-blue-2, #4aa3ff) !important;
+    box-shadow: none !important; transform: none;
+    transition: background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease, transform .15s ease !important;
+}
+@media (hover: hover) {
+  html[data-theme] body :is(.btn-primary, .btn-outline, .btn-deal, .btn-ghost, .hero-auth-btn, .hero-cta .btn, .vs-tab, button.go, .go):not([data-ltab]):not(#a):not(#b):hover {
+    background-color: var(--logo-blue, #1f6bff) !important;
+    background-image: linear-gradient(135deg, var(--logo-blue, #1f6bff), var(--logo-blue-dark, #0b4fd6)) !important;
+    border-color: var(--logo-blue-2, #4aa3ff) !important;
+    color: #fff !important;
+    box-shadow: 0 0 0 3px rgba(var(--logo-rgb, 31,107,255), .28), 0 8px 22px rgba(var(--logo-rgb, 31,107,255), .35) !important;
+    transform: translateY(-2px);
+  }
+  html[data-theme] body :is(.btn-primary, .btn-outline, .btn-deal, .btn-ghost, .hero-auth-btn, .hero-cta .btn, .vs-tab, button.go, .go):not([data-ltab]):not(#a):not(#b):hover :is(i, svg, span) { color: #fff !important; }
+}
+/* touch screens: fill while pressed */
+html[data-theme] body :is(.btn-primary, .btn-outline, .btn-deal, .btn-ghost, .hero-auth-btn, .hero-cta .btn, .vs-tab, button.go, .go):not([data-ltab]):not(#a):not(#b):active {
+    background-color: var(--logo-blue, #1f6bff) !important;
+    background-image: linear-gradient(135deg, var(--logo-blue, #1f6bff), var(--logo-blue-dark, #0b4fd6)) !important;
+    color: #fff !important;
+}
+
+/* =====================================================================
+   CHECKOUT: payment options = blue outline always, full blue box on cursor.
+   Card / Advance notice boxes: clearly readable text. Continue always visible.
+   ===================================================================== */
+html[data-theme] body .pay-opt:not(.disabled):not(#a):not(#b) {
+  background: transparent !important; background-image: none !important;
+  border: 2px solid var(--logo-blue-2, #4aa3ff) !important; box-shadow: none !important;
+  transition: background .2s ease, border-color .2s ease, transform .15s ease, box-shadow .2s ease !important;
+}
+html[data-theme] body .pay-opt.selected:not(#a):not(#b) {
+  background: rgba(var(--logo-rgb, 31,107,255), .28) !important;
+}
+@media (hover: hover) {
+  html[data-theme] body .pay-opt:not(.disabled):not(#a):not(#b):hover {
+    background-color: var(--logo-blue, #1f6bff) !important;
+    background-image: linear-gradient(135deg, var(--logo-blue, #1f6bff), var(--logo-blue-dark, #0b4fd6)) !important;
+    box-shadow: 0 0 0 3px rgba(var(--logo-rgb, 31,107,255), .28), 0 8px 22px rgba(var(--logo-rgb, 31,107,255), .35) !important;
+    transform: translateY(-2px);
+  }
+  html[data-theme] body .pay-opt:not(.disabled):hover, html[data-theme] body .pay-opt:not(.disabled):hover * { color: #fff !important; }
+}
+html[data-theme] #card-notice-box, html[data-theme] #advance-disclaimer-box {
+  background: rgba(8, 21, 51, .72) !important; border: 2px solid var(--logo-blue-2, #4aa3ff) !important; color: #fff !important;
+}
+html[data-theme] #card-notice-box *, html[data-theme] #advance-disclaimer-box * { color: #fff !important; opacity: 1 !important; text-shadow: none !important; }
+html[data-theme] #card-notice-box i, html[data-theme] #advance-disclaimer-box i { color: var(--logo-blue-2, #4aa3ff) !important; }
+html[data-theme] #card-notice-box input[type=checkbox], html[data-theme] #advance-disclaimer-box input[type=checkbox] { accent-color: var(--logo-blue, #1f6bff); }
+html[data-theme] #checkout-continue-btn:disabled, html[data-theme] #checkout-continue-btn[disabled] {
+  opacity: 1 !important; color: #fff !important; -webkit-text-fill-color: #fff !important; cursor: not-allowed;
+  border: 2px solid var(--logo-blue-2, #4aa3ff) !important; background: rgba(var(--logo-rgb, 31,107,255), .35) !important; transform: none !important;
+}
+html[data-theme] #checkout-continue-btn:disabled * { color: #fff !important; }
+
+/* FOOTER payment icons: three distinct clickable icons */
+.site-footer .pay-ico-row { display: flex !important; gap: 14px; align-items: center; }
+.site-footer .pay-ico { background: none !important; border: 0 !important; padding: 0; width: 32px; height: 32px; cursor: pointer; border-radius: 9px; line-height: 0;
+  transition: transform .18s ease, filter .18s ease; filter: drop-shadow(0 3px 5px rgba(0,0,0,.45)); }
+.site-footer .pay-ico svg { width: 32px; height: 32px; display: block; }
+.site-footer .pay-ico:hover, .site-footer .pay-ico:focus-visible { transform: translateY(-3px) scale(1.12); filter: drop-shadow(0 8px 12px rgba(var(--logo-rgb, 31,107,255), .6)); outline: 0; }
+
+/* ADMIN: profile card avatar + click popover, overview "Top selling" always readable, no flicker */
+html[data-theme] body.page-admin .admin-avatar { width:46px; height:46px; border-radius:50%; object-fit:cover; flex:0 0 46px; border:2px solid var(--logo-blue-2,#4aa3ff); }
+html[data-theme] body.page-admin .admin-avatar-fb { display:inline-flex; align-items:center; justify-content:center; background:var(--logo-blue,#1f6bff); color:#fff; font-weight:800; font-size:18px; }
+html[data-theme] body.page-admin .admin-profile-card { display:flex; align-items:center; gap:12px; }
+#admin-profile-pop { position:absolute; left:0; right:0; top:calc(100% + 8px); z-index:60; background:#fff; color:#0b1730; border:2px solid var(--logo-blue-2,#4aa3ff); border-radius:14px; padding:14px; box-shadow:0 14px 34px rgba(0,0,0,.35); display:flex; flex-direction:column; gap:8px; }
+#admin-profile-pop[hidden] { display:none !important; }
+#admin-profile-pop .app-name { font-weight:800; font-size:15px; } #admin-profile-pop .app-mail { font-size:12.5px; opacity:.75; word-break:break-all; } #admin-profile-pop .app-role { font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:#1d4ed8; }
+html[data-theme] body.page-admin #top-products, html[data-theme] body.page-admin #top-products * { color:#0b1730 !important; opacity:1 !important; }
+html[data-theme] body.page-admin #stats-grid { min-height: 96px; }
+
+/* v29: remove the white "fog" over the background photo in light theme (white veil + white text = hazy, unreadable) */
+html[data-theme=light]{--veil:linear-gradient(180deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,.16) 50%,rgba(0,0,0,.26) 100%) !important}
+html[data-theme=light] footer.site-footer:before{background:linear-gradient(180deg,rgba(8,8,8,.22),rgba(8,8,8,.34)) !important}
+
+/* v29: customer forms (Book appointment, contact, login, register) — visible cursor + no white fog */
+body:not(.page-admin) .input, body:not(.page-admin) form input, body:not(.page-admin) form textarea, body:not(.page-admin) form select{
+  caret-color:#8ec5ff !important; color-scheme:dark; background-color:rgba(8,14,28,.84) !important; color:#fff !important; border:1px solid rgba(255,255,255,.28) !important;
+}
+body:not(.page-admin) .input::placeholder, body:not(.page-admin) form input::placeholder, body:not(.page-admin) form textarea::placeholder{color:rgba(255,255,255,.62) !important}
+body:not(.page-admin) .input:focus, body:not(.page-admin) form input:focus, body:not(.page-admin) form textarea:focus, body:not(.page-admin) form select:focus{
+  outline:0 !important; border-color:#8ec5ff !important; box-shadow:0 0 0 3px rgba(142,197,255,.28) !important;
+}
+body:not(.page-admin) form.card{background:rgba(8,12,24,.74) !important; -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px)}
+body:not(.page-admin) form.card label{color:#fff !important; text-shadow:0 1px 3px rgba(0,0,0,.6)}
+
+/* v29: remove white fog everywhere — light theme now uses the same clear dark glass as dark theme (white translucent panels + blur made everything hazy and unreadable) */
+html[data-theme=light]{
+  --glass-bg:rgba(14,18,28,.62) !important; --glass-bg-strong:rgba(14,18,28,.78) !important; --bg-elevated:rgba(14,18,28,.82) !important;
+  --surface:rgba(16,20,32,.66) !important; --surface-2:rgba(28,34,50,.7) !important; --surface-3:rgba(44,52,72,.8) !important;
+  --text:#f6f7fb !important; --text-dim:#e6e9f2 !important; --text-faint:#b9c3dc !important; --heading:#ffffff !important;
+  --border:rgba(217,217,217,.34) !important; --border-soft:rgba(217,217,217,.22) !important; color-scheme:dark;
+}
+/* chatbot panel: solid dark glass instead of 14% white fog */
+#chat-panel{background:rgba(10,14,26,.94) !important; -webkit-backdrop-filter:blur(10px) !important; backdrop-filter:blur(10px) !important; border:1px solid rgba(255,255,255,.2) !important; color:#f4f6fb !important}
+#chat-panel .chat-head, #chat-panel .chat-input-row{background:rgba(255,255,255,.05) !important}
+#chat-panel .msg.bot{background:rgba(255,255,255,.1) !important; color:#f4f6fb !important}
+#chat-panel .msg.user{color:#fff !important}
+#chat-panel .chat-input-row input{background:rgba(255,255,255,.08) !important; color:#fff !important; caret-color:#8ec5ff !important; border:1px solid rgba(255,255,255,.25) !important}
+html[data-theme=light] .product-card, html[data-theme=light] .card{background:rgba(14,18,28,.7) !important; border-color:rgba(217,217,217,.26) !important}
+#chat-panel .msg button{background:rgba(255,255,255,.12) !important; color:#fff !important; border:1px solid rgba(255,255,255,.3) !important}
+html body:not(.page-admin) form .input, html body:not(.page-admin) form input:not([type=checkbox]):not([type=radio]), html body:not(.page-admin) form textarea, html body:not(.page-admin) form select{background-color:rgba(8,14,28,.84) !important}
+html body:not(.page-admin) form a, html body:not(.page-admin) .card a:not(.btn):not(.button){color:#8ec5ff !important}
+
+/* ===== v43: Trending now cards — no white fog ===== */
+html[data-theme] .charge-card, html[data-theme=light] .charge-card, html[data-theme=dark] .charge-card, .charge-card {
+    background: transparent !important; background-image: none !important;
+    -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+html[data-theme] .charge-card { border: 1px solid rgba(255,255,255,.45) !important; }
+.charge-card, .charge-card * { text-shadow: 0 1px 3px rgba(0,0,0,.7); }
+.charge-card::before { display: none !important; }
+
+/* ===== v45: chatbot circle — no white fog (transparent fill, thin ring only) ===== */
+html[data-theme] .ai-fab, html[data-theme] .ai-fab:hover, html[data-theme=light] .ai-fab, html[data-theme=dark] .ai-fab, .ai-fab {
+    background: transparent !important; background-image: none !important;
+    -webkit-backdrop-filter: none !important; backdrop-filter: none !important; box-shadow: none !important;
+}
+html[data-theme] .ai-fab { border: 1.5px solid rgba(255,255,255,.7) !important; color: #fff !important; }
+.ai-fab svg, .ai-fab i { filter: drop-shadow(0 1px 3px rgba(0,0,0,.6)); }
+
+/* ===== v46: audit fixes ===== */
+/* admin modals are white -> headings/labels must be dark (title was white-on-white) */
+html[data-theme] body.page-admin .modal h1, html[data-theme] body.page-admin .modal h2, html[data-theme] body.page-admin .modal h3,
+html[data-theme] body.page-admin .modal h4, html[data-theme] body.page-admin .modal h5, html[data-theme] body.page-admin .modal h6,
+html[data-theme] body.page-admin .modal label, html[data-theme] body.page-admin .modal strong { color: #0b1220 !important; text-shadow: none !important; }
+html[data-theme] body.page-admin .modal .text-dim, html[data-theme] body.page-admin .modal .text-faint { color: #334155 !important; }
+html[data-theme] body.page-admin .modal .modal-close { color: #0b1220 !important; }
+/* "How it works" phone: typed search text sat white on a white search bar */
+html[data-theme] .wt-searchbar .wt-typing, .wt-searchbar .wt-typing { color: #0b1730 !important; text-shadow: none !important; }
+/* homepage category tiles: no white glass tint in light theme */
+html[data-theme=light] .cat-tile { background: transparent !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+/* price-range value label was dark blue on a dark card */
+html[data-theme=light] .product-card .text-accent, html[data-theme=light] .card .text-accent { color: #8ec5ff !important; }
+
+/* "View all" link (Handpicked / Featured products): was dark blue on the photo background in both themes.
+   Now a readable white glass pill, never wraps, never pushed outside the section on small phones. */
+html[data-theme] .section-head .see-all, .section-head .see-all {
+  color: #fff !important;
+  background: rgba(8, 16, 36, .55);
+  border: 1px solid rgba(255, 255, 255, .38);
+  border-radius: 999px;
+  padding: 7px 16px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  max-width: 100%;
+  align-self: flex-end;
+  text-shadow: none;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: background .16s ease, border-color .16s ease, transform .16s ease;
+}
+html[data-theme] .section-head .see-all i, .section-head .see-all i { color: #fff !important; }
+html[data-theme] .section-head .see-all:hover, html[data-theme] .section-head .see-all:focus-visible {
+  background: rgba(8, 16, 36, .75);
+  border-color: #5c84e0;
+  outline: 2px solid #5c84e0; outline-offset: 2px;
+  transform: translateX(2px);
+}
+@media (max-width: 480px) {
+  .section-head { gap: 10px; }
+  html[data-theme] .section-head .see-all { padding: 6px 13px; font-size: 13px; }
+}
+
+/* ===== v50: GPS ON/OFF button — fixed at bottom-right on every page ===== */
+.gps-fab{position:fixed;right:18px;bottom:18px;z-index:9000;width:52px;height:52px;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg-elevated,#fff);border:2px solid currentColor;box-shadow:0 8px 22px rgba(0,0,0,.28);transition:transform .15s ease,box-shadow .15s ease}
+.gps-fab:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.34)}
+.gps-fab:active{transform:scale(.94)}
+.gps-fab svg{width:24px;height:24px}
+.gps-fab.on{color:#16a34a;border-color:#22c55e!important}
+.gps-fab.off{color:#dc2626;border-color:#dc2626!important}
+.gps-fab.on:after{top:4px;right:4px}
+.toast-stack{bottom:84px!important}
+@media (max-width:640px){.gps-fab{right:12px;bottom:12px;width:48px;height:48px}.toast-stack{bottom:72px!important;right:12px!important}}
+
+/* stop the browser from re-anchoring scroll when content above changes (home page jump/blink) */
+html,body{overflow-anchor:none;scroll-behavior:auto}
+.foot-admin-link{opacity:1}

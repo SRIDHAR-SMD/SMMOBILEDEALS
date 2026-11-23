@@ -1,0 +1,8 @@
+# keep admin passwords / local files OUT of GitHub
+supabase/accounts-and-otp-exempt.sql
+supabase/default-admin.sql
+DELIVERY-NOTES.md
+.vercel
+node_modules
+
+.vercel

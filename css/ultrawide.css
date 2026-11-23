@@ -1,0 +1,18 @@
+/* ===== Ultra-high-resolution screens (2.5K -> 4K -> 8K -> 12K) =====
+   Layout was designed for ~1920px. On bigger screens it stayed tiny, so the whole page scales up
+   (text + layout are re-rendered as vectors, so they stay sharp, not blurry). Phones/laptops are untouched. */
+@media (min-width:2200px){html{zoom:1.2}}
+@media (min-width:2560px){html{zoom:1.35}}
+@media (min-width:3200px){html{zoom:1.7}}
+@media (min-width:3840px){html{zoom:2}}
+@media (min-width:5120px){html{zoom:2.65}}
+@media (min-width:6144px){html{zoom:3.2}}
+@media (min-width:7680px){html{zoom:4}}
+@media (min-width:10240px){html{zoom:5.3}}
+@media (min-width:11520px){html{zoom:6}}
+@media (min-width:12288px){html{zoom:6.4}}
+/* crisp media on big screens */
+@media (min-width:2200px){
+  img,svg,canvas{image-rendering:auto}
+  body{text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+}

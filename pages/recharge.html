@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}try{if(sessionStorage.getItem('smd_splash'))document.documentElement.classList.add('no-splash');}catch(e){}setTimeout(function(){var e=document.getElementById('page-loader');if(e){e.classList.add('hide');setTimeout(function(){e.remove()},400)}},1800);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile Recharge — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<link rel="stylesheet" href="../css/color-fix.css"><link rel="stylesheet" href="../css/final-fix.css">
+<link rel="stylesheet" href="../css/ultrawide.css">
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<style>
+  .rc-op{padding:14px 6px;border-radius:12px;border:2px solid var(--border,#444);background:var(--surface-2,#1a1a1a);color:var(--text,#fff);font:800 14px var(--font-display,sans-serif);cursor:pointer;transition:.15s}
+  .rc-op.on{background:var(--c);border-color:var(--c);color:#fff;transform:scale(1.04)}
+  .rc-step{display:none}.rc-step.on{display:block}
+  .rc-amt{padding:9px 14px;border-radius:10px;border:1px solid var(--border,#444);background:var(--surface-2,#1a1a1a);color:var(--text,#fff);font-weight:700;cursor:pointer}
+  .rc-amt.on{background:var(--accent,#2563eb);border-color:var(--accent,#2563eb);color:#fff}
+  .rc-sum{background:var(--surface-2,#1a1a1a);border:1px solid var(--border-soft,#333);border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.8;margin-bottom:14px}
+  .rc-note{font-size:12px;line-height:1.6;opacity:.8;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.4);border-radius:10px;padding:10px 12px;margin-top:14px}
+</style>
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Mobile Recharge</span></div>
+    <h1 class="page-title">Mobile Recharge</h1>
+  </section>
+  <section class="section container" style="padding-top:10px;max-width:640px;">
+    <div class="card" style="padding:20px;">
+      <div id="rc-err" style="display:none;background:#dce4f8;border:1px solid #adc1ef;color:#214aac;border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:14px;"></div>
+
+      <!-- STEP 1: details -->
+      <div class="rc-step on" id="rc-s1">
+        <div id="rc-tabs" style="display:flex;gap:8px;margin-bottom:16px;">
+          <button type="button" class="btn btn-primary btn-sm" data-t="Prepaid" style="flex:1;">Prepaid</button>
+          <button type="button" class="btn btn-outline btn-sm" data-t="Postpaid" style="flex:1;">Postpaid</button>
+        </div>
+        <div class="field"><label>Mobile number</label><input class="input" id="rc-num" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel-national"></div>
+        <div class="field"><label>Operator</label>
+          <input type="hidden" id="rc-op" value="">
+          <div id="rc-ops" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+            <button type="button" class="rc-op" data-op="Jio" style="--c:#0a3cff">Jio</button>
+            <button type="button" class="rc-op" data-op="Airtel" style="--c:#e40000">Airtel</button>
+            <button type="button" class="rc-op" data-op="Vi" style="--c:#e60000">Vi</button>
+            <button type="button" class="rc-op" data-op="BSNL" style="--c:#0b7a3b">BSNL</button>
+          </div></div>
+        <div class="field"><label>Circle</label>
+          <select class="input" id="rc-circle"><option>Tamil Nadu</option><option>Chennai</option><option>Kerala</option><option>Karnataka</option><option>Andhra Pradesh</option><option>Other</option></select></div>
+        <div class="field"><label id="rc-amt-label">Select recharge pack (₹)</label>
+          <div id="rc-quick" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+          <input class="input" id="rc-amt" inputmode="numeric" maxlength="5" placeholder="Or enter amount" style="margin-top:10px;">
+          <input class="input" id="rc-plan" maxlength="80" placeholder="Plan details (optional) e.g. 1.5GB/day · 28 days" style="margin-top:10px;"></div>
+        <button class="btn btn-primary btn-block btn-lg" type="button" id="rc-next"><i class="fa-solid fa-arrow-right"></i> Continue to payment</button>
+      </div>
+
+      <!-- STEP 2: pay + screenshot -->
+      <div class="rc-step" id="rc-s2">
+        <div class="rc-sum" id="rc-sum"></div>
+        <div style="text-align:center"><div id="rc-qrwrap" style="display:inline-block;background:#fff;padding:10px;border-radius:12px"><canvas id="rc-qr" width="240" height="240"></canvas></div>
+          <p class="text-dim" style="font-size:13px;margin:8px 0 12px">Scan with any UPI app · GPay · PhonePe · Paytm</p>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px">
+            <a class="btn btn-outline btn-sm" id="rc-gpay">GPay</a><a class="btn btn-outline btn-sm" id="rc-phonepe">PhonePe</a><a class="btn btn-outline btn-sm" id="rc-paytm">Paytm</a><a class="btn btn-outline btn-sm" id="rc-upi">Other UPI</a></div></div>
+        <div class="field"><label>Payment screenshot</label><input class="input" type="file" id="rc-shot" accept="image/*"><span class="text-faint" style="font-size:11.5px;">Pay first, then upload the screenshot showing the UTR / transaction ID.</span></div>
+        <div style="display:flex;gap:10px"><button type="button" class="btn btn-outline" id="rc-back">Back</button><button type="button" class="btn btn-primary" id="rc-submit" style="flex:1"><i class="fa-solid fa-paper-plane"></i> Submit recharge request</button></div>
+      </div>
+
+      <!-- STEP 3: done -->
+      <div class="rc-step" id="rc-s3" style="text-align:center">
+        <div style="font-size:46px">✅</div><h3 style="font-family:var(--font-display);margin:6px 0">Request received</h3>
+        <p class="text-dim" id="rc-done-msg" style="font-size:14px"></p>
+        <a class="btn btn-primary" href="../index.html">Back to Home</a>
+      </div>
+
+      <div class="rc-note"><b>Notes:</b> Recharge is done manually by the shop after payment is verified, usually within a few minutes during shop hours. Please double-check the mobile number and operator — a recharge sent to a wrong number cannot be reversed by us. Your payment screenshot is checked automatically (amount, paid-to UPI, UTR, time) — pay the exact amount shown, to the QR shown, and upload the full screenshot. Wrong or edited screenshots are rejected. For any issue call the shop.</div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="../js/vendor/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/webp-manifest.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+<script defer src="../js/vendor/qrcode-generator.js"></script>
+<script defer src="../js/qr-render.js"></script>
+<script defer src="../js/payment.js"></script>
+<script defer src="../js/smd-v29.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var type='Prepaid', $=function(i){return document.getElementById(i)}, REQ=null, direct=false;
+  var quick={Prepaid:[199,239,299,349,479,719],Postpaid:[399,499,599,799,999]};
+  var L={Airtel:{Prepaid:'https://www.airtel.in/recharge/prepaid/',Postpaid:'https://www.airtel.in/recharge/prepaid/?icid=header'},
+    Vi:{Prepaid:'https://www.myvi.in/prepaid/online-mobile-recharge',Postpaid:'https://www.myvi.in/postpaid/quick-online-bill-payment'},
+    BSNL:{Prepaid:'https://portal.bsnl.in/myportal/quickrecharge.do',Postpaid:'https://portal.bsnl.in/myportal/quickrecharge.do'},
+    Jio:{Prepaid:'https://www.jio.com/selfcare/plans/mobility/prepaid-plans-list/',Postpaid:'https://www.jio.com/selfcare/plans/mobility/postpaid-plans-home/'}};
+  async function uploadShot(id,file){
+    file=await Utils.compressImage(file);
+    if(DB.useSupabase()){
+      try{
+        var path='recharge/'+id+'/'+Date.now()+'-'+file.name.replace(/[^a-z0-9.]/gi,'_');
+        var r=await supabaseClient.storage.from('payment-screenshots').upload(path,file,{upsert:true});
+        if(r.error)throw r.error;
+        return supabaseClient.storage.from('payment-screenshots').getPublicUrl(path).data.publicUrl;
+      }catch(e){console.warn('[recharge] upload failed, using base64:',e.message)}
+    }
+    return await Utils.fileToBase64(file);
+  }
+  function err(m){var b=$('rc-err');b.textContent=m||'';b.style.display=m?'block':'none';if(m)b.scrollIntoView({block:'center'})}
+  function step(n){[1,2,3].forEach(function(i){$('rc-s'+i).classList.toggle('on',i===n)});err('')}
+  function paint(){
+    document.querySelectorAll('#rc-tabs [data-t]').forEach(function(b){var on=b.dataset.t===type;b.classList.toggle('btn-primary',on);b.classList.toggle('btn-outline',!on)});
+    $('rc-amt-label').textContent=type==='Prepaid'?'Select recharge pack (₹)':'Bill amount to pay (₹)';
+    $('rc-quick').innerHTML=quick[type].map(function(a){return '<button type="button" class="rc-amt" data-a="'+a+'">₹'+a+'</button>'}).join('');
+  }
+  /* admin permission: when ON, selecting an operator opens its official recharge page */
+  async function loadSetting(){
+    try{ if(typeof DB!=='undefined'&&DB.useSupabase&&DB.useSupabase()){
+      var r=await supabaseClient.from('store_settings').select('value').eq('key','recharge_direct').maybeSingle();
+      if(r&&r.data){direct=r.data.value==='1';return}
+    }}catch(e){}
+    try{direct=localStorage.getItem('smd_recharge_direct')==='1'}catch(e){}
+  }
+  $('rc-tabs').addEventListener('click',function(e){var b=e.target.closest('[data-t]');if(b){type=b.dataset.t;paint()}});
+  $('rc-ops').addEventListener('click',function(e){
+    var b=e.target.closest('[data-op]');if(!b)return;
+    $('rc-op').value=b.dataset.op;document.querySelectorAll('.rc-op').forEach(function(x){x.classList.toggle('on',x===b)});
+    if(direct){var u=L[b.dataset.op]&&L[b.dataset.op][type];if(u)window.open(u,'_blank','noopener')}
+  });
+  $('rc-quick').addEventListener('click',function(e){var b=e.target.closest('[data-a]');if(!b)return;$('rc-amt').value=b.dataset.a;document.querySelectorAll('.rc-amt').forEach(function(x){x.classList.toggle('on',x===b)})});
+  $('rc-next').addEventListener('click',function(){
+    var n=$('rc-num').value.replace(/\D/g,''),op=$('rc-op').value,amt=parseInt($('rc-amt').value,10);
+    var m=!/^[6-9]\d{9}$/.test(n)?'Enter a valid 10-digit mobile number.':!op?'Select your operator.':!(amt>=10&&amt<=10000)?'Select a pack or enter a valid amount (₹10 – ₹10,000).':'';
+    if(m)return err(m);
+    if(direct)return err('Operator selected — the official '+op+' page has opened in a new tab. Complete your recharge there.');
+    if(typeof Auth!=='undefined'&&!Auth.isLoggedIn()){ return err('Please login first to place a recharge request.'),setTimeout(function(){location.href='login.html'},1500); }
+    REQ={id:'RC'+Date.now().toString().slice(-9),type:type,mobile:n,operator:op,circle:$('rc-circle').value,amount:amt,plan:$('rc-plan').value.trim()};
+    $('rc-sum').innerHTML='<b>'+REQ.type+'</b> · '+REQ.operator+' · '+REQ.circle+'<br>Mobile: <b>'+REQ.mobile+'</b><br>Amount to pay: <b>₹'+REQ.amount+'</b>'+(REQ.plan?'<br>Plan: '+REQ.plan.replace(/</g,'&lt;'):'');
+    var link=Payment.upiLink(REQ.amount,REQ.id);
+    try{QRRender.draw($('rc-qr'),link,240)}catch(e){}
+    ['gpay','phonepe','paytm'].forEach(function(a){$('rc-'+a).href=Payment.appPayLink(a,REQ.amount,REQ.id)});$('rc-upi').href=link;
+    step(2);
+  });
+  $('rc-back').addEventListener('click',function(){step(1)});
+  $('rc-submit').addEventListener('click',async function(){
+    var f=$('rc-shot').files[0];if(!f)return err('Please upload your payment screenshot.');
+    var btn=this,h=btn.innerHTML;btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Sending…';
+    try{
+      var u=Auth.currentUser()||{}, url=await uploadShot(REQ.id,f), emailed=false;
+      var row={id:REQ.id,user_id:u.id||null,user_email:u.email||null,user_name:u.name||null,type:REQ.type,mobile:REQ.mobile,operator:REQ.operator,circle:REQ.circle,amount:REQ.amount,plan:REQ.plan||null,screenshot_url:url,status:'pending'};
+      var saved=false;
+      if(DB.useSupabase()){
+        var r=await supabaseClient.from('recharge_requests').insert(row);
+        if(r.error)throw r.error; saved=true;
+        var m=await supabaseClient.functions.invoke('recharge-mail',{body:{id:REQ.id}});
+        if(m&&m.data&&m.data.verified===false){
+          err('Screenshot check failed: '+(m.data.reasons||[]).join('; ')+'. Please pay the exact amount to the shop QR and upload a clear, full screenshot. A new request will be created.');
+          btn.disabled=false;btn.innerHTML=h;REQ.id='RC'+Date.now().toString().slice(-9);return;
+        }
+        emailed=!!(m&&m.data&&m.data.verified);
+        if(m&&m.error&&!emailed){err('Could not verify right now. Please try again in a moment or call the shop.');btn.disabled=false;btn.innerHTML=h;return}
+        if(typeof Inbox!=='undefined')Inbox.sendToAdmin('New recharge request','₹'+REQ.amount+' '+REQ.operator+' '+REQ.type+' for '+REQ.mobile,'pages/admin-recharge.html');
+      }
+      if(!saved){var a=JSON.parse(localStorage.getItem('smd_recharge_reqs')||'[]');a.unshift(Object.assign({created_at:new Date().toISOString()},row));localStorage.setItem('smd_recharge_reqs',JSON.stringify(a.slice(0,100)))}
+      $('rc-done-msg').textContent='Request '+REQ.id+' for ₹'+REQ.amount+' ('+REQ.operator+' '+REQ.mobile+') has been verified'+(emailed?' and sent to our team':'')+'. We will verify your payment and recharge your number shortly.';
+      step(3);
+    }catch(ex){err('Could not submit: '+(ex&&ex.message||'try again'));}
+    btn.disabled=false;btn.innerHTML=h;
+  });
+  paint();
+  App.boot('shop').then(loadSetting);
+});
+</script>
+<script src="../js/fast-nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}try{if(sessionStorage.getItem('smd_splash'))document.documentElement.classList.add('no-splash');}catch(e){}setTimeout(function(){var e=document.getElementById('page-loader');if(e){e.classList.add('hide');setTimeout(function(){e.remove()},400)}},1800);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/color-fix.css"><link rel="stylesheet" href="../css/final-fix.css">
+<link rel="stylesheet" href="../css/ultrawide.css">
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Profile</span></div>
+    <h1 class="page-title">My Profile</h1>
+  </section>
+  <section class="section container" style="padding-top:10px;max-width:520px;" id="profile-root"><div class="card" style="padding:26px;min-height:340px;display:flex;align-items:center;justify-content:center;color:var(--text-dim,#cbd5e1);">Loading your profile&hellip;</div></section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="../js/vendor/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/webp-manifest.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/pincode.js"></script>
+<script defer src="../js/profile.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+<script defer src="../js/smd-v29.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+App.boot('').then(() => {
+  const root = document.getElementById('profile-root');
+  if (!Auth.requireLogin('login.html')) return;
+  const esc = Utils.escapeHtml;
+  const u = Auth.currentUser();
+  const isAdmin = Auth.isAdmin(), isStaff = u.role === 'staff';
+  const isTemp = isAdmin && !!u.tempUntil;           // temporary owner
+  const isOwner = isAdmin && !u.tempUntil;           // permanent admin
+  const roleLabel = isAdmin ? (isTemp ? 'Temporary Admin' : 'Admin') : (isStaff ? 'Store Admin' : 'Customer');
+  const fmtLeft = (iso) => { const ms = new Date(iso).getTime() - Date.now(); if (ms <= 0) return 'ended'; const h = Math.floor(ms/3600000), m = Math.floor(ms%3600000/60000); return (h >= 24 ? Math.floor(h/24)+'d ' : '') + (h%24) + 'h ' + m + 'm left'; };
+  const fmtDate = (iso) => new Date(iso).toLocaleString();
+  const access = isAdmin
+    ? ['Full admin dashboard (orders, payments, refunds, products, customers)', 'Site content & invoice settings', isOwner ? 'Transfer ownership temporarily to another account' : 'Cannot transfer ownership or delete the store']
+    : isStaff
+      ? ['Limited dashboard: orders, messages, service appointments, products', 'Admin-only sections are locked']
+      : ['Shop, wishlist, cart and place orders', 'Track your orders and payments', 'Manage your own details and delete your account'];
+
+  root.innerHTML = `
+    <div class="card" style="padding:26px;">
+      <div class="flex items-center gap-16" style="margin-bottom:22px;">
+        <div class="rc-avatar" style="width:56px;height:56px;font-size:20px;">${Utils.initials(u.name)}</div>
+        <div><h3 style="font-family:var(--font-display);margin:0;">${esc(u.name)} <span class="admin-role-badge" style="font-size:11px;vertical-align:middle;">${roleLabel}</span></h3><span class="text-faint" style="font-size:13px;">${esc(u.email)}</span></div>
+      </div>
+      <form id="profile-form">
+        <div class="field"><label>Full Name</label><input class="input" name="name" value="${esc(u.name)}" required></div>
+        <div class="field"><label>Phone Number</label><input class="input" name="phone" value="${esc(u.phone||'')}"></div>
+        <div class="field"><label>Pincode</label>
+          <input class="input" name="pincode" id="prof-pincode" pattern="[0-9]{6}" maxlength="6" value="${esc(u.pincode||'')}">
+          <span id="prof-pincode-status" class="text-faint" style="font-size:11.5px;"></span>
+        </div>
+        <div class="field"><label>Saved Address</label><textarea class="input" name="address" rows="3">${esc(u.address||'')}</textarea></div>
+        <div class="field" style="display:flex;gap:12px;">
+          <div style="flex:1;"><label>City / District</label><input class="input" name="city" id="prof-city" value="${esc(u.city||'')}"></div>
+          <div style="flex:1;"><label>State</label><input class="input" name="state" id="prof-state" value="${esc(u.state||'')}"></div>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+      </form>
+    </div>
+
+    <div class="card" style="padding:22px;margin-top:18px;" id="access-card">
+      <strong style="font-family:var(--font-display);"><i class="fa-solid fa-shield-halved"></i> Access &amp; Control</strong>
+      <div class="text-faint" style="font-size:12.5px;margin:4px 0 12px;">Role: <b>${roleLabel}</b> &middot; Login: password + email OTP</div>
+      ${isTemp ? `<div style="background:#fff4d6;border:1px solid #f0d98c;color:#7a5a00;border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:12px;"><i class="fa-solid fa-hourglass-half"></i> Temporary ownership — ends <b>${esc(fmtDate(u.tempUntil))}</b> (<span id="temp-left">${fmtLeft(u.tempUntil)}</span>)${u.tempDeleteOnExpiry ? '. This account will then be <b>deleted automatically</b>.' : '. Admin access will then be removed.'}</div>` : ''}
+      <ul style="margin:0 0 4px 18px;padding:0;font-size:13.5px;line-height:1.7;">${access.map(a => `<li>${esc(a)}</li>`).join('')}</ul>
+      ${(isAdmin || isStaff) ? `<a href="admin.html" class="btn btn-primary btn-sm" style="margin-top:12px;"><i class="fa-solid fa-gauge"></i> Open Dashboard</a>` : ''}
+    </div>
+
+    ${isOwner ? `
+    <div class="card" style="padding:22px;margin-top:18px;" id="transfer-card">
+      <strong style="font-family:var(--font-display);"><i class="fa-solid fa-right-left"></i> Transfer Ownership (temporary)</strong>
+      <p class="text-faint" style="font-size:12.5px;margin:6px 0 14px;">Give another registered account full admin access for a limited time (max 500 hours). When the time ends the access stops automatically.</p>
+      <div class="field"><label>Registered email of the person</label><input class="input" id="tr-email" type="email" placeholder="someone@example.com"></div>
+      <div class="field"><label>Duration: <b id="tr-hours-label">24</b> hours <span class="text-faint" id="tr-hours-days" style="font-size:12px;">(1 day)</span></label>
+        <input id="tr-hours" type="range" min="1" max="500" value="24" style="width:100%;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">${[1,6,12,24,72,168,336,500].map(h => `<button type="button" class="btn btn-outline btn-sm" data-h="${h}">${h}h</button>`).join('')}</div>
+      </div>
+      <label style="display:flex;gap:8px;align-items:flex-start;font-size:13px;margin:6px 0 14px;"><input type="checkbox" id="tr-delete" checked style="margin-top:3px;"> <span>Delete that account permanently when the time ends (untick = only remove admin access)</span></label>
+      <button class="btn btn-primary btn-block" id="tr-go"><i class="fa-solid fa-user-clock"></i> Transfer for selected hours</button>
+      <div id="tr-list" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;"></div>
+    </div>` : ''}
+
+    <div class="card" style="padding:22px;margin-top:18px;">
+      <div class="flex justify-between items-center">
+        <div><strong style="font-family:var(--font-display);">My Orders</strong><div class="text-faint" style="font-size:12.5px;">View your order history &amp; track deliveries</div></div>
+        <a href="orders.html" class="btn btn-outline btn-sm">View</a>
+      </div>
+    </div>
+    <button class="btn btn-outline btn-block" style="margin-top:18px;" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+
+    ${isAdmin ? '' : `
+    <div class="card" style="padding:22px;margin-top:18px;border-color:var(--danger,#3868d9);">
+      <strong style="font-family:var(--font-display);color:var(--danger,#3868d9);">Danger Zone</strong>
+      <p class="text-faint" style="font-size:12.5px;margin:6px 0 14px;">Permanently delete your account. You must confirm with a code emailed to you. This cannot be undone — see our <a href="privacy.html" class="text-accent">Privacy Policy</a>.</p>
+      ${Auth.canSelfDelete()
+        ? `<button class="btn btn-block" style="background:var(--danger,#3868d9);color:#fff;" id="delete-account-btn"><i class="fa-solid fa-trash-can"></i> Delete My Account Permanently</button>
+           <div id="del-box" style="display:none;margin-top:14px;">
+             <div id="del-err" style="display:none;background:#dce4f8;border:1px solid #adc1ef;color:#214aac;border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:10px;"></div>
+             <p class="text-dim" style="font-size:13px;margin:0 0 10px;">We emailed a code to <b>${esc(u.email)}</b>. Enter it to delete your account forever.</p>
+             <input class="input" id="del-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="Code from your email" style="letter-spacing:4px;text-align:center;font-size:18px;margin-bottom:10px;">
+             <button class="btn btn-block" style="background:var(--danger,#3868d9);color:#fff;" id="del-confirm"><i class="fa-solid fa-check"></i> Verify &amp; Delete Forever</button>
+             <p class="text-dim" style="text-align:center;margin-top:10px;font-size:13px;"><a href="#" id="del-resend" class="text-accent">Resend code</a> &middot; <a href="#" id="del-cancel" class="text-accent">Cancel</a></p>
+           </div>`
+        : `<p class="text-faint" style="font-size:13px;margin:0;">This store-admin session has no separate account to delete. Ask the Admin to remove your access.</p>`}
+    </div>`}`;
+
+  // live countdown for temporary owner
+  if (isTemp){ setInterval(() => { const el = document.getElementById('temp-left'); if (el) el.textContent = fmtLeft(u.tempUntil); if (new Date(u.tempUntil) <= Date.now()) Auth.expireTemp(); }, 30000); }
+
+  // ---- delete with OTP ----
+  const delBtn = document.getElementById('delete-account-btn');
+  if (delBtn){
+    const box = document.getElementById('del-box'), err = document.getElementById('del-err');
+    const showErr = (m) => { err.textContent = m; err.style.display = 'block'; };
+    const sendCode = async () => {
+      err.style.display = 'none';
+      delBtn.disabled = true;
+      const r = await Auth.requestDeleteOtp();
+      delBtn.disabled = false;
+      if (!r.ok){ Notify.toast(r.error, 'error'); return false; }
+      box.style.display = 'block'; delBtn.style.display = 'none';
+      Notify.toast('Code sent to ' + (r.email || u.email), 'success');
+      return true;
+    };
+    delBtn.addEventListener('click', async () => {
+      if (prompt('This permanently deletes your account, orders and saved details.\n\nType DELETE to continue:') !== 'DELETE') return;
+      await sendCode();
+    });
+    document.getElementById('del-resend').addEventListener('click', async (e) => { e.preventDefault(); await sendCode(); });
+    document.getElementById('del-cancel').addEventListener('click', (e) => { e.preventDefault(); box.style.display = 'none'; delBtn.style.display = ''; });
+    document.getElementById('del-confirm').addEventListener('click', async (e) => {
+      const b = e.currentTarget; err.style.display = 'none';
+      const code = document.getElementById('del-code').value.trim();
+      if (!code){ showErr('Enter the code from your email.'); return; }
+      b.disabled = true; const h = b.innerHTML; b.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Deleting…';
+      const r = await Auth.confirmDeleteAccount(code);
+      if (r.ok){ Notify.toast('Your account has been permanently deleted.', 'success'); setTimeout(() => { window.location.href = ROOT_PREFIX + 'index.html'; }, 1200); }
+      else { b.disabled = false; b.innerHTML = h; showErr(r.error || 'Could not delete your account.'); }
+    });
+  }
+
+  // ---- temporary ownership (permanent admin) ----
+  if (isOwner){
+    const range = document.getElementById('tr-hours');
+    const setH = (h) => { range.value = h; document.getElementById('tr-hours-label').textContent = h; const d = h/24; document.getElementById('tr-hours-days').textContent = '(' + (d >= 1 ? (Math.round(d*10)/10) + ' day' + (d >= 2 ? 's' : '') : h + ' hr') + ')'; };
+    range.addEventListener('input', () => setH(range.value));
+    document.querySelectorAll('#transfer-card [data-h]').forEach(b => b.addEventListener('click', () => setH(b.dataset.h)));
+    const renderList = async () => {
+      const list = await Auth.listTempAdmins(); const el = document.getElementById('tr-list');
+      el.innerHTML = list.length ? '<strong style="font-size:13px;">Active temporary owners</strong>' + list.map(a => `
+        <div class="card" style="padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+          <div><b>${esc(a.name||'—')}</b><div class="text-faint" style="font-size:12px;">${esc(a.email||'')} &middot; ${esc(fmtLeft(a.temp_admin_until))} &middot; ${a.temp_delete_on_expiry ? 'will be deleted' : 'access removed only'}</div></div>
+          <button class="btn btn-outline btn-sm" data-revoke="${a.id}">End now</button>
+        </div>`).join('') : '';
+      el.querySelectorAll('[data-revoke]').forEach(b => b.addEventListener('click', async () => {
+        if (!confirm('End this temporary access now? (the account itself is kept)')) return;
+        const r = await Auth.revokeTempAdmin(b.dataset.revoke); Notify.toast(r.ok ? 'Access ended.' : r.error, r.ok ? 'success' : 'error'); renderList();
+      }));
+    };
+    renderList();
+    document.getElementById('tr-go').addEventListener('click', async (e) => {
+      const email = document.getElementById('tr-email').value.trim(), hours = Number(range.value), del = document.getElementById('tr-delete').checked;
+      if (!email){ Notify.toast('Enter the person\'s registered email.', 'error'); return; }
+      if (!confirm('Give ' + email + ' FULL admin access for ' + hours + ' hour(s)?' + (del ? '\n\nTheir account will be DELETED permanently when the time ends.' : ''))) return;
+      const b = e.currentTarget; b.disabled = true;
+      const r = await Auth.grantTempAdmin(email, hours, del);
+      b.disabled = false;
+      if (!r.ok){ Notify.toast(r.error, 'error'); return; }
+      Notify.toast('Ownership transferred until ' + fmtDate(r.until), 'success');
+      document.getElementById('tr-email').value = ''; renderList();
+    });
+  }
+
+  document.getElementById('prof-pincode').addEventListener('input', Utils.debounce(async (e) => {
+    const pin = e.target.value.trim();
+    const statusEl = document.getElementById('prof-pincode-status');
+    if (pin.length !== 6){ statusEl.textContent = ''; return; }
+    statusEl.textContent = 'Looking up…'; statusEl.style.color = 'var(--text-faint)';
+    const result = await Pincode.lookup(pin);
+    if (!result.ok){ statusEl.textContent = result.error; statusEl.style.color = 'var(--danger)'; return; }
+    document.getElementById('prof-city').value = result.district;
+    document.getElementById('prof-state').value = result.state;
+    statusEl.textContent = `✓ ${result.area}, ${result.district}, ${result.state}`;
+    statusEl.style.color = 'var(--success)';
+  }, 500));
+
+  document.getElementById('profile-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    await Profile.save({ name: fd.get('name'), phone: fd.get('phone'), address: fd.get('address'), city: fd.get('city'), state: fd.get('state'), pincode: fd.get('pincode') });
+    Notify.toast('Profile updated', 'success');
+  });
+  document.getElementById('logout-btn').addEventListener('click', async () => { await Auth.logout(); window.location.href = '../index.html'; });
+});
+});
+</script>
+<script src="../js/fast-nav.js"></script>
+</body>
+</html>

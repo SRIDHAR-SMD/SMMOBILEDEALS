@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}try{if(sessionStorage.getItem('smd_splash'))document.documentElement.classList.add('no-splash');}catch(e){}setTimeout(function(){var e=document.getElementById('page-loader');if(e){e.classList.add('hide');setTimeout(function(){e.remove()},400)}},1800);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compare Products — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<style>
+  .cmp-table-wrap{ overflow-x:auto; }
+  .cmp-table{ width:100%; border-collapse:separate; border-spacing:0; min-width:600px; }
+  .cmp-table th, .cmp-table td{ padding:14px 16px; border-bottom:1px solid var(--border-soft); vertical-align:top; }
+  .cmp-table th{ text-align:left; width:140px; color:var(--text-faint); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+  .cmp-col img{ width:70px; height:70px; object-fit:contain; background:var(--surface-2); border-radius:12px; padding:6px; margin-bottom:8px; }
+  .cmp-remove{ background:none; border:none; color:var(--text-faint); cursor:pointer; float:right; }
+  .vs-slot, .vs-table, .vs-slot *, .vs-table *{ text-shadow:none !important; }
+  .vs-slot, .vs-table{ color:var(--text); }
+  .vs-picked h3, .vs-row .l, .vs-row .r{ color:var(--text); opacity:1; }
+  .vs-row .l .text-faint, .vs-row .r .text-faint, .vs-picked .text-faint{ color:var(--text-faint); }
+  .vs-tabs{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+  .vs-tab{ border:1px solid var(--border-soft); background:var(--surface); color:var(--text); padding:9px 16px; border-radius:999px; font-weight:600; font-size:13.5px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+  .vs-tab.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .vs-slots{ display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:stretch; margin-bottom:22px; }
+  .vs-slot{ position:relative; background:var(--surface); border:1px solid var(--border-soft); border-radius:16px; padding:16px; min-width:0; }
+  .vs-search{ width:100%; }
+  .vs-results{ position:absolute; left:16px; right:16px; top:62px; z-index:20; max-height:280px; overflow-y:auto; background:var(--surface); border:1px solid var(--border-soft); border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.25); display:none; }
+  .vs-results button{ display:flex; width:100%; align-items:center; gap:10px; padding:9px 12px; background:none; border:0; border-bottom:1px solid var(--border-soft); color:var(--text); text-align:left; cursor:pointer; font-size:13px; }
+  .vs-results button:hover{ background:var(--surface-2); }
+  .vs-results img{ width:34px; height:34px; object-fit:contain; border-radius:8px; background:var(--surface-2); flex:none; }
+  .vs-picked{ text-align:center; padding:16px 4px 4px; }
+  .vs-picked img{ width:120px; height:120px; object-fit:contain; background:var(--surface-2); border-radius:16px; padding:8px; }
+  .vs-picked h3{ font-size:15px; margin:10px 0 2px; font-family:var(--font-display); }
+  .vs-empty{ text-align:center; color:var(--text-faint); padding:34px 8px; font-size:13.5px; }
+  .vs-badge{ align-self:center; width:58px; height:58px; border-radius:50%; background:linear-gradient(135deg,var(--accent),var(--deal)); color:#fff; font-weight:800; font-size:18px; letter-spacing:.02em; display:flex; align-items:center; justify-content:center; border:0; cursor:pointer; box-shadow:0 8px 24px rgba(0,0,0,.3); }
+  .vs-badge:hover{ transform:rotate(180deg); transition:transform .4s; }
+  .vs-table{ background:var(--surface); border:1px solid var(--border-soft); border-radius:16px; overflow:hidden; }
+  .vs-row{ display:grid; grid-template-columns:1fr 150px 1fr; border-bottom:1px solid var(--border-soft); }
+  .vs-row:last-child{ border-bottom:0; }
+  .vs-row > div{ padding:13px 16px; font-size:14px; display:flex; align-items:center; }
+  .vs-row .l{ justify-content:flex-end; text-align:right; } .vs-row .r{ justify-content:flex-start; }
+  .vs-row .k{ justify-content:center; text-align:center; background:var(--surface-2); color:var(--text-faint); font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; }
+  .vs-win{ color:var(--success); font-weight:700; }
+  @media (max-width:700px){
+    .vs-slots{ grid-template-columns:1fr; } .vs-badge{ justify-self:center; width:48px; height:48px; font-size:15px; }
+    .vs-row{ grid-template-columns:1fr 1fr; } .vs-row .k{ grid-column:1 / -1; order:-1; padding:7px; }
+    .vs-row .l, .vs-row .r{ justify-content:center; text-align:center; }
+  }
+</style>
+    <link rel="stylesheet" href="../css/color-fix.css"><link rel="stylesheet" href="../css/final-fix.css">
+<link rel="stylesheet" href="../css/ultrawide.css">
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Compare</span></div>
+    <h1 class="page-title">Compare <span style="color:var(--accent-2);">VS</span></h1>
+  </section>
+  <section class="section container" style="padding-top:10px;">
+    <div id="vs-app"></div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="../js/vendor/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/webp-manifest.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+<script defer src="../js/smd-v29.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const esc = Utils.escapeHtml;
+  const CATS = {
+    android: { label:'Android', icon:'fa-brands fa-android', test:p => p.type === 'phone' && ['mobiles','second-hand-mobiles'].includes(p.category) && p.brand !== 'Apple' },
+    iphone:  { label:'iPhone', icon:'fa-brands fa-apple', test:p => p.type === 'phone' && ['mobiles','second-hand-mobiles'].includes(p.category) && p.brand === 'Apple' },
+    watch:   { label:'Smartwatches', icon:'fa-regular fa-clock', test:p => p.category === 'watches' },
+    gadgets: { label:'Gadgets', icon:'fa-solid fa-headphones', test:p => p.type === 'earbuds' || p.category === 'earbuds' || p.category === 'accessories' }
+  };
+  const SPEC_LABELS = {
+    phone: ['Storage','Display','Processor','Camera'],
+    watch: ['Case Size','Health Sensor','Connectivity','Water Resistance'],
+    earbuds: ['Feature','Controls','Water Resistance','Battery Life']
+  };
+  const state = { cat:'android', left:null, right:null };
+  const root = document.getElementById('vs-app');
+  const all = () => DB.getProducts();
+  const byId = id => all().find(p => p.id === id);
+  const inCat = () => all().filter(CATS[state.cat].test);
+
+  function init(){
+    // Start from whatever was added with the "Compare" button on product pages
+    const ids = Compare.get().map(byId).filter(Boolean);
+    if (ids.length){
+      const first = Object.keys(CATS).find(k => CATS[k].test(ids[0]));
+      if (first) state.cat = first;
+      const same = ids.filter(p => CATS[state.cat].test(p));
+      state.left = same[0] ? same[0].id : null;
+      state.right = same[1] ? same[1].id : null;
+    }
+  }
+
+  function slotHTML(side){
+    const p = state[side] ? byId(state[side]) : null;
+    return `<div class="vs-slot" data-side="${side}">
+      <input class="input vs-search" placeholder="Search ${CATS[state.cat].label} — type a model name…" autocomplete="off">
+      <div class="vs-results"></div>
+      ${p ? `<div class="vs-picked"><img src="${Utils.productImage(p)}" onerror="this.onerror=null;this.src='${Utils.deviceImage(p.type,p.color)}'" alt="">
+          <h3>${esc(p.name)}</h3><div class="text-faint" style="font-size:12px;">${esc(p.brand || '')}</div>
+          <div style="font-family:var(--font-mono);font-weight:700;margin-top:6px;">${Utils.formatINR(p.price)}</div></div>`
+        : `<div class="vs-empty"><i class="fa-solid fa-magnifying-glass" style="font-size:22px;display:block;margin-bottom:8px;"></i>Pick a ${side === 'left' ? 'first' : 'second'} product</div>`}
+    </div>`;
+  }
+
+  function rowsHTML(L, R){
+    const labels = SPEC_LABELS[L.type] || [];
+    const rows = [];
+    const win = (a, b, higherBetter) => a === b ? ['',''] : ((higherBetter ? a > b : a < b) ? ['vs-win',''] : ['','vs-win']);
+    const [pl, pr] = win(L.price, R.price, false);
+    rows.push([`<span class="${pl}">${Utils.formatINR(L.price)}</span>`, 'Price', `<span class="${pr}">${Utils.formatINR(R.price)}</span>`]);
+    const rl = L.reviews ? L.rating : 0, rr = R.reviews ? R.rating : 0;
+    const [wl, wr] = win(rl, rr, true);
+    const stars = (p, c) => p.reviews ? `<span class="${c}">${UI.stars(p.rating)} <span class="text-faint" style="font-size:12px;">(${p.reviews})</span></span>` : '<span class="text-faint">No ratings yet</span>';
+    rows.push([stars(L, wl), 'Rating', stars(R, wr)]);
+    const n = Math.max((L.specs||[]).length, (R.specs||[]).length);
+    for (let i = 0; i < n; i++){
+      rows.push([esc((L.specs||[])[i] || '—'), labels[i] || `Spec ${i+1}`, esc((R.specs||[])[i] || '—')]);
+    }
+    rows.push([UI.stockBadge(L), 'Availability', UI.stockBadge(R)]);
+    rows.push([`<a href="product-details.html?id=${L.id}" class="btn btn-outline btn-sm">View</a>`, '', `<a href="product-details.html?id=${R.id}" class="btn btn-outline btn-sm">View</a>`]);
+    return rows.map(r => `<div class="vs-row"><div class="l">${r[0]}</div><div class="k">${r[1]}</div><div class="r">${r[2]}</div></div>`).join('');
+  }
+
+  function render(){
+    if (!Auth.isLoggedIn()){
+      root.innerHTML = '<div class="empty-state"><i class="fa-solid fa-user-lock"></i><h3>Please log in to compare products</h3><p>The comparison feature is available only for logged-in customers.</p><a href="login.html" class="btn btn-primary" style="margin-top:12px;">Login</a> <a href="register.html" class="btn btn-outline" style="margin-top:12px;">Create account</a></div>';
+      return;
+    }
+    const L = state.left && byId(state.left), R = state.right && byId(state.right);
+    root.innerHTML = `
+      <div class="vs-tabs">${Object.entries(CATS).map(([k,c]) => `<button type="button" class="vs-tab ${k === state.cat ? 'active' : ''}" data-cat="${k}"><i class="${c.icon}"></i> ${c.label}</button>`).join('')}</div>
+      <div class="vs-slots">${slotHTML('left')}<button type="button" class="vs-badge" id="vs-swap" title="Swap sides">VS</button>${slotHTML('right')}</div>
+      ${L && R ? `<div class="vs-table">${rowsHTML(L, R)}</div>` : '<p class="text-faint" style="text-align:center;font-size:13.5px;">Choose one product on each side to see the comparison.</p>'}`;
+  }
+
+  root.addEventListener('click', e => {
+    const tab = e.target.closest('.vs-tab');
+    if (tab){ state.cat = tab.dataset.cat; state.left = state.right = null; render(); return; }
+    if (e.target.closest('#vs-swap')){ [state.left, state.right] = [state.right, state.left]; render(); return; }
+    const pick = e.target.closest('.vs-results button');
+    if (pick){ state[pick.closest('.vs-slot').dataset.side] = pick.dataset.id; render(); return; }
+    if (!e.target.closest('.vs-slot')) root.querySelectorAll('.vs-results').forEach(r => r.style.display = 'none');
+  });
+  root.addEventListener('input', e => {
+    if (!e.target.classList.contains('vs-search')) return;
+    const slot = e.target.closest('.vs-slot'), box = slot.querySelector('.vs-results');
+    const q = e.target.value.trim().toLowerCase();
+    const other = state[slot.dataset.side === 'left' ? 'right' : 'left'];
+    const list = inCat().filter(p => p.id !== other && (!q || (p.name + ' ' + (p.brand||'')).toLowerCase().includes(q))).slice(0, 25);
+    box.innerHTML = list.length ? list.map(p => `<button type="button" data-id="${p.id}"><img src="${Utils.productImage(p)}" onerror="this.onerror=null;this.src='${Utils.deviceImage(p.type,p.color)}'" alt=""><span style="flex:1;">${esc(p.name)}</span><span style="font-family:var(--font-mono);font-size:12px;">${Utils.formatINR(p.price)}</span></button>`).join('') : '<div class="vs-empty" style="padding:14px;">No match</div>';
+    box.style.display = 'block';
+  });
+  root.addEventListener('focusin', e => { if (e.target.classList.contains('vs-search')) e.target.dispatchEvent(new Event('input', { bubbles:true })); });
+
+  App.boot('compare').then(() => { init(); render(); });
+});
+</script>
+<script src="../js/fast-nav.js"></script>
+</body>
+</html>

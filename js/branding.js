@@ -1,0 +1,1 @@
+const Branding=(()=>{async function n(){const t=await Inbox.getSetting("site_background_url");t&&document.documentElement.style.setProperty("--site-bg-url",`url('${t}')`)}async function o(t){return await Inbox.getSetting(t==="light"?"logo_light_url":"logo_dark_url")}async function l(){await n()}return{applyBackground:n,customLogoUrl:o,applyAll:l}})();
