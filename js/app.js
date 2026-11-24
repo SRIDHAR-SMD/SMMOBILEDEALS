@@ -9,6 +9,9 @@
    ready — whether that data came from Supabase or the local fallback.
    ========================================================================== */
 
+/* keep the browser's install prompt so the header "Application" button can use it */
+try{ window.addEventListener('beforeinstallprompt', function(e){ e.preventDefault(); window.__smdInstallEvt = e; window.dispatchEvent(new Event('smd-installable')); }); window.addEventListener('appinstalled', function(){ window.__smdInstallEvt = null; window.dispatchEvent(new Event('smd-installed')); }); }catch(e){}
+
 const App = (() => {
   // ---------------------------------------------------------------------
   // ERROR WATCHDOG — a static site has no server process watching pages
@@ -163,6 +166,7 @@ const App = (() => {
     registerSW();
     initErrorWatchdog();
     try{ loadScript((typeof ROOT_PREFIX !== 'undefined' ? ROOT_PREFIX : '') + 'js/scroll-guard.js').catch(() => {}); }catch(e){}
+    try{ loadScript((typeof ROOT_PREFIX !== 'undefined' ? ROOT_PREFIX : '') + 'js/install-app.js').catch(() => {}); }catch(e){}
     // Auth.init() MUST finish before DB.init() fires its Supabase queries.
     // orders are RLS-protected ("auth.uid() = user_id"), so if DB.init()'s
     // orders refresh runs while the Supabase client still has no restored
