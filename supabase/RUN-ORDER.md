@@ -9,7 +9,8 @@
 7. order-cancel-guard.sql
 8. live-location.sql
 9. security-v29.sql
-10. master-gateway.sql
+10. notifications-delete.sql   (NEW - makes notification X / Clear all work)
+11. master-gateway.sql
 11. accounts-and-otp-exempt.sql   <- LAST (3 accounts + test-account OTP skip). Every row of its result must show password_ok = true.
 12. recharge.sql   (mobile recharge requests + admin switch; then: supabase functions deploy recharge-mail)
 
