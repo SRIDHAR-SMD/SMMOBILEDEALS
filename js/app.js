@@ -166,7 +166,7 @@ const App = (() => {
     registerSW();
     initErrorWatchdog();
     try{ loadScript((typeof ROOT_PREFIX !== 'undefined' ? ROOT_PREFIX : '') + 'js/scroll-guard.js').catch(() => {}); }catch(e){}
-    try{ loadScript((typeof ROOT_PREFIX !== 'undefined' ? ROOT_PREFIX : '') + 'js/install-app.js').catch(() => {}); }catch(e){}
+    if (/admin/.test((window.location.pathname || '').toLowerCase())){ try{ loadScript((typeof ROOT_PREFIX !== 'undefined' ? ROOT_PREFIX : '') + 'js/install-app.js').catch(() => {}); }catch(e){} } // install app: admin & staff dashboard only
     // Auth.init() MUST finish before DB.init() fires its Supabase queries.
     // orders are RLS-protected ("auth.uid() = user_id"), so if DB.init()'s
     // orders refresh runs while the Supabase client still has no restored

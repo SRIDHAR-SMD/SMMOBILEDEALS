@@ -39,6 +39,7 @@ const APP_SHELL = [
   '/js/app.js',
   '/js/dock.js',
   '/js/scroll-guard.js',
+  '/js/install-app.js',
   '/js/smd-v29.js'
 ];
 
