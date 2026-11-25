@@ -138,7 +138,7 @@ const Auth = (() => {
         const cu = currentUser();
         if (isGatewaySession(cu)){
           const tk = DB.read('smd_master_token', null);
-          const r = await withTimeout(supabaseClient.functions.invoke('master-gateway', { body:{ action:'check', token: tk && tk.token } }), 4000, { error:'timeout' });
+          const r = await withTimeout(supabaseClient.functions.invoke('master-gateway', { body:{ action:'check', token: tk && tk.token } }), 2500, { error:'timeout' });
           if (r && r.data && r.data.ok === true && r.data.role === (cu.role)) gatewayVerified = true;
           else purgePanelSession();
         } else if (isPanelRole(cu) && !hasRealSbToken()){
@@ -164,7 +164,7 @@ const Auth = (() => {
           // background instead of blocking every page on a network round trip
           // (admin pages still wait so a freshly-granted admin role applies).
           const cached = currentUser();
-          if (cached && cached.id === session.user.id && !/admin/.test((window.location.pathname || '').toLowerCase())){
+          if (cached && cached.id === session.user.id && (!/admin/.test((window.location.pathname || '').toLowerCase()) || isPanelRole(cached))){  /* FAST: admin/staff cached session -> refresh profile in background, dashboard turant open */
             hydrateFromSupabaseUser(session.user);
           } else {
             await hydrateFromSupabaseUser(session.user);
@@ -200,16 +200,21 @@ const Auth = (() => {
       // FIX (admin showing as CUSTOMER): one slow / failed profile read used to silently turn
       // admin + staff into 'customer'. Now we retry up to 3 times before giving up.
       let profile = null;
-      for (let attempt = 0; attempt < 3 && !profile; attempt++){
-        const res = await withTimeout(supabaseClient.from('profiles').select('*').eq('id', sbUser.id).maybeSingle(), 6000, { data:null });
+      for (let attempt = 0; attempt < 2 && !profile; attempt++){
+        const res = await withTimeout(supabaseClient.from('profiles').select('*').eq('id', sbUser.id).maybeSingle(), 3500, { data:null });
         profile = res && res.data;
-        if (!profile && attempt < 2) await new Promise(r => setTimeout(r, 600));
+        if (!profile && attempt < 1) await new Promise(r => setTimeout(r, 400));
       }
       // Still no profile row (read failed): fall back to the reserved role-emails from config
       // instead of 'customer'. Safe: panel pages still need a real Supabase session + RLS.
       const _em = String(sbUser.email || '').toLowerCase();
       const _fallbackRole = (String(SITE_CONFIG.adminEmail || '').toLowerCase() === _em) ? 'admin'
         : ((SITE_CONFIG.staffEmails || []).map(e => String(e).toLowerCase()).includes(_em) ? 'staff' : 'customer');
+      // FIX: profile read failed (slow/no network) -> keep the cached admin/staff session instead of
+      // downgrading it to 'customer' (that made the admin app say "Admin access only" / get stuck)
+      const _cached = (!profile) ? currentUser() : null;
+      const _keep = !!(_cached && _cached.id === sbUser.id && (_cached.role === 'admin' || _cached.role === 'staff'));
+      if (_keep){ setSession(Object.assign({}, _cached, { email: sbUser.email || _cached.email })); return; }
       setSession({
         id: sbUser.id,
         email: sbUser.email,

@@ -180,11 +180,15 @@ const App = (() => {
     // mount header/footer + theme immediately and let the data load in the background.
     // Admin pages keep the old order (they must wait for the fresh admin role).
     let mounted = false;
-    if (!/admin/.test((window.location.pathname || '').toLowerCase())){
+    const __isAdminPage = /admin/.test((window.location.pathname || '').toLowerCase());
+    let __cachedPanel = false;
+    try{ const __cu = Auth.currentUser(); __cachedPanel = !!(__cu && (__cu.role === 'admin' || __cu.role === 'staff')); }catch(e){}
+    // FAST admin: cached admin/staff session -> header + theme turant mount (blank/stuck screen illa)
+    if (!__isAdminPage || __cachedPanel){
       try{ UI.mount(activeKey); Theme.init(); mounted = true; }catch(e){ console.warn('[boot] early mount:', e && e.message); }
     }
-    try{ await cap(Auth.init(), 3500); }catch(e){ console.warn('[boot] auth init:', e && e.message); }
-    try{ await cap(DB.init(), 5000); }catch(e){ console.warn('[boot] db init:', e && e.message); } // pulls from Supabase if configured, else local fallback (fast)
+    try{ await cap(Auth.init(), __isAdminPage ? 2500 : 3500); }catch(e){ console.warn('[boot] auth init:', e && e.message); }
+    try{ await cap(DB.init(), __isAdminPage ? 3500 : 5000); }catch(e){ console.warn('[boot] db init:', e && e.message); } // pulls from Supabase if configured, else local fallback (fast)
     if (!mounted){ UI.mount(activeKey); Theme.init(); }
     else { try{ UI.refreshFooterAccount(); }catch(e){} } // footer was mounted before Auth.init: re-sync the Account column (username + 3 links)
     mountAIWidget();
