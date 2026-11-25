@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}try{if(sessionStorage.getItem('smd_splash'))document.documentElement.classList.add('no-splash');}catch(e){}setTimeout(function(){var e=document.getElementById('page-loader');if(e){e.classList.add('hide');setTimeout(function(){e.remove()},400)}},1800);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucky Spin — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<link rel="stylesheet" href="../css/color-fix.css"><link rel="stylesheet" href="../css/final-fix.css">
+<link rel="stylesheet" href="../css/ultrawide.css">
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<style>
+  .sw-wrap{position:relative;width:min(92vw,420px);aspect-ratio:1;margin:10px auto 22px;}
+  .sw-wheel{width:100%;height:100%;border-radius:50%;transition:transform 5.2s cubic-bezier(.12,.72,.1,1);box-shadow:0 0 0 8px #f5b301,0 0 0 12px #8a5a00,0 14px 40px rgba(0,0,0,.5);}
+  .sw-wheel canvas{width:100%;height:100%;display:block;border-radius:50%}
+  .sw-pin{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-top:34px solid #e11d48;filter:drop-shadow(0 3px 3px rgba(0,0,0,.5));z-index:3}
+  .sw-hub{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#ffd54a 55%,#c98a00);border:4px solid #8a5a00;font:800 13px var(--font-display,sans-serif);color:#5a3a00;cursor:pointer;z-index:3;box-shadow:0 4px 12px rgba(0,0,0,.45)}
+  .sw-hub:disabled{opacity:.7;cursor:not-allowed}
+  .sw-list li{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--border-soft);font-size:14px}
+  .sw-modal{position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:16px}
+</style>
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Lucky Spin</span></div>
+    <h1 class="page-title">🎡 Lucky Spin Wheel</h1>
+  </section>
+  <section class="section container" style="padding-top:10px;max-width:640px;text-align:center;">
+    <div class="sw-wrap">
+      <div class="sw-pin"></div>
+      <div class="sw-wheel" id="sw-wheel"><canvas id="sw-canvas" width="840" height="840"></canvas></div>
+      <button class="sw-hub" id="sw-spin" type="button">SPIN</button>
+    </div>
+    <p id="sw-note" class="text-dim" style="font-size:13px;margin:0 0 18px;">One free spin per day.</p>
+    <div class="card" style="padding:18px;text-align:left;">
+      <h3 style="margin:0 0 6px;font-family:var(--font-display);">Prize list</h3>
+      <ul class="sw-list" style="list-style:none;margin:0;padding:0;">
+        <li><span>🥇 1st Prize</span><b>₹10,000 cashback</b></li>
+        <li><span>🥈 2nd Prize</span><b>₹5,000 cashback</b></li>
+        <li><span>🥉 3rd Prize</span><b>₹3,000 cashback</b></li>
+        <li><span>🎁 4th · Consolation</span><b>₹1,000 cashback</b></li>
+        <li><span>📱 Bumper</span><b>iPhone 18 Pro Max · Samsung S26 Ultra</b></li>
+        <li><span>🎧 Gifts</span><b>Airbuds · Headphones</b></li>
+        <li style="border:0"><span>🙂 No prize</span><b>Better luck next time</b></li>
+      </ul>
+      <p class="text-faint" style="font-size:11.5px;margin:10px 0 0;">Bumper and top cashback prizes are special-draw prizes announced by the shop. Terms apply.</p>
+    </div>
+  </section>
+</main>
+<div class="sw-modal" id="sw-modal"><div style="max-width:380px;width:100%;background:var(--surface,#111);color:var(--text,#fff);border:1px solid var(--border,#333);border-radius:16px;padding:24px;text-align:center">
+  <div id="sw-ic" style="font-size:46px"></div><h3 id="sw-title" style="margin:8px 0 6px;font-family:var(--font-display)"></h3><p id="sw-msg" class="text-dim" style="font-size:14px;margin:0 0 16px"></p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a id="sw-claim" class="btn btn-primary" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Claim on WhatsApp</a><button class="btn btn-outline" id="sw-close" type="button">Close</button></div></div></div>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="../js/vendor/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/webp-manifest.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+<script defer src="../js/smd-v29.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  /* ===== CONFIG: change "weight" to control what the wheel can land on (0 = never lands) ===== */
+  var PRIZES=[
+    {label:'₹10,000',sub:'Cashback',img:'cashback.png',color:'#e11d48',weight:0},
+    {label:'iPhone 18',sub:'Pro Max',img:'iphone.jpg',color:'#2563eb',weight:0},
+    {label:'₹5,000',sub:'Cashback',img:'cashback.png',color:'#f59e0b',weight:0},
+    {label:'Galaxy S26',sub:'Ultra',img:'galaxy-s26-ultra.jpg',color:'#7c3aed',weight:0},
+    {label:'₹3,000',sub:'Cashback',img:'cashback.png',color:'#16a34a',weight:0},
+    {label:'Airbuds',sub:'Free gift',img:'airbuds.jpg',color:'#0ea5e9',weight:50},
+    {label:'Headphones',sub:'Free gift',img:'headphones.jpg',color:'#ec4899',weight:50},
+    {label:'Better luck',sub:'next time',img:'better-luck.png',color:'#475569',weight:50,lose:true}
+  ];
+  var N=PRIZES.length, SEG=360/N, rot=0, busy=false, KEY='smd_spin_day';
+  var cv=document.getElementById('sw-canvas'), cx=cv.getContext('2d'), R=cv.width/2;
+  var IMG_DIR='../assets/images/spin/';
+  PRIZES.forEach(function(p){p.im=new Image();p.im.onload=draw;p.im.src=IMG_DIR+p.img;});
+  function draw(){
+    cx.clearRect(0,0,cv.width,cv.height);
+    PRIZES.forEach(function(p,i){
+      var a0=(i*SEG-90)*Math.PI/180, a1=((i+1)*SEG-90)*Math.PI/180;
+      cx.beginPath();cx.moveTo(R,R);cx.arc(R,R,R-4,a0,a1);cx.closePath();cx.fillStyle=p.color;cx.fill();cx.lineWidth=4;cx.strokeStyle='#fff';cx.stroke();
+      cx.save();cx.translate(R,R);cx.rotate((i*SEG+SEG/2)*Math.PI/180);cx.textAlign='center';cx.fillStyle='#fff';
+      /* round white badge + prize image (PNG/JPG from assets/images/spin) */
+      var ir=62, iy=-R*0.76;
+      cx.beginPath();cx.arc(0,iy,ir+6,0,Math.PI*2);cx.fillStyle='#fff';cx.fill();
+      if(p.im.complete&&p.im.naturalWidth){
+        cx.save();cx.beginPath();cx.arc(0,iy,ir,0,Math.PI*2);cx.clip();
+        if(p.lose){var k=Math.min(ir*2/p.im.naturalWidth,ir*2/p.im.naturalHeight)*0.98,w=p.im.naturalWidth*k,h=p.im.naturalHeight*k;cx.drawImage(p.im,-w/2,iy-h/2,w,h);}else cx.drawImage(p.im,-ir,iy-ir,ir*2,ir*2);
+        cx.restore();
+      }
+      cx.fillStyle='#fff';
+      cx.font='800 33px sans-serif';cx.fillText(p.label,0,-R*0.56);
+      cx.font='600 24px sans-serif';cx.fillText(p.sub,0,-R*0.47);cx.restore();
+    });
+  }
+  draw();
+  function today(){return new Date().toISOString().slice(0,10)}
+  function used(){try{return localStorage.getItem(KEY)===today()}catch(e){return false}}
+  function lock(){var b=document.getElementById('sw-spin');b.disabled=true;document.getElementById('sw-note').textContent='You have used today\'s spin. Come back tomorrow!';}
+  if(used())lock();
+  function pick(){var t=PRIZES.reduce(function(s,p){return s+p.weight},0),r=Math.random()*t;for(var i=0;i<N;i++){r-=PRIZES[i].weight;if(r<0)return i}return N-1}
+  document.getElementById('sw-spin').addEventListener('click',function(){
+    if(busy||used())return;busy=true;this.disabled=true;
+    var i=pick(), center=i*SEG+SEG/2, jitter=(Math.random()-.5)*SEG*.6;
+    rot+=360*6+((360-center+jitter)-(rot%360)+360)%360;
+    document.getElementById('sw-wheel').style.transform='rotate('+rot+'deg)';
+    setTimeout(function(){
+      try{localStorage.setItem(KEY,today())}catch(e){}
+      var p=PRIZES[i];lock();busy=false;
+      var claim=document.getElementById('sw-claim');
+      if(p.lose){
+        document.getElementById('sw-ic').innerHTML='<img src="'+IMG_DIR+p.img+'" alt="Game over - good luck next time" style="width:100%;max-width:300px;height:auto;display:block;margin:0 auto;background:#fff;border-radius:12px;padding:6px">';
+        document.getElementById('sw-title').textContent='Better luck next time!';
+        document.getElementById('sw-msg').textContent='No prize on this spin. Come back tomorrow for another free spin.';
+        claim.style.display='none';
+      }else{
+        claim.style.display='';
+        document.getElementById('sw-ic').innerHTML='<img src="'+IMG_DIR+p.img+'" alt="" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid #f5b301">';
+        document.getElementById('sw-title').textContent='You won '+p.label+' '+p.sub+'!';
+        document.getElementById('sw-msg').textContent='Tap below to claim your prize from SM Mobile Deals.';
+      }
+      var num=(typeof SITE_CONFIG!=='undefined'&&SITE_CONFIG.whatsappNumber)||'918760633334';
+      document.getElementById('sw-claim').href='https://wa.me/'+num+'?text='+encodeURIComponent('Hi SM Mobile Deals, I won "'+p.label+' '+p.sub+'" on the Lucky Spin Wheel ('+today()+'). Please confirm my prize.');
+      document.getElementById('sw-modal').style.display='flex';
+    },5400);
+  });
+  document.getElementById('sw-close').addEventListener('click',function(){document.getElementById('sw-modal').style.display='none'});
+  App.boot('shop');
+});
+</script>
+<script src="../js/fast-nav.js"></script>
+</body>
+</html>

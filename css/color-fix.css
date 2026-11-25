@@ -1,0 +1,287 @@
+/* Remove all black/purple shadow boxes and change purple to red (including Shop menu) */
+
+/* Override dark mode purple colors to red */
+:root, html[data-theme=dark] {
+    --accent: #3868d9 !important;
+    --accent-2: #2555c4 !important;
+    --accent-rgb: 56, 104, 217 !important;
+    --accent-soft: rgba(56, 104, 217, 0.3) !important;
+    --eyebrow: #adc1ef !important;
+    --accent-text: #adc1ef !important;
+    --deal: #3868d9 !important;
+    --deal-2: #5c84e0 !important;
+    --deal-rgb: 56, 104, 217 !important;
+    --deal-soft: rgba(56, 104, 217, 0.28) !important;
+    --word-grad: linear-gradient(90deg, #adc1ef, #5c84e0) !important;
+}
+
+/* Override light mode purple colors to red */
+html[data-theme=light] {
+    --accent: #3868d9 !important;
+    --accent-2: #2555c4 !important;
+    --accent-rgb: 56, 104, 217 !important;
+    --accent-soft: rgba(56, 104, 217, 0.2) !important;
+    --eyebrow: #214aac !important;
+    --accent-text: #2555c4 !important;
+    --deal: #3868d9 !important;
+    --deal-2: #5c84e0 !important;
+    --deal-rgb: 56, 104, 217 !important;
+    --deal-soft: rgba(56, 104, 217, 0.2) !important;
+    --word-grad: linear-gradient(90deg, #2555c4, #5c84e0) !important;
+}
+
+/* Remove ALL box shadows and backdrop filters globally */
+.hero-badge-float,
+.hero .hero-badge-float,
+.product-card,
+.card,
+.review-card,
+.charge-card,
+.faq-item,
+.modal,
+.mobile-drawer .panel,
+.btn-primary,
+.btn-deal,
+.btn,
+.icon-btn,
+.theme-toggle,
+.badge,
+.chip,
+#cursor-glow,
+.glow-orb,
+.hero-visual .glow-orb {
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Remove text shadows */
+h1, h2, h3, h4, h5, h6,
+.page-title,
+.section-title,
+.eyebrow,
+.hero-eyebrow,
+.breadcrumb,
+.breadcrumb *,
+.hero p.lead,
+.hero-quote,
+.hero-stats .stat b,
+.hero-stats .stat span,
+.page-head p,
+main > .container > p,
+.section > .container > .text-dim,
+.section-head .text-dim,
+.faq-q,
+.site-footer li,
+.site-footer p,
+.site-footer h4,
+.site-footer h5,
+.site-footer a:not(.btn),
+.footer-bottom,
+.footer-bottom * {
+    text-shadow: none !important;
+}
+
+/* Remove glow effects */
+#cursor-glow,
+.hero-visual .glow-orb {
+    display: none !important;
+}
+
+/* Shop Now button - RED */
+.btn-primary,
+.hero-cta .btn-primary {
+    background: linear-gradient(135deg, #3868d9, #5c84e0) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2555c4, #3868d9) !important;
+    box-shadow: none !important;
+}
+
+/* Other buttons - RED outlines */
+.btn-deal,
+.btn-outline {
+    background: transparent !important;
+    border: 2px solid #3868d9 !important;
+    color: #3868d9 !important;
+    box-shadow: none !important;
+}
+
+.btn-deal:hover,
+.btn-outline:hover {
+    background: linear-gradient(135deg, #3868d9, #5c84e0) !important;
+    border-color: transparent !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+/* Shop menu link - RED */
+nav.main-nav a[href*="shop"],
+.main-nav a[href*="shop.html"] {
+    color: #6f92e3 !important;
+}
+
+nav.main-nav a[href*="shop"]:hover,
+.main-nav a[href*="shop.html"]:hover,
+nav.main-nav a[href*="shop"].active,
+.main-nav a[href*="shop.html"].active {
+    background: rgba(111, 146, 227, 0.2) !important;
+    color: #6f92e3 !important;
+}
+
+/* All badges and accent colors - RED */
+.badge-accent,
+.badge-deal {
+    background: rgba(56, 104, 217, 0.2) !important;
+    color: #3868d9 !important;
+    box-shadow: none !important;
+}
+
+.text-accent,
+a.text-accent,
+.cc-charger,
+.rc-avatar,
+.why-track-cta,
+.chip:hover,
+.chip.active,
+.cc-watts,
+.site-footer a[href^=mailto] {
+    color: #adc1ef !important;
+}
+
+html[data-theme=light] .text-accent,
+html[data-theme=light] a.text-accent {
+    color: #2555c4 !important;
+}
+
+/* Icon colors - RED */
+.why-icon,
+.ct-icon,
+.cc-watts i,
+.rc-avatar,
+.hero-badge-float i.fa-bolt {
+    color: #adc1ef !important;
+}
+
+html[data-theme=light] .why-icon,
+html[data-theme=light] .ct-icon {
+    color: #2555c4 !important;
+}
+
+/* Remove icon button shadows */
+.icon-btn,
+.theme-toggle {
+    box-shadow: none !important;
+}
+
+.icon-btn .count {
+    background: #3868d9 !important;
+    box-shadow: none !important;
+}
+
+/* Accent word gradient - RED */
+.hero h1 .accent-word {
+    background: linear-gradient(90deg, #adc1ef, #5c84e0) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+html[data-theme=light] .hero h1 .accent-word {
+    background: linear-gradient(90deg, #2555c4, #5c84e0) !important;
+}
+
+/* Remove selection purple background */
+::selection {
+    background: #3868d9 !important;
+    color: #fff !important;
+}
+
+/* Footer icons - RED */
+.site-footer li i,
+.site-footer .payment-icons i {
+    color: #adc1ef !important;
+}
+
+html[data-theme=light] .site-footer li i,
+html[data-theme=light] .site-footer .payment-icons i {
+    color: #2555c4 !important;
+}
+
+/* Admin panel accents - RED */
+.admin-nav button i {
+    color: #adc1ef !important;
+}
+
+.admin-nav button:hover {
+    background: rgba(56, 104, 217, 0.2) !important;
+}
+
+.admin-nav button.active {
+    background: linear-gradient(135deg, #3868d9, #5c84e0) !important;
+    color: #fff !important;
+}
+
+/* Remove any remaining purple inline styles */
+button[style*="#6f92e3"],
+button[style*="rgb(111,146,227)"],
+button[style*="#4c77dd"],
+button[style*="#7395e4"],
+button[style*="#3768d9"],
+button[style*="#2656c5"],
+div[style*="#6f92e3"],
+div[style*="rgb(111,146,227)"],
+div[style*="#4c77dd"],
+div[style*="#7395e4"],
+div[style*="#3768d9"],
+div[style*="#2656c5"] {
+    background: #3868d9 !important;
+    color: #fff !important;
+}
+
+/* Shop menu also RED */
+nav.main-nav a[href*="shop"] button,
+.main-nav a[href*="shop.html"] button,
+nav.main-nav a[href*="shop"] *,
+.main-nav a[href*="shop.html"] * {
+    color: #6f92e3 !important;
+    background: transparent !important;
+}
+
+
+/* ===== REMOVE BLACK SHADOW BOXES (hero + home sections) ===== */
+.hero::before,
+html[data-theme=dark] .hero::before,
+html[data-theme=light] .hero::before {
+    background: none !important;
+    display: none !important;
+}
+html[data-theme=dark] main .section:not(.hero),
+html[data-theme=dark] body:has(.hero) .section:not(.hero),
+html[data-theme=light] main .section:not(.hero),
+html[data-theme=light] body:has(.hero) .section:not(.hero) {
+    background: transparent !important;
+    box-shadow: none !important;
+}
+/* light veil on home page background instead of heavy dark one */
+html body:has(.hero) {
+    --veil: linear-gradient(180deg, rgba(0,0,0,.14), rgba(0,0,0,.14)) !important;
+}
+/* phone: no drop shadow / floor shadow / purple haze */
+.hero-visual img { filter: none !important; }
+.hero-visual::after, .hero-visual:after { display: none !important; }
+.hero-visual .glow-orb, .hero-visual .glow-orb::after, .glow-orb { display: none !important; background: none !important; }
+
+/* ===== CHATBOT BUTTON + ANY LEFTOVER PURPLE -> RED ===== */
+.chat-fab, .chatbot-fab, #chat-fab, #chatbot-toggle, .cb-fab, .chat-toggle, [class*="chat"][class*="fab"], [class*="chatbot"][class*="toggle"] {
+    background: linear-gradient(135deg, #3868d9, #5c84e0) !important;
+    box-shadow: none !important;
+}
+.hero h1 .accent-word { background: linear-gradient(90deg, #5c84e0, #3868d9) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; }
+
+/* AI chat button -> RED */
+.ai-fab, .ai-fab:hover { background: linear-gradient(135deg, #3868d9, #5c84e0) !important; box-shadow: none !important; }

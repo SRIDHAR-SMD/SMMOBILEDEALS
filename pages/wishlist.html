@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}try{if(sessionStorage.getItem('smd_splash'))document.documentElement.classList.add('no-splash');}catch(e){}setTimeout(function(){var e=document.getElementById('page-loader');if(e){e.classList.add('hide');setTimeout(function(){e.remove()},400)}},1800);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wishlist — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/color-fix.css"><link rel="stylesheet" href="../css/final-fix.css">
+<link rel="stylesheet" href="../css/ultrawide.css">
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Wishlist</span></div>
+    <h1 class="page-title">Your Wishlist</h1>
+  </section>
+  <section class="section container" style="padding-top:10px;">
+    <div id="wish-empty" class="empty-state" style="display:none;">
+      <i class="fa-solid fa-heart-crack"></i><h3>Your wishlist is empty</h3><p>Save products you love for later.</p>
+      <a href="products.html" class="btn btn-primary" style="margin-top:14px;">Browse Products</a>
+    </div>
+    <div class="grid grid-products" id="wish-grid"></div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="../js/vendor/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/webp-manifest.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+<script defer src="../js/smd-v29.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+function render(){
+    const items = Wishlist.detailed();
+    document.getElementById('wish-empty').style.display = items.length ? 'none' : 'block';
+    document.getElementById('wish-grid').innerHTML = items.map(UI.productCardHTML).join('');
+    Loader.initReveal();
+  }
+  document.addEventListener('wishlist:change', render);
+  App.boot('shop').then(render);
+});
+</script>
+<script src="../js/fast-nav.js"></script>
+</body>
+</html>
