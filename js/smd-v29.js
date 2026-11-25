@@ -33,12 +33,15 @@
     '.smd-ov{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(5,8,16,.78);backdrop-filter:blur(6px)}' +
     '.smd-ov.solid{background:var(--bg,#090909);backdrop-filter:none}' +
     '.smd-box{width:100%;max-width:420px;background:var(--surface,#16203a);color:var(--text,#f4f6fb);border:1px solid var(--border-soft,rgba(255,255,255,.18));border-radius:18px;padding:26px 22px;box-shadow:0 24px 60px rgba(0,0,0,.5);text-align:center;font-family:inherit}' +
-    '.smd-box h3{margin:10px 0 8px;font-size:20px;color:var(--heading,#fff)}' +
-    '.smd-box p{margin:0 0 14px;font-size:14px;line-height:1.55;color:var(--text-dim,#d5dbec)}' +
+    '.smd-box{background:#111a2e !important;color:#f4f6fb !important;text-shadow:none !important}' +
+    '.smd-box h3{margin:10px 0 8px;font-size:20px;color:#ffffff !important;text-shadow:none !important}' +
+    '.smd-box p,.smd-box small,.smd-box b,.smd-box span,.smd-box label{color:#dbe3f5 !important;text-shadow:none !important}' +
+    '.smd-box p{margin:0 0 14px;font-size:14px;line-height:1.55}' +
     '.smd-box img.smd-av{width:64px;height:64px;object-fit:contain;border-radius:0}' +
     '.smd-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 22px;border-radius:12px;border:0;background:var(--accent,#4c77dd);color:#fff;font-weight:700;font-size:15px;cursor:pointer}' +
-    '.smd-btn.ghost{background:transparent;border:1px solid var(--border-soft,rgba(255,255,255,.25));color:var(--text,#fff)}' +
-    '.smd-in{width:100%;box-sizing:border-box;min-height:46px;margin:6px 0 10px;border-radius:12px;border:1px solid var(--border-soft,rgba(255,255,255,.25));background:var(--surface-2,#1d2a4a);color:var(--text,#fff);font-size:22px;letter-spacing:8px;text-align:center}' +
+    '.smd-btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff !important}' +
+    '.smd-btn{color:#fff !important}' +
+    '.smd-in{width:100%;box-sizing:border-box;min-height:46px;margin:6px 0 10px;border-radius:12px;border:1px solid var(--border-soft,rgba(255,255,255,.25));background:#1d2a4a !important;color:#fff !important;font-size:22px;letter-spacing:8px;text-align:center}' +
     '.smd-err{min-height:18px;margin-bottom:8px;font-size:13px;color:#ff7a7a}' +
     '.smd-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}' +
     '#smd-logout-btn{cursor:pointer}' +
@@ -232,16 +235,23 @@
 
   /* ---------- 5. admin phone SMS-OTP gate ---------- */
   async function smsCall(body) {
-    var s = await supabaseClient.auth.getSession();
+    // FIX: never hang on "Checking..." — every step is time-capped (slow network = skip, never block the admin)
+    var s = await Promise.race([supabaseClient.auth.getSession(), new Promise(function (r) { setTimeout(r, 2500, null); })]);
     var tok = s && s.data && s.data.session && s.data.session.access_token;
     if (!tok) return { ok: false, error: 'no_session', __status: 401 };
-    var res = await fetch(SUPABASE_URL + '/functions/v1/sms-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok, 'apikey': SUPABASE_ANON_KEY },
-      body: JSON.stringify(body)
-    });
-    var j = {}; try { j = await res.json(); } catch (e) {}
-    j.__status = res.status; return j;
+    var ctl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var tmo = setTimeout(function () { try { ctl && ctl.abort(); } catch (e) {} }, 4000);
+    try {
+      var res = await fetch(SUPABASE_URL + '/functions/v1/sms-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok, 'apikey': SUPABASE_ANON_KEY },
+        body: JSON.stringify(body),
+        signal: ctl ? ctl.signal : undefined
+      });
+      var j = {}; try { j = await res.json(); } catch (e) {}
+      j.__status = res.status; return j;
+    } catch (e) { return { ok: false, error: 'timeout', __status: 0 }; }
+    finally { clearTimeout(tmo); }
   }
 
   var gateBusy = false;
