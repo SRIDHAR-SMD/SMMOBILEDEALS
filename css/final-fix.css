@@ -1217,3 +1217,37 @@ html[data-theme] body.page-admin .modal .btn-primary { background-image: linear-
 html[data-theme] body.page-admin .modal .modal-close { background: #f1f5f9 !important; border: 1px solid rgba(15,23,42,.2) !important; }
 html[data-theme] body.page-admin .modal [style*="background:var(--surface"], html[data-theme] body.page-admin .modal [style*="background:var(--bg"] { background: #f8fafc !important; }
 html[data-theme] body.page-admin .modal .text-dim, html[data-theme] body.page-admin .modal .text-faint, html[data-theme] body.page-admin .modal small { color: #475569 !important; }
+
+/* =====================================================================
+   ADMIN PANEL — readable buttons & preview window (both themes)
+   The admin edit/new-product modal and the live-preview window are always
+   WHITE, but buttons used the theme text colour (white in dark theme) so
+   Save / Preview / Mobile / Dark / Product page looked empty.
+   ===================================================================== */
+html[data-theme] body.page-admin .modal :is(.btn, .btn-primary, .btn-outline, .btn-ghost, .btn-deal):not(:hover):not(:active):not(:focus-visible),
+html[data-theme] body.page-admin .modal-overlay :is(.btn, .btn-primary, .btn-outline, .btn-ghost, .btn-deal):not(:hover):not(:active):not(:focus-visible) {
+  color: #1d4ed8 !important; border-color: #1d4ed8 !important; background: #ffffff !important; text-shadow: none !important;
+}
+html[data-theme] body.page-admin .modal :is(.btn, .btn-primary, .btn-outline, .btn-ghost, .btn-deal) :is(i, svg, span),
+html[data-theme] body.page-admin .modal-overlay :is(.btn, .btn-primary, .btn-outline, .btn-ghost, .btn-deal) :is(i, svg, span) { color: inherit !important; }
+html[data-theme] body.page-admin .modal :is(.btn, .btn-primary, .btn-outline, .btn-ghost, .btn-deal):is(:hover, :active, :focus-visible),
+html[data-theme] body.page-admin .modal-overlay :is(.btn, .btn-primary, .btn-outline, .btn-ghost, .btn-deal):is(:hover, :active, :focus-visible) {
+  color: #ffffff !important; background: #1d4ed8 !important; border-color: #1d4ed8 !important;
+}
+html[data-theme] body.page-admin .modal :is(.btn, .btn-primary, .btn-outline, .btn-ghost, .btn-deal):is(:hover, :active, :focus-visible) :is(i, svg, span) { color: #ffffff !important; }
+
+/* Preview window (Desktop / Mobile / Dark / Light / tabs) */
+html[data-theme] #ap-overlay .ap-box { background: #ffffff !important; color: #0b1220 !important; border-color: #cbd5e1 !important; }
+html[data-theme] #ap-overlay .ap-head b, html[data-theme] #ap-overlay .ap-foot { color: #0b1220 !important; text-shadow: none !important; }
+html[data-theme] #ap-overlay .ap-seg { border-color: #94a3b8 !important; background: #ffffff !important; }
+html[data-theme] #ap-overlay .ap-seg button, html[data-theme] #ap-overlay .ap-tabs button {
+  background: #ffffff !important; color: #0b1220 !important; border-color: #94a3b8 !important; text-shadow: none !important; opacity: 1 !important; box-shadow: none !important; transform: none !important;
+}
+html[data-theme] #ap-overlay .ap-seg button.on, html[data-theme] #ap-overlay .ap-tabs button.on {
+  background: #1d4ed8 !important; background-image: none !important; color: #ffffff !important; border-color: #1d4ed8 !important;
+}
+html[data-theme] #ap-overlay .ap-x { color: #0b1220 !important; background: transparent !important; border: 0 !important; box-shadow: none !important; }
+html[data-theme] #ap-overlay .ap-stage { background: #e2e8f0 !important; }
+
+/* Inline "Preview product" button inside the product form */
+html[data-theme] body.page-admin .modal .ap-btn:not(:hover) { color: #1d4ed8 !important; background: #ffffff !important; }
