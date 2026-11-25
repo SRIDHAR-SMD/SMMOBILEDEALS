@@ -1334,3 +1334,19 @@ html body::before {
   background-repeat: no-repeat, no-repeat;
 }
 footer.site-footer { margin-bottom: 0 !important; }
+
+/* ===== CHATBOT BUTTON: never flash on the LEFT while loading =====
+   The chatbot button is created first (page body) and moved into the bottom-right
+   dock a moment later (js/dock.js). Until then it used the old left position, so on
+   refresh it blinked on the left and then jumped right. Now it starts bottom-right. */
+body > .ai-fab {
+  position: fixed !important;
+  left: auto !important; top: auto !important;
+  right: 18px !important; bottom: 18px !important;
+  width: 58px !important; height: 58px !important;
+}
+@media (max-width: 640px) {
+  body > .ai-fab { right: 12px !important; bottom: 12px !important; width: 52px !important; height: 52px !important; }
+}
+/* GPS button + location badge are created on the left first, then moved into the dock: keep them invisible until docked */
+body > #gps-toggle, body > .gps-fab, body > #geo-badge { visibility: hidden !important; }
