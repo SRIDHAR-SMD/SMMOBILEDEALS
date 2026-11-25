@@ -350,7 +350,7 @@ input, select, textarea, button { accent-color: var(--logo-blue); }
 #qr-lightbox img { width: min(380px, 88vw) !important; max-height: 82vh !important; padding: 0 !important; }
 
 /* ===== QUICK FIX: footer colour overflow + icons ===== */
-html, body { overflow-x: hidden; max-width: 100%; background-color: #000; }
+html, body { overflow-x: hidden; max-width: 100%; }
 footer.site-footer { overflow: hidden !important; width: 100% !important; max-width: 100vw; margin-bottom: 0 !important; padding-bottom: 0 !important; background: transparent !important; box-shadow: none !important; }
 footer.site-footer::before, footer.site-footer::after { inset: 0 !important; width: auto !important; max-width: 100% !important; }
 footer.site-footer *, footer.site-footer *::before, footer.site-footer *::after { box-shadow: none; }
@@ -1306,3 +1306,31 @@ body.page-admin .breadcrumb a,html[data-theme] body.page-admin .breadcrumb a{col
 html[data-theme] body .hero .hero-quote,html[data-theme] body .hero .hero-eyebrow,html[data-theme] body main .hero-quote,html[data-theme] body main .hero-eyebrow,html[data-theme] body .hero p.lead{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 1px 5px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.6)!important}
 html[data-theme] body .section-head .eyebrow,html[data-theme] body p.eyebrow{text-shadow:0 1px 4px rgba(0,0,0,.8)!important}
 html[data-theme] body a.text-accent,html[data-theme] body span.text-faint{text-shadow:0 1px 3px rgba(0,0,0,.75)}
+
+
+/* ===== FOOTER / PAGE BOTTOM BLACK FIX (v2) =====
+   Cause: the background photo was painted on <body> only, and html had a solid
+   black colour. When page content is shorter than the screen (or on mobile where
+   background-attachment:fixed is unreliable) the area under the footer showed
+   html's black. Now the photo lives on a fixed layer that always covers the whole
+   viewport, and html/body are transparent. */
+html { background: #1c2434 !important; background-image: none !important; min-height: 100%; }
+html body, html[data-theme=light] body, html[data-theme=dark] body {
+  background: transparent !important;
+  background-image: none !important;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+html body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: #1c2434;
+  background-image: var(--veil), var(--site-bg-url);
+  background-size: cover, cover;
+  background-position: center center, center center;
+  background-repeat: no-repeat, no-repeat;
+}
+footer.site-footer { margin-bottom: 0 !important; }
