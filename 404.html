@@ -19,7 +19,7 @@ a.p{background:linear-gradient(90deg,#3868d9,#5c84e0);border:0;color:#fff}
 <svg viewBox="0 0 64 64" width="96" height="96" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3868d9"/><stop offset="1" stop-color="#5c84e0"/></linearGradient></defs><circle cx="32" cy="32" r="31" fill="#1a1030"/><circle cx="32" cy="32" r="24" fill="none" stroke="url(#gg)" stroke-width="3" stroke-dasharray="4 3"/><path d="M32 5v9M32 50v9M5 32h9M50 32h9" stroke="url(#gg)" stroke-width="3.5" stroke-linecap="round"/><path d="M32 17.5c-6.3 0-11.2 4.9-11.2 11 0 8.2 11.2 18.6 11.2 18.6s11.2-10.4 11.2-18.6c0-6.1-4.9-11-11.2-11z" fill="url(#gg)"/><circle cx="32" cy="28.6" r="4.3" fill="#fff"/><path d="M8 8l48 48" stroke="#5c84e0" stroke-width="5" stroke-linecap="round"/></svg>
 <h1 style="margin-top:10px">404 — Location (GPS) is OFF</h1>
 <p class="s" id="gps-msg">SM Mobile Deals work aaga GPS / Location ON-la irukkanum. GPS ON pannunga, website thirumba open aagum.</p>
-<div class="row"><button class="b p" id="gps-on" style="background:linear-gradient(90deg,#3868d9,#5c84e0);border:0;color:#fff">📍 Turn GPS ON</button><a class="b" id="gps-home" href="index.html">🏠 Home</a></div>
+<div class="row"><button class="b p" id="gps-on" style="background:linear-gradient(90deg,#3868d9,#5c84e0);border:0;color:#fff">📍 Turn GPS ON</button><a class="b" id="gps-home" href="/index.html">🏠 Home</a></div>
 <div id="gps-help" style="font-size:12px;opacity:.65;margin-top:14px;line-height:1.6"></div>
 </main>
 <main class="card" id="normal-card">
@@ -29,7 +29,7 @@ a.p{background:linear-gradient(90deg,#3868d9,#5c84e0);border:0;color:#fff}
 <div id="op-msg"></div>
 <div class="row"><a class="b p" href="/index.html">🏠 Home</a><a class="b" href="/pages/products.html">🛍️ Shop</a><button class="b" id="op-retry">↻ Retry</button></div>
 </main>
-<script src="/js/config.js"></script><script>if(!new URLSearchParams(location.search).get("gps")){var sc=document.createElement("script");sc.src="/js/offline-player.js";document.body.appendChild(sc);}</script>
+<script src="/js/config.js"></script><script src="/js/supabase-client.js"></script><script src="/js/site-overrides.js"></script><script>if(!new URLSearchParams(location.search).get("gps")){var sc=document.createElement("script");sc.src="/js/offline-player.js";document.body.appendChild(sc);}</script>
 <script>
 (function(){
   var q=new URLSearchParams(location.search), why=q.get('gps'); if(!why) return;
@@ -49,5 +49,5 @@ a.p{background:linear-gradient(90deg,#3868d9,#5c84e0);border:0;color:#fff}
   });
 })();
 </script>
-<script src="js/fast-nav.js"></script>
+<script src="/js/fast-nav.js"></script>
 </body></html>

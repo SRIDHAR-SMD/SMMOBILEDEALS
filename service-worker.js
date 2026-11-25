@@ -3,7 +3,7 @@
    Bump CACHE_NAME whenever assets change so old caches get cleaned up.
    ========================================================================== */
 
-const CACHE_NAME = 'smd-cache-v69';
+const CACHE_NAME = 'smd-cache-v72';
 
 // Heavy / rarely-needed files (catalog-seed.js, chatbot.js, admin.js, ...) are NOT precached — they load on demand.
 const APP_SHELL = [
@@ -39,7 +39,9 @@ const APP_SHELL = [
   '/js/app.js',
   '/js/dock.js',
   '/js/scroll-guard.js',
-  '/js/smd-v29.js'
+  '/js/smd-v29.js',
+  '/js/pwa-install.js',
+  '/js/site-overrides.js'
 ];
 
 self.addEventListener('install', (event) => {
