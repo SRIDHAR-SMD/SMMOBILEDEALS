@@ -87,25 +87,28 @@
     var s = document.createElement('style'); s.id = 'smd-install-css';
     s.textContent =
       '#smd-install-card{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:2147483000;max-width:440px;margin:0 auto;' +
-      'background:#fff;color:#0b1220;border:1px solid #e3e8f0;border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.28);padding:16px;display:flex;gap:14px;align-items:flex-start;' +
+      'background:#fff !important;color:#0b1220 !important;border:1px solid #e3e8f0;border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.28);padding:16px;display:flex;gap:14px;align-items:flex-start;' +
       'font-family:Inter,"Plus Jakarta Sans",system-ui,sans-serif;animation:smdIn .35s ease}' +
-      '#smd-install-card.admin{background:#0c111c;color:#fff;border-color:#2a3550}' +
+      '#smd-install-card.admin{background:#0c111c !important;color:#fff !important;border-color:#2a3550}' +
       '#smd-install-card img{width:52px;height:52px;border-radius:12px;flex:none}' +
-      '#smd-install-card h4{margin:0 0 3px;font-size:15px;font-weight:700}' +
+      '#smd-install-card h4{margin:0 0 3px;font-size:15px;font-weight:700;color:#0b1220 !important}' +
+      '#smd-install-card p,#smd-install-card li,#smd-install-card b{color:#0b1220 !important;opacity:1}' +
+      '#smd-install-card.admin h4,#smd-install-card.admin p,#smd-install-card.admin li,#smd-install-card.admin b{color:#fff !important}' +
       '#smd-install-card p{margin:0 0 10px;font-size:12.5px;line-height:1.45;opacity:.8}' +
       '#smd-install-card ol{margin:0 0 10px 18px;padding:0;font-size:12.5px;line-height:1.55}' +
       '#smd-install-card .row{display:flex;gap:8px;flex-wrap:wrap}' +
       '#smd-install-card button{border:0;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation}' +
-      '#smd-install-card .go{background:#1d6bff;color:#fff}' +
-      '#smd-install-card.admin .go{background:#f59e0b;color:#0c111c}' +
-      '#smd-install-card .no{background:transparent;color:inherit;opacity:.7}' +
-      '#smd-install-card .x{position:absolute;top:6px;right:8px;background:none;color:inherit;opacity:.55;font-size:16px;padding:4px 8px}' +
+      '#smd-install-card .go{background:#1d6bff !important;color:#fff !important;border:0 !important;opacity:1 !important}' +
+      '#smd-install-card.admin .go{background:#f59e0b !important;color:#0c111c !important}' +
+      '#smd-install-card .no{background:transparent !important;color:#0b1220 !important;opacity:.75}' +
+      '#smd-install-card.admin .no{color:#fff !important}' +
+      '#smd-install-card .x{position:absolute;top:6px;right:8px;background:none !important;color:#0b1220 !important;opacity:.55;font-size:16px;padding:4px 8px}' +
       '@keyframes smdIn{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}' +
       '#admin-install-app{color:#f59e0b !important}' +
-      '#smd-header-install{display:inline-flex;align-items:center;gap:6px;flex:none;height:42px;padding:0 14px;border-radius:999px;border:1px solid var(--border-soft,#cbd5e1);' +
-      'background:var(--surface-2,#fff);color:var(--text,#0b1220);font:700 13px/1 inherit;cursor:pointer;touch-action:manipulation;white-space:nowrap}' +
-      '#smd-header-install:hover{border-color:#1d6bff;color:#1d6bff}' +
-      '@media(max-width:560px){#smd-header-install span{display:none}#smd-header-install{padding:0;width:42px;justify-content:center}}';
+      '#smd-header-install{display:inline-flex;align-items:center;justify-content:center;flex:none;width:42px;height:42px;padding:0;border-radius:10px;border:1px solid var(--border-soft,#cbd5e1);' +
+      'background:#0b1220;cursor:pointer;touch-action:manipulation;overflow:hidden}' +
+      '#smd-header-install img{width:100%;height:100%;object-fit:cover;display:block;border-radius:9px}' +
+      '#smd-header-install:hover{border-color:#1d6bff;box-shadow:0 0 0 2px rgba(29,107,255,.35)}';
     document.head.appendChild(s);
   }
 
@@ -186,7 +189,7 @@
       var b = document.createElement('button');
       b.id = 'smd-header-install'; b.type = 'button'; b.setAttribute('data-install-app', '');
       b.setAttribute('aria-label', 'Install SM Mobile Deals app'); b.title = 'Install SM Mobile Deals app';
-      b.innerHTML = '<i class="fa-solid fa-download"></i><span>App</span>';
+      b.innerHTML = '<img alt="" src="' + ROOT + 'assets/icons/icon-192.png">';
       bar.insertAdjacentElement('afterend', b);
     }, 500);
   }
