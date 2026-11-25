@@ -92,23 +92,26 @@
       '#smd-install-card.admin{background:#0c111c !important;color:#fff !important;border-color:#2a3550}' +
       '#smd-install-card img{width:52px;height:52px;border-radius:12px;flex:none}' +
       '#smd-install-card h4{margin:0 0 3px;font-size:15px;font-weight:700;color:#0b1220 !important}' +
+      '#smd-install-card h4,#smd-install-card p,#smd-install-card li,#smd-install-card b,#smd-install-card button{font-family:Inter,"Plus Jakarta Sans",system-ui,sans-serif !important;text-shadow:none !important}' +
       '#smd-install-card p,#smd-install-card li,#smd-install-card b{color:#0b1220 !important;opacity:1}' +
       '#smd-install-card.admin h4,#smd-install-card.admin p,#smd-install-card.admin li,#smd-install-card.admin b{color:#fff !important}' +
       '#smd-install-card p{margin:0 0 10px;font-size:12.5px;line-height:1.45;opacity:.8}' +
       '#smd-install-card ol{margin:0 0 10px 18px;padding:0;font-size:12.5px;line-height:1.55}' +
-      '#smd-install-card .row{display:flex;gap:8px;flex-wrap:wrap}' +
+      '#smd-install-card .smd-row{display:flex;gap:8px;flex-wrap:wrap}' +
       '#smd-install-card button{border:0;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation}' +
-      '#smd-install-card .go{background:#1d6bff !important;color:#fff !important;border:0 !important;opacity:1 !important}' +
-      '#smd-install-card.admin .go{background:#f59e0b !important;color:#0c111c !important}' +
-      '#smd-install-card .no{background:transparent !important;color:#0b1220 !important;opacity:.75}' +
-      '#smd-install-card.admin .no{color:#fff !important}' +
-      '#smd-install-card .x{position:absolute;top:6px;right:8px;background:none !important;color:#0b1220 !important;opacity:.55;font-size:16px;padding:4px 8px}' +
+      '#smd-install-card .smd-go{background:#1d6bff !important;color:#fff !important;border:0 !important;opacity:1 !important}' +
+      '#smd-install-card.admin .smd-go{background:#f59e0b !important;color:#0c111c !important}' +
+      '#smd-install-card .smd-no{background:transparent !important;color:#0b1220 !important;opacity:.75}' +
+      '#smd-install-card.admin .smd-no{color:#fff !important}' +
+      '#smd-install-card .smd-x{position:absolute;top:6px;right:8px;background:none !important;color:#0b1220 !important;opacity:.55;font-size:16px;padding:4px 8px}' +
       '@keyframes smdIn{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}' +
       '#admin-install-app{color:#f59e0b !important}' +
-      '#smd-header-install{display:inline-flex;align-items:center;justify-content:center;flex:none;width:42px;height:42px;padding:0;border-radius:10px;border:1px solid var(--border-soft,#cbd5e1);' +
-      'background:#0b1220;cursor:pointer;touch-action:manipulation;overflow:hidden}' +
-      '#smd-header-install img{width:100%;height:100%;object-fit:cover;display:block;border-radius:9px}' +
-      '#smd-header-install:hover{border-color:#1d6bff;box-shadow:0 0 0 2px rgba(29,107,255,.35)}';
+      '#smd-header-install{display:inline-flex;align-items:center;gap:8px;flex:none;height:42px;padding:0 14px 0 4px;border-radius:12px;border:1px solid var(--border-soft,#cbd5e1);' +
+      'background:var(--surface-2,rgba(255,255,255,.08));color:var(--text,#fff);font:700 13px/1 Inter,system-ui,sans-serif;cursor:pointer;touch-action:manipulation;white-space:nowrap}' +
+      '#smd-header-install img{width:34px;height:34px;border-radius:8px;background:#0b1220;object-fit:cover;display:block;flex:none}' +
+      '#smd-header-install span{color:inherit}' +
+      '#smd-header-install:hover{border-color:#1d6bff;color:#1d6bff}' +
+      '@media(max-width:560px){#smd-header-install span{display:none}#smd-header-install{padding:0;width:42px;justify-content:center;gap:0}#smd-header-install img{width:100%;height:100%;border-radius:11px}}';
     document.head.appendChild(s);
   }
 
@@ -142,14 +145,14 @@
     var c = document.createElement('div');
     c.id = 'smd-install-card'; c.className = admin ? 'admin' : '';
     c.setAttribute('role', 'dialog'); c.setAttribute('aria-label', 'Install app');
-    c.innerHTML = '<button class="x" aria-label="Close">&times;</button><img alt="" src="' + icon + '">' +
-      '<div><h4>' + title + '</h4>' + body + '<div class="row">' +
-      (deferred ? '<button class="go">Install</button>' : '') +
-      '<button class="no">' + ((manual || unsupported) ? 'Got it' : 'Not now') + '</button></div></div>';
+    c.innerHTML = '<button class="smd-x" aria-label="Close">&times;</button><img alt="" src="' + icon + '">' +
+      '<div><h4>' + title + '</h4>' + body + '<div class="smd-row">' +
+      (deferred ? '<button class="smd-go">Install</button>' : '') +
+      '<button class="smd-no">' + ((manual || unsupported) ? 'Got it' : 'Not now') + '</button></div></div>';
     document.body.appendChild(c);
 
-    c.querySelector('.x').onclick = c.querySelector('.no').onclick = function () { snooze(); removeCard(); };
-    var go = c.querySelector('.go');
+    c.querySelector('.smd-x').onclick = c.querySelector('.smd-no').onclick = function () { snooze(); removeCard(); };
+    var go = c.querySelector('.smd-go');
     if (go) go.onclick = function () {
       if (!deferred) return;
       var ev = deferred; deferred = null; removeCard();
@@ -189,7 +192,7 @@
       var b = document.createElement('button');
       b.id = 'smd-header-install'; b.type = 'button'; b.setAttribute('data-install-app', '');
       b.setAttribute('aria-label', 'Install SM Mobile Deals app'); b.title = 'Install SM Mobile Deals app';
-      b.innerHTML = '<img alt="" src="' + ROOT + 'assets/icons/icon-192.png">';
+      b.innerHTML = '<img alt="" src="' + ROOT + 'assets/icons/icon-192.png"><span>App</span>';
       bar.insertAdjacentElement('afterend', b);
     }, 500);
   }
