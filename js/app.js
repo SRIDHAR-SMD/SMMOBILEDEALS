@@ -233,3 +233,14 @@ const App = (() => {
     s.defer = true; document.head.appendChild(s);
   }catch(e){}
 })();
+
+
+/* Customer extras: Desktop-view option + Logout-only menu for logged-in customers (js/customer-extras.js). */
+(function(){
+  try{
+    if (window.__smdCustomerExtras || document.querySelector('script[src*="customer-extras.js"]')) return;
+    var s = document.createElement('script');
+    s.src = (typeof ROOT_PREFIX !== 'undefined' ? ROOT_PREFIX : '') + 'js/customer-extras.js';
+    s.defer = true; document.head.appendChild(s);
+  }catch(e){}
+})();
