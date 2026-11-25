@@ -3,7 +3,7 @@
    Bump CACHE_NAME whenever assets change so old caches get cleaned up.
    ========================================================================== */
 
-const CACHE_NAME = 'smd-cache-v72';
+const CACHE_NAME = 'smd-cache-v73';
 
 // Heavy / rarely-needed files (catalog-seed.js, chatbot.js, admin.js, ...) are NOT precached — they load on demand.
 const APP_SHELL = [
