@@ -313,24 +313,8 @@
       .observe(document.body, { childList: true, subtree: true });
   }
 
-  /* ---------- 7. top-bar logo: swaps (fade) between the dark and light SM logo every 5 seconds ---------- */
-  function headerLogoCycle() {
-    var tries = 0;
-    function start() {
-      var img = document.querySelector('header .logo-img, .site-header .logo-img');
-      if (!img || typeof SITE_CONFIG === 'undefined' || !SITE_CONFIG.logo) { if (++tries < 30) setTimeout(start, 400); return; }
-      var list = [SITE_CONFIG.logo.dark, SITE_CONFIG.logo.light].filter(Boolean).map(function (u) { return u.replace(/\.png$/, '.webp'); });
-      if (list.length < 2) return;
-      img.style.transition = 'opacity .4s ease';
-      var i = 0;
-      setInterval(function () {
-        i = (i + 1) % list.length;
-        img.style.opacity = '0';
-        setTimeout(function () { img.src = root() + list[i]; img.style.opacity = '1'; }, 400);
-      }, 5000);
-    }
-    start();
-  }
+  /* ---------- 7. top-bar logo: no blinking / auto-swap any more (static, follows theme; APK always uses the dark logo — see ui.js) ---------- */
+  function headerLogoCycle() { /* removed */ }
 
   /* ---------- boot ---------- */
   function boot() {
