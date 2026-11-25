@@ -1,8 +1,8 @@
-# Tech Store AI — Intelligent E-Commerce Platform for Mobile and Laptop Accessories Shopping
+# Dealora: An AI-Powered, Secure and Location-Aware Full-Stack Commerce Platform
 ### Shop: SM Mobile Deals
 
 **Genuine mobiles, laptops, smart watches & accessories — Coimbatore.**
-Academic project: *Tech Store AI — Intelligent E-Commerce Platform for Mobile and Laptop Shopping* (Sridhar S, Sri Ramakrishna College of Arts & Science, 2026), built for **SM Mobiles**.
+Academic project: *Dealora: An AI-Powered, Secure and Location-Aware Full-Stack Commerce Platform* (Sridhar S, Sri Ramakrishna College of Arts & Science, 2026), built for **SM Mobiles**.
 
 A production-styled, fully working e-commerce front end: catalog, cart, wishlist, compare, checkout, UPI/QR payment with screenshot verification, order tracking, customer accounts, an admin dashboard, and a multilingual AI FAQ assistant. Runs as static HTML/CSS/JS — **no build step** — backed by **Supabase** (Postgres + Auth + Storage).
 
