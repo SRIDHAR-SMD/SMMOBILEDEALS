@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}try{if(sessionStorage.getItem('smd_splash'))document.documentElement.classList.add('no-splash');}catch(e){}setTimeout(function(){var e=document.getElementById('page-loader');if(e){e.classList.add('hide');setTimeout(function(){e.remove()},400)}},1800);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recharge Requests — Admin</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<link rel="stylesheet" href="../css/color-fix.css"><link rel="stylesheet" href="../css/final-fix.css">
+<link rel="stylesheet" href="../css/ultrawide.css">
+<style>
+/* phone performance: fixed background + blur made this page freeze */
+html body{background-attachment:scroll !important}
+html body .card, html body .site-header, html body header, html body .site-footer, html body .modal{-webkit-backdrop-filter:none !important;backdrop-filter:none !important}
+</style>
+<script>window.addEventListener('pageshow',function(e){if(e.persisted)location.reload()});</script>
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+
+<main>
+  <section class="page-hero container"><div class="breadcrumb"><a href="admin.html">Admin</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Recharge requests</span></div>
+    <h1 class="page-title">Recharge Requests</h1></section>
+  <section class="section container" style="padding-top:10px;max-width:860px;">
+    <div class="card" style="padding:18px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
+      <div><b>Direct operator links</b><div class="text-dim" style="font-size:13px">ON: customers are sent straight to Airtel / Jio / Vi / BSNL official pages.<br>OFF: customers pay the shop by UPI and upload a screenshot (you recharge manually).</div></div>
+      <button class="btn btn-outline" id="rc-toggle" type="button">…</button></div>
+    <div id="rc-list"><div class="text-dim" style="padding:18px;text-align:center">Loading…</div></div>
+  </section>
+</main>
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="../js/vendor/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/webp-manifest.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+<script defer src="../js/smd-v29.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var $=function(i){return document.getElementById(i)}, esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+  var direct=false, sb=function(){return typeof DB!=='undefined'&&DB.useSupabase&&DB.useSupabase()};
+  function paintToggle(){var b=$('rc-toggle');b.textContent=direct?'ON — tap to turn OFF':'OFF — tap to turn ON';b.className='btn '+(direct?'btn-primary':'btn-outline')}
+  function failBox(msg){
+    $('rc-list').innerHTML='<div class="card" style="padding:16px;text-align:center"><div style="margin-bottom:10px">'+esc(msg)+'</div><button type="button" class="btn btn-outline btn-sm" id="rc-retry">Retry</button></div>';
+    var rb=$('rc-retry'); if(rb) rb.onclick=function(){ $('rc-list').innerHTML='<div class="text-dim" style="padding:18px;text-align:center">Loading\u2026</div>'; load(); };
+  }
+  var loading=false;
+  async function load(){
+    if(loading) return; loading=true;
+    try{
+      var rows=[];
+      if(sb()){
+        var timeout=new Promise(function(_,rej){ setTimeout(function(){ rej(new Error('Connection is slow. Please retry.')) },12000) });
+        var q=Promise.all([
+          supabaseClient.from('store_settings').select('value').eq('key','recharge_direct').maybeSingle(),
+          supabaseClient.from('recharge_requests').select('*').order('created_at',{ascending:false}).limit(100)
+        ]);
+        var res=await Promise.race([q,timeout]);
+        direct=!!(res[0] && res[0].data && res[0].data.value==='1');
+        if(res[1].error) throw res[1].error;
+        rows=res[1].data||[];
+      }else{
+        try{direct=localStorage.getItem('smd_recharge_direct')==='1'}catch(e){}
+        try{rows=JSON.parse(localStorage.getItem('smd_recharge_reqs')||'[]')}catch(e){rows=[]}
+      }
+      render(rows);
+    }catch(err){
+      failBox('Could not load recharge requests: '+(err&&err.message?err.message:'network problem'));
+    }finally{
+      loading=false; paintToggle();
+    }
+  }
+  function render(rows){
+    $('rc-list').innerHTML=rows.length?rows.map(function(r){
+      var st=r.status;
+      return '<div class="card" style="padding:14px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>'+esc(r.id)+' · ₹'+esc(r.amount)+'</b><span class="badge">'+esc(st)+(r.ai_status?' · AI '+esc(r.ai_status):'')+'</span></div>'+(r.ai_notes?'<div style="font-size:12.5px;margin:6px 0;color:'+(r.ai_status==='failed'?'#ef4444':'#22c55e')+'">'+esc(r.ai_notes)+'</div>':'')+
+      '<div class="text-dim" style="font-size:13.5px;line-height:1.7">'+esc(r.type)+' · '+esc(r.operator)+' · '+esc(r.circle)+'<br>Mobile: <b style="color:var(--text)">'+esc(r.mobile)+'</b>'+(r.plan?' · '+esc(r.plan):'')+'<br>'+esc(r.user_name)+' ('+esc(r.user_email)+') · '+new Date(r.created_at).toLocaleString()+'</div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">'+(String(r.screenshot_url||'').indexOf('http')===0||String(r.screenshot_url||'').indexOf('data:image')===0?'<a class="btn btn-outline btn-sm" target="_blank" rel="noopener" href="'+esc(r.screenshot_url)+'">View screenshot</a>':'')+
+      (st==='pending'?'<button class="btn btn-primary btn-sm" data-id="'+esc(r.id)+'" data-s="accepted">Accept</button><button class="btn btn-outline btn-sm" data-id="'+esc(r.id)+'" data-s="rejected">Reject</button>':'')+
+      (st==='accepted'?'<button class="btn btn-primary btn-sm" data-id="'+esc(r.id)+'" data-s="done">Mark recharged</button>':'')+'</div></div>';
+    }).join(''):'<div class="empty-state"><i class="fa-solid fa-mobile-screen"></i><h3>No recharge requests yet</h3></div>';
+  }
+  $('rc-toggle').addEventListener('click',async function(){
+    direct=!direct;
+    try{localStorage.setItem('smd_recharge_direct',direct?'1':'0')}catch(e){}
+    if(sb()){try{var r=await supabaseClient.from('store_settings').upsert({key:'recharge_direct',value:direct?'1':'0',updated_at:new Date().toISOString()});if(r.error){direct=!direct;alert('Could not save: '+r.error.message)}}catch(err){direct=!direct;alert('Could not save: '+(err&&err.message||'network problem'))}}
+    paintToggle();
+  });
+  $('rc-list').addEventListener('click',async function(e){
+    var b=e.target.closest('[data-id]');if(!b)return;
+    if(b.disabled)return;b.disabled=true;if(sb()){try{var r=await supabaseClient.from('recharge_requests').update({status:b.dataset.s,updated_at:new Date().toISOString()}).eq('id',b.dataset.id);if(r.error){b.disabled=false;return alert(r.error.message)}}catch(err){b.disabled=false;return alert('Network problem. Please try again.')}}
+    else{var a=JSON.parse(localStorage.getItem('smd_recharge_reqs')||'[]');a.forEach(function(x){if(x.id===b.dataset.id)x.status=b.dataset.s});localStorage.setItem('smd_recharge_reqs',JSON.stringify(a))}
+    load();
+  });
+  App.boot('shop').then(function(){ if(!Auth.isAdmin()){location.href='login.html';return} load(); });
+});
+</script>
+<script src="../js/fast-nav.js"></script>
+</body>
+</html>
