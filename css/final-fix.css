@@ -1350,3 +1350,32 @@ body > .ai-fab {
 }
 /* GPS button + location badge are created on the left first, then moved into the dock: keep them invisible until docked */
 body > #gps-toggle, body > .gps-fab, body > #geo-badge { visibility: hidden !important; }
+
+/* ===== TOAST-FIX-v3: "Product saved" popup (bottom-right) always readable =====
+   Cause: pages/admin.html gave the toast a WHITE background in light theme while
+   the global rule forces WHITE text => white text on white (invisible).
+   This rule is more specific than that inline admin rule, so it always wins. */
+html[data-theme] body .toast-stack .toast,
+html[data-theme] body.page-admin .toast-stack .toast,
+html[data-theme=light] body.page-admin .toast-stack .toast,
+html[data-theme=dark] body.page-admin .toast-stack .toast {
+  background: #14213f !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,.35) !important;
+  border-left-width: 6px !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,.55) !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+html[data-theme] body.page-admin .toast-stack .toast *:not(i):not(svg),
+html[data-theme] body .toast-stack .toast span { color: #ffffff !important; text-shadow: none !important; }
+html[data-theme] body.page-admin .toast-stack .toast.success { border-left-color: #22c55e !important; }
+html[data-theme] body.page-admin .toast-stack .toast.error   { border-left-color: #ef4444 !important; }
+html[data-theme] body.page-admin .toast-stack .toast.warn    { border-left-color: #f59e0b !important; }
+html[data-theme] body.page-admin .toast-stack .toast.info    { border-left-color: #60a5fa !important; }
+html[data-theme] body.page-admin .toast-stack .toast.success i { color: #4ade80 !important; }
+html[data-theme] body.page-admin .toast-stack .toast.error i   { color: #fca5a5 !important; }
+html[data-theme] body.page-admin .toast-stack .toast.warn i    { color: #fbbf24 !important; }
+html[data-theme] body.page-admin .toast-stack .toast.info i    { color: #93c5fd !important; }
+.toast-stack { z-index: 100050 !important; }
