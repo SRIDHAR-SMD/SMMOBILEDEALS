@@ -1286,3 +1286,23 @@ header.site-header .header-actions{flex-wrap:nowrap;min-width:0}
   header.site-header .header-actions .icon-btn,header.site-header .header-actions .theme-toggle{width:34px;height:34px}
   header.site-header .header-actions>button:not(.icon-btn):not(.theme-toggle):not(.mobile-menu-btn),header.site-header .header-inner>button{padding-left:8px;padding-right:8px}
 }
+
+/* ===== COLOUR FIX v31 — customer + admin (pixel-contrast audit, dark & light theme) =====
+   Photo background mela irukkura text (breadcrumb, hero quote, eyebrow, links) low-contrast aagi
+   theriyaama irundhadhu. Brighter text + soft dark halo, card ulla irukkuradhu maaradhu. */
+.breadcrumb a,.breadcrumb a:visited,.breadcrumb span,.breadcrumb i,
+html[data-theme] .breadcrumb a,html[data-theme] .breadcrumb span{color:#fff!important;text-shadow:0 1px 4px rgba(0,0,0,.85)!important}
+.breadcrumb a:hover{color:#bfdcff!important}
+.hero-quote,.hero-eyebrow,html[data-theme] .hero-quote,html[data-theme] .hero-eyebrow{color:#fff!important;text-shadow:0 1px 5px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.6)!important}
+.eyebrow,html[data-theme] .eyebrow{text-shadow:0 1px 4px rgba(0,0,0,.75)!important}
+/* links / faint text sitting directly on the photo */
+html[data-theme=dark] .text-accent,html[data-theme=dark] .text-faint,html[data-theme=dark] .text-dim{text-shadow:0 1px 3px rgba(0,0,0,.7)}
+html[data-theme=light] .text-accent:not(.card .text-accent):not(.modal .text-accent):not([class*="admin"] .text-accent):not(.table-wrap .text-accent){color:#bfdcff!important;text-shadow:0 1px 3px rgba(0,0,0,.75)}
+/* admin sidebar active tab: darker blue on light-blue pill */
+body.page-admin .admin-nav button.active,html[data-theme] body.page-admin .admin-nav button.active{color:#1e3a8a!important}
+/* admin breadcrumb "Home" (was faint blue on photo) */
+body.page-admin .breadcrumb a,html[data-theme] body.page-admin .breadcrumb a{color:#fff!important}
+/* hero text: highest specificity so no earlier theme rule can dim it */
+html[data-theme] body .hero .hero-quote,html[data-theme] body .hero .hero-eyebrow,html[data-theme] body main .hero-quote,html[data-theme] body main .hero-eyebrow,html[data-theme] body .hero p.lead{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:0 1px 5px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.6)!important}
+html[data-theme] body .section-head .eyebrow,html[data-theme] body p.eyebrow{text-shadow:0 1px 4px rgba(0,0,0,.8)!important}
+html[data-theme] body a.text-accent,html[data-theme] body span.text-faint{text-shadow:0 1px 3px rgba(0,0,0,.75)}
