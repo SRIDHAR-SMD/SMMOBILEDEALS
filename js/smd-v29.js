@@ -330,5 +330,12 @@
       try { adminGate(); } catch (e) {}
     }, 700);
   }
+  /* Customer Activity logger + admin "Customer Activity" tab (js/activity.js) */
+  try {
+    if (!document.getElementById('smd-activity-js')) {
+      var as = document.createElement('script'); as.id = 'smd-activity-js'; as.defer = true;
+      as.src = root() + 'js/activity.js'; (document.head || document.documentElement).appendChild(as);
+    }
+  } catch (e) {}
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
