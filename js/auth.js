@@ -138,9 +138,23 @@ const Auth = (() => {
         const cu = currentUser();
         if (isGatewaySession(cu)){
           const tk = DB.read('smd_master_token', null);
-          const r = await withTimeout(supabaseClient.functions.invoke('master-gateway', { body:{ action:'check', token: tk && tk.token } }), 2500, { error:'timeout' });
+          const askServer = () => supabaseClient.functions.invoke('master-gateway', { body:{ action:'check', token: tk && tk.token } });
+          const r = await withTimeout(askServer(), 2500, { error:'timeout' });
           if (r && r.data && r.data.ok === true && r.data.role === (cu.role)) gatewayVerified = true;
-          else purgePanelSession();
+          else if (r && r.data && r.data.ok === false) purgePanelSession();   // server clearly rejected the token -> logout
+          else {
+            // FIX (dashboard opens then jumps to login): slow network / edge-function cold start / offline is NOT a logout.
+            // Keep the session, trust it for now, and re-check quietly in the background.
+            gatewayVerified = true;
+            (async () => {
+              for (let i = 0; i < 3; i++){
+                const rr = await withTimeout(askServer().catch(() => ({ error:'net' })), 10000, { error:'timeout' });
+                if (rr && rr.data && rr.data.ok === true){ return; }
+                if (rr && rr.data && rr.data.ok === false){ purgePanelSession(); window.location.replace((window.location.pathname.includes('/pages/') ? '../' : '') + 'index.html'); return; }
+                await new Promise(res => setTimeout(res, 4000));
+              }
+            })();
+          }
         } else if (isPanelRole(cu) && !hasRealSbToken()){
           purgePanelSession();   // forged / stale panel session with no real login behind it
         }
