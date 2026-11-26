@@ -1,10 +1,10 @@
-# Dealora: An AI-Powered, Secure and Location-Aware Full-Stack Commerce Platform
-### Shop: SM Mobile Deals
+# Smart Gadget Store: A Progressive Web App for Multilingual AI-Driven Customer Support and Location-Based Delivery
+### Shop: SM Mobile Deals (Coimbatore)
 
 **Genuine mobiles, laptops, smart watches & accessories — Coimbatore.**
-Academic project: *Dealora: An AI-Powered, Secure and Location-Aware Full-Stack Commerce Platform* (Sridhar S, Sri Ramakrishna College of Arts & Science, 2026), built for **SM Mobiles**.
+Academic project: *Smart Gadget Store: A Progressive Web App for Multilingual AI-Driven Customer Support and Location-Based Delivery* (Sridhar S, Sri Ramakrishna College of Arts & Science, 2026), built for **SM Mobiles**.
 
-A production-styled, fully working e-commerce front end: catalog, cart, wishlist, compare, checkout, UPI/QR payment with screenshot verification, order tracking, customer accounts, an admin dashboard, and a multilingual AI FAQ assistant. Runs as static HTML/CSS/JS — **no build step** — backed by **Supabase** (Postgres + Auth + Storage).
+A production-styled, fully working e-commerce front end: catalog, cart, wishlist, compare, checkout, UPI/QR payment with screenshot verification, order tracking, customer accounts, an admin dashboard, and a multilingual AI customer-support assistant. Installable as a Progressive Web App (PWA). Runs as static HTML/CSS/JS — **no build step** — backed by **Supabase** (Postgres + Auth + Storage).
 
 ---
 
@@ -38,7 +38,7 @@ The site works **even without a database connected** — it falls back to the br
 ```sql
 update profiles set role = 'admin' where id = '<your-user-uuid>';
 ```
-(find the UUID under **Authentication → Users** after you sign up). Alternatively, the built-in admin login (`sridhariphone7@gmail.com` / `SRIDHAR7@#`, set in `js/config.js`) always works, Supabase or not.
+(find the UUID under **Authentication → Users** after you sign up). A built-in fallback admin login is also defined in `js/config.js` (see §5).
 
 ## 3. How the data layer is designed
 
@@ -60,12 +60,7 @@ Card payments add an extra processing charge (SITE_CONFIG.cardSurchargePercent, 
 
 ## 5. Admin access
 
-```
-Email:    sridhariphone7@gmail.com
-Password: SRIDHAR7@#
-```
-
-This shortcut always works locally regardless of Supabase. **Change it** in `js/config.js` before putting the site anywhere public, or promote a real Supabase account to `role = 'admin'` instead (see §2).
+The admin email and password are set in `js/config.js` (they are intentionally **not** written in this README). That shortcut always works locally regardless of Supabase. **Change it** before putting the site anywhere public, or promote a real Supabase account to `role = 'admin'` instead (see §2).
 
 ## 6. Updating your shop info, payment & social links
 
@@ -77,7 +72,7 @@ QR code images (`assets/images/qr-upi-payment.jpg`, `qr-instagram.png`, `qr-what
 
 ## 7. AI FAQ Assistant
 
-Click the floating chat bubble (bottom-left, every page). It understands greetings, store/contact info, payment/delivery/warranty questions, and brand/category/budget product search ("phones under 30000"). Supports **English, Tamil (தமிழ்) and Hindi (हिंदी)** — switch with the dropdown in the chat header, or extend `I18N` in `js/chatbot.js` for more. Runs entirely with local keyword/intent matching — no external AI API call, works offline, zero running cost.
+Click the floating chat bubble (bottom-left, every page). It understands greetings, store/contact info, payment/delivery/warranty questions, and brand/category/budget product search ("phones under 30000"). Supports **English, Tamil (தமிழ்) and Hindi (हिंदी)** — switch with the dropdown in the chat header, or extend `I18N` in `js/chatbot.js` for more. By default it runs on local keyword/intent matching (works offline, zero running cost); open-ended questions can optionally be answered by real Claude AI through the Supabase Edge Function in §12.
 
 ## 8. Folder structure
 
@@ -92,7 +87,7 @@ SM-Mobile-Deals/
 ├── assets/                               — images, QR codes, icons, logos
 ├── css/                                  — variables, components, layout, responsive, animations, dark mode
 ├── js/                                   — supabase-client, config, data layer, auth, cart/wishlist/compare,
-│                                            checkout, payment, orders, admin, chatbot, shared UI, app bootstrap
+│                                            checkout, payment, orders, admin, chatbot, model-suggest, shared UI, app bootstrap
 └── pages/                                — every other page (shop, cart, checkout, payment, orders, tracking,
                                              login, register, admin-login, profile, admin, about, contact, privacy,
                                              second-hand-mobiles, second-hand-laptops)
@@ -144,6 +139,13 @@ To make it answer **anything** a customer might ask (using real Claude AI), wire
 - **Facebook page link** — not supplied yet, icon is hidden until you add it to `js/config.js`.
 - Real product photography for the catalog (see §11 — upload your own via the admin panel).
 - Deploy the frontend to **Vercel** (drag-and-drop the folder or connect a GitHub repo — no build command needed, it's static HTML).
+
+## 14. Model suggestions & chatbot auto-fill
+
+`js/model-suggest.js` (loaded on `pages/service.html` and `pages/admin.html`):
+
+- **Service / complaint form** — a *Phone Model* box with live suggestions for iPhone (SE to 18 Pro Max), Samsung (S20 to S26 series incl. Plus / Ultra / FE, Z Fold/Flip, A, M, F) and other Android brands (OnePlus, Vivo, Oppo, Realme, Xiaomi/Redmi/Poco, iQOO, Pixel, Nothing, Motorola, Honor, Infinix, Tecno, Lava). Typing `samsung s` lists the whole S-series; `samsung s ultra` lists the Ultra models only. A *Condition* dropdown and one-tap complaint chips are added too; all three are saved with the service request.
+- **Admin product form** — the same suggestions on the Name / Model boxes. With **Chatbot auto-fill access** switched on, typing only a model or brand and saving auto-fills any blank description, specifications, features and model name. **Auto-fill now** runs it on demand and **Undo auto-fill** restores the previous values. Auto-filled specs are *estimates* from the model name — verify before publishing.
 
 ## Performance notes
 
