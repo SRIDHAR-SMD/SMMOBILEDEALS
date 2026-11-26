@@ -85,9 +85,8 @@ document.addEventListener('DOMContentLoaded', async function(){
 
   async function geo(){
     if (geoCache) return geoCache;
-    const r = await Geo.requestWithNotice('Admin / staff sign-in is protected by a location check.');
-    geoCache = r.ok ? { lat:r.lat, lng:r.lng, accuracy:r.accuracy } : null;
-    return geoCache;
+    /* Admin / staff are NOT asked for location any more (only customers are). Server accepts consent:false. */
+    return null;
   }
   async function enter(res, extra){
     const g = await Auth.masterGrant({ role: res.role, token: res.token, ...extra });
