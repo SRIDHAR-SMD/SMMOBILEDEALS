@@ -31,7 +31,7 @@
       'allowfullscreen allowtransparency="true" loading="eager" referrerpolicy="strict-origin-when-cross-origin" ' +
       'allow="autoplay; encrypted-media; picture-in-picture; clipboard-write; fullscreen"></iframe>';
     count.textContent = (i + 1) + ' / ' + ids.length;
-    msg.innerHTML = 'Real deliveries from our customers<br>' + watchLink(id);
+    msg.innerHTML = 'Real deliveries from our customers \u2014 tap \u25B6 on the reel to play<br>' + watchLink(id);
     timer = setTimeout(function () { step(1); }, 15000);
   }
   function step(n) { i = (i + n + ids.length) % ids.length; show(); }
