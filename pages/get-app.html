@@ -44,14 +44,12 @@ img{margin-top:12px;border-radius:12px;background:#fff;padding:8px}
   var APK='/downloads/SM-Mobile-Deals.apk',ua=navigator.userAgent||'';
   var isAndroid=/Android/i.test(ua),isIOS=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
   function on(id){document.getElementById(id).classList.add('on')}
-  if(isAndroid){
+  if(isIOS){on('ios')}
+  else{
     on('android');
-    fetch(APK,{method:'HEAD',cache:'no-store'}).then(function(r){
-      if(r.ok&&!/text\/html/.test(r.headers.get('content-type')||'')){setTimeout(function(){location.href=APK},900)}
-      else document.getElementById('msg').textContent='App file innum upload aagala. Konjam neram kazhichu try pannunga.';
-    }).catch(function(){});
-  }else if(isIOS){on('ios')}
-  else{on('desktop');document.getElementById('qr').src='https://api.qrserver.com/v1/create-qr-code/?size=360x360&data='+encodeURIComponent(location.href)}
+    var a=document.createElement('a');a.href=APK;a.download='SM-Mobile-Deals.apk';a.style.display='none';document.body.appendChild(a);
+    setTimeout(function(){a.click()},300);
+  }
 })();
 </script>
 </body>
