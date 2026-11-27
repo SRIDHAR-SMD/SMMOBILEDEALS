@@ -1388,14 +1388,14 @@ App.boot('').then(() => {
           const td = 'padding:8px;border-bottom:1px solid #cbd5e1;color:#0b1220;vertical-align:top;';
           const detail = (it) => {
             const bits = [['Model', it.model], ['Storage', it.storage], ['RAM', it.ram], ['Colour', it.colorName], ['Warranty', it.warranty]].filter(([,v]) => v).map(([k,v]) => k + ': ' + E(v)).join(' &middot; ');
-            return (bits ? '<div style="font-size:11.5px;color:#475569">' + bits + '</div>' : '') +
+            return (bits ? '<div class="mb-sub" style="font-size:11.5px;color:#475569">' + bits + '</div>' : '') +
               (it.imei ? '<div style="font-size:11.5px;color:#0b1220;font-weight:600">IMEI 1: ' + E(it.imei) + '</div>' : '') +
               (it.imei2 ? '<div style="font-size:11.5px;color:#0b1220;font-weight:600">IMEI 2: ' + E(it.imei2) + '</div>' : '');
           };
           const rows = items.map((it) => '<tr><td style="' + td + '"><b>' + E(it.name) + '</b>' + detail(it) + '</td>' +
-            '<td style="' + td + 'text-align:center">' + it.qty + '</td>' +
-            '<td style="' + td + 'text-align:right">&#8377;' + it.price.toLocaleString('en-IN') + '</td>' +
-            '<td style="' + td + 'text-align:right">&#8377;' + (it.price * it.qty).toLocaleString('en-IN') + '</td></tr>').join('');
+            '<td class="mb-num" style="' + td + 'text-align:center">' + it.qty + '</td>' +
+            '<td class="mb-num" style="' + td + 'text-align:right">&#8377;' + it.price.toLocaleString('en-IN') + '</td>' +
+            '<td class="mb-num" style="' + td + 'text-align:right">&#8377;' + (it.price * it.qty).toLocaleString('en-IN') + '</td></tr>').join('');
           const th = 'padding:8px;background:#1e293b;color:#fff;';
           const html = '<div class="mb-bill" style="max-width:640px;margin:0 auto;padding:22px;background:#fff;color:#0b1220;font-family:Inter,sans-serif">' +
             '<div style="display:flex;align-items:center;gap:12px;border-bottom:2px solid #0b1220;padding-bottom:12px;margin-bottom:14px">' +
@@ -1410,9 +1410,9 @@ App.boot('').then(() => {
             '<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:30px;padding-top:14px;border-top:1px dashed #94a3b8">' +
               '<div style="font-size:11px;color:#64748b;max-width:240px">System-generated bill from ' + E(SITE_CONFIG.shopName) + '.</div>' +
               '<div style="text-align:center">' + (sig ? '<img src="' + E(sig) + '" alt="Signature" style="max-height:56px;max-width:170px;display:block;margin:0 auto 4px">' : '<div style="height:40px"></div>') +
-              '<div style="border-top:1px solid #334155;width:170px;padding-top:5px;font-size:11px;color:#334155">Authorised Signatory<br><b>' + E(SITE_CONFIG.adminName || '') + '</b></div></div>' +
+              '<div style="border-top:1px solid #334155;width:170px;padding-top:5px;font-size:11px;color:#334155">Authorised Signatory<br><b>Sridhar S</b></div></div>' +
             '</div></div>';
-          if (window.AdminPreview && AdminPreview.open) AdminPreview.open('Bill preview', [{ label: 'Bill', css: 'html body{background:#f1f5f9!important;background-image:none!important;color:#0b1220!important}.mb-bill,.mb-bill *{color:inherit}.mb-bill{background:#fff!important;color:#0b1220!important}', html: html }]);
+          if (window.AdminPreview && AdminPreview.open) AdminPreview.open('Bill preview', [{ label: 'Bill', css: 'html,html[data-theme],html body,html[data-theme] body{background:#fff!important;background-image:none!important;color:#0b1220!important}' + 'html body::before,html body::after{display:none!important;content:none!important}' + 'html[data-theme] .mb-bill{background:#fff!important;color:#0b1220!important}' + 'html[data-theme] .mb-bill *{opacity:1!important;text-shadow:none!important}' + 'html[data-theme] .mb-bill td,html[data-theme] .mb-bill div,html[data-theme] .mb-bill b,html[data-theme] .mb-bill span{color:#0b1220!important}' + 'html[data-theme] .mb-bill .mb-sub{color:#475569!important}' + 'html[data-theme] .mb-bill th{background:#1e293b!important;color:#fff!important;white-space:nowrap}' + 'html[data-theme] .mb-bill td,html[data-theme] .mb-bill th{border-color:#cbd5e1!important;word-break:normal!important;overflow-wrap:normal!important}' + 'html[data-theme] .mb-bill .mb-num{white-space:nowrap}', html: html }]);
         });
       })();
 
