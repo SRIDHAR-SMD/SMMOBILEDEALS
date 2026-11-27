@@ -25,6 +25,8 @@
   .inv-sheet *{ color:#1a1a1a; }
   .inv-head{ display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #1a1a1a; padding-bottom:18px; margin-bottom:22px; }
   .inv-brand{ font-family:var(--font-display); font-size:22px; font-weight:800; }
+  .inv-brandrow{ display:flex; align-items:center; gap:14px; }
+  .inv-logo{ height:60px; width:60px; object-fit:contain; border-radius:10px; }
   .inv-brand small{ display:block; font-family:var(--font-sans); font-size:12px; font-weight:500; color:#555; margin-top:4px; }
   .inv-meta{ text-align:right; font-size:12.5px; line-height:1.6; }
   .inv-meta b{ font-family:var(--font-mono); }
@@ -140,6 +142,9 @@ App.boot('shop').then(async () => {
 
   const products = DB.getProducts();
   const signatureUrl = await Inbox.getSetting('admin_signature_url');
+  let logoUrl = '';
+  try{ logoUrl = (await Inbox.getSetting('logo_dark_url')) || ''; }catch(e){}
+  if (!logoUrl) logoUrl = ROOT_PREFIX + ((SITE_CONFIG.logo && SITE_CONFIG.logo.dark) || 'assets/logos/logo-dark.png');
 
   const rows = (order.items || []).map(item => {
     const p = products.find(pp => pp.id === item.id);
@@ -149,9 +154,11 @@ App.boot('shop').then(async () => {
         .filter(([,v]) => v).forEach(([k,v]) => specBits.push(`${k}: ${v}`));
       if (p.condition && p.condition !== 'new') specBits.push((DB.CONDITION_META[p.condition]||{}).label || p.condition);
     }
+    if (item.model && !(p && p.modelName === item.model)) specBits.unshift(`Model: ${item.model}`);
+    const imeiLine = item.imei ? `<div class="spec-line" style="font-family:var(--font-mono);font-weight:600;">IMEI: ${Utils.escapeHtml(item.imei)}</div>` : '';
     const lineTotal = (item.price || 0) * (item.qty || 1);
     return `<tr>
-      <td>${Utils.escapeHtml(item.name)}${specBits.length ? `<div class="spec-line">${Utils.escapeHtml(specBits.join(' · '))}</div>` : ''}</td>
+      <td>${Utils.escapeHtml(item.name)}${specBits.length ? `<div class="spec-line">${Utils.escapeHtml(specBits.join(' · '))}</div>` : ''}${imeiLine}</td>
       <td style="text-align:center;">${item.qty}</td>
       <td style="text-align:right;font-family:var(--font-mono);">${Utils.formatINR(item.price)}</td>
       <td style="text-align:right;font-family:var(--font-mono);font-weight:700;">${Utils.formatINR(lineTotal)}</td>
@@ -167,7 +174,10 @@ App.boot('shop').then(async () => {
   root.innerHTML = `
     <div class="inv-head">
       <div>
-        <div class="inv-brand">${SITE_CONFIG.shopName}<small>${SITE_CONFIG.legalName} · ${SITE_CONFIG.address}</small></div>
+        <div class="inv-brandrow">
+          <img class="inv-logo" src="${Utils.escapeHtml(logoUrl)}" alt="${Utils.escapeHtml(SITE_CONFIG.shopName)}" onerror="this.style.display='none'">
+          <div class="inv-brand">${SITE_CONFIG.shopName}<small>${SITE_CONFIG.legalName} · ${SITE_CONFIG.address}<br>${(SITE_CONFIG.phones || []).join(' / ')}</small></div>
+        </div>
       </div>
       <div class="inv-meta">
         <div><b>Invoice for Order ${Utils.escapeHtml(order.id)}</b></div>
@@ -222,8 +232,9 @@ App.boot('shop').then(async () => {
         Contact: ${SITE_CONFIG.phones?.[0] || ''} · ${SITE_CONFIG.email || ''}
       </div>
       <div class="inv-sign-box">
-        ${signatureUrl ? `<img src="${signatureUrl}" alt="Authorised signature">` : ''}
-        <div class="inv-sign-line">Authorised Signatory</div>
+        <div style="font-size:11px;color:#555;margin-bottom:2px;">For ${SITE_CONFIG.shopName}</div>
+        ${signatureUrl ? `<img src="${signatureUrl}" alt="Authorised signature">` : '<div style="height:44px;"></div>'}
+        <div class="inv-sign-line">Authorised Signatory<br><b>${Utils.escapeHtml(SITE_CONFIG.adminName || '')}</b></div>
       </div>
       <div class="inv-seal">${SITE_CONFIG.shopName.toUpperCase()}<br>★ VERIFIED ★<br>DIGITAL SEAL</div>
     </div>`);

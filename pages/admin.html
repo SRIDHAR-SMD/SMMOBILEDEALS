@@ -381,6 +381,7 @@
               <div class="field" style="flex:1;min-width:180px;"><label>Phone</label><input class="input" id="mb-phone" placeholder="10-digit mobile"></div>
             </div>
             <div class="field"><label>Address <span class="text-faint" style="font-weight:400;">(optional)</span></label><input class="input" id="mb-address" placeholder="Line 1, City, State, Pincode"></div>
+            <div class="field" style="max-width:220px;"><label>Bill Date</label><input class="input" type="date" id="mb-date"></div>
           </div>
 
           <div class="card" style="padding:20px;max-width:820px;margin-bottom:20px;">
@@ -1287,12 +1288,20 @@ App.boot('').then(() => {
 
       function renderItems(){
         itemsBody.innerHTML = items.map((it, i) => `
+          <tr>
+            <td style="padding:8px 6px 4px;">${Utils.escapeHtml(it.name)}${it.id ? '' : ' <span class="text-faint" style="font-size:11px;">(custom)</span>'}</td>
+            <td style="padding:8px 6px 4px;"><input class="input" type="number" min="1" value="${it.qty}" style="width:60px;padding:6px 8px;" onchange="ManualBill.setQty(${i}, this.value)"></td>
+            <td style="padding:8px 6px 4px;"><input class="input" type="number" min="0" value="${it.price}" style="width:100px;padding:6px 8px;" onchange="ManualBill.setPrice(${i}, this.value)"></td>
+            <td style="padding:8px 6px 4px;font-family:var(--font-mono);">${Utils.formatINR(it.price * it.qty)}</td>
+            <td style="padding:8px 6px 4px;"><button type="button" class="btn btn-ghost btn-sm" onclick="ManualBill.remove(${i})" style="color:var(--danger,#3868d9);"><i class="fa-solid fa-trash"></i></button></td>
+          </tr>
           <tr style="border-bottom:1px solid var(--border-soft);">
-            <td style="padding:8px 6px;">${Utils.escapeHtml(it.name)}${it.id ? '' : ' <span class="text-faint" style="font-size:11px;">(custom)</span>'}</td>
-            <td style="padding:8px 6px;"><input class="input" type="number" min="1" value="${it.qty}" style="width:60px;padding:6px 8px;" onchange="ManualBill.setQty(${i}, this.value)"></td>
-            <td style="padding:8px 6px;"><input class="input" type="number" min="0" value="${it.price}" style="width:100px;padding:6px 8px;" onchange="ManualBill.setPrice(${i}, this.value)"></td>
-            <td style="padding:8px 6px;font-family:var(--font-mono);">${Utils.formatINR(it.price * it.qty)}</td>
-            <td style="padding:8px 6px;"><button type="button" class="btn btn-ghost btn-sm" onclick="ManualBill.remove(${i})" style="color:var(--danger,#3868d9);"><i class="fa-solid fa-trash"></i></button></td>
+            <td colspan="5" style="padding:0 6px 10px;">
+              <div class="flex gap-12" style="flex-wrap:wrap;">
+                <input class="input" placeholder="Mobile model name" value="${Utils.escapeHtml(it.model || '')}" style="flex:1;min-width:160px;padding:6px 8px;" onchange="ManualBill.setModel(${i}, this.value)">
+                <input class="input" placeholder="IMEI number (15 digits)" inputmode="numeric" maxlength="17" value="${Utils.escapeHtml(it.imei || '')}" style="flex:1;min-width:160px;padding:6px 8px;font-family:var(--font-mono);" onchange="ManualBill.setImei(${i}, this.value)">
+              </div>
+            </td>
           </tr>`).join('');
         emptyMsg.style.display = items.length ? 'none' : 'block';
         const total = items.reduce((s,it) => s + it.price * it.qty, 0);
@@ -1302,13 +1311,13 @@ App.boot('').then(() => {
       function addProduct(p){
         const existing = items.find(it => it.id === p.id);
         if (existing) existing.qty += 1;
-        else items.push({ id:p.id, name:p.name, price:p.price, qty:1, type:p.type, color:p.color });
+        else items.push({ id:p.id, name:p.name, price:p.price, qty:1, type:p.type, color:p.color, model:p.modelName || p.name, imei:'' });
         renderItems();
         searchInput.value = '';
         suggestionsBox.style.display = 'none';
       }
       function addCustom(name){
-        items.push({ id:null, name: name || 'Custom item', price:0, qty:1, type:'accessory', color:'#4c8dff' });
+        items.push({ id:null, name: name || 'Custom item', price:0, qty:1, type:'accessory', color:'#4c8dff', model: name || '', imei:'' });
         renderItems();
         searchInput.value = '';
         suggestionsBox.style.display = 'none';
@@ -1340,8 +1349,19 @@ App.boot('').then(() => {
       window.ManualBill = {
         setQty: (i, v) => { items[i].qty = Math.max(1, parseInt(v) || 1); renderItems(); },
         setPrice: (i, v) => { items[i].price = Math.max(0, parseFloat(v) || 0); renderItems(); },
+        setModel: (i, v) => { items[i].model = String(v || '').trim(); },
+        setImei: (i, v) => { items[i].imei = String(v || '').replace(/[^0-9A-Za-z]/g, '').slice(0, 17); renderItems(); },
         remove: (i) => { items.splice(i, 1); renderItems(); }
       };
+
+      /* default bill date = today */
+      (function(){ const d = document.getElementById('mb-date'); if (d && !d.value){ const n = new Date(); d.value = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0'); } })();
+      function billDateISO(){
+        const v = (document.getElementById('mb-date') || {}).value;
+        if (!v) return new Date().toISOString();
+        const now = new Date(), [y,m,d] = v.split('-').map(Number);
+        return new Date(y, m-1, d, now.getHours(), now.getMinutes(), now.getSeconds()).toISOString();
+      }
 
       /* Preview Bill - shows the bill exactly as entered, WITHOUT saving anything */
       (function(){
@@ -1352,18 +1372,40 @@ App.boot('').then(() => {
         pb.innerHTML = '<i class="fa-solid fa-eye"></i> Preview Bill';
         gen.insertAdjacentElement('beforebegin', pb);
         const E = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-        pb.addEventListener('click', () => {
+        pb.addEventListener('click', async () => {
           const name = document.getElementById('mb-name').value.trim();
           if (!name){ Notify.toast("Enter the customer's name first.", 'error'); return; }
           if (!items.length){ Notify.toast('Add at least one product to preview the bill.', 'error'); return; }
           const total = items.reduce((t, it) => t + it.price * it.qty, 0);
-          const rows = items.map((it) => '<tr><td style="padding:8px;border-bottom:1px solid #e2e8f0">' + E(it.name) + '</td><td style="padding:8px;border-bottom:1px solid #e2e8f0;text-align:center">' + it.qty + '</td><td style="padding:8px;border-bottom:1px solid #e2e8f0;text-align:right">&#8377;' + it.price.toLocaleString('en-IN') + '</td><td style="padding:8px;border-bottom:1px solid #e2e8f0;text-align:right">&#8377;' + (it.price * it.qty).toLocaleString('en-IN') + '</td></tr>').join('');
-          const html = '<div style="max-width:640px;margin:0 auto;padding:22px;background:#fff;color:#0b1220;font-family:Inter,sans-serif">' +
-            '<h2 style="margin:0 0 4px">SM Mobile Deals</h2><div style="font-size:12px;color:#475569;margin-bottom:14px">Bill preview &mdash; not saved yet</div>' +
-            '<div style="font-size:13px;margin-bottom:14px"><b>' + E(name) + '</b><br>' + E(document.getElementById('mb-phone').value) + '<br>' + E(document.getElementById('mb-address').value) + '</div>' +
-            '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="background:#e2e8f0"><th style="padding:8px;text-align:left">Item</th><th style="padding:8px">Qty</th><th style="padding:8px;text-align:right">Price</th><th style="padding:8px;text-align:right">Total</th></tr></thead><tbody>' + rows + '</tbody></table>' +
-            '<div style="display:flex;justify-content:space-between;font-weight:700;font-size:16px;padding:12px 8px">Total<span>&#8377;' + total.toLocaleString('en-IN') + '</span></div></div>';
-          if (window.AdminPreview && AdminPreview.open) AdminPreview.open('Bill preview', [{ label: 'Bill', css: 'html body{background:#f1f5f9!important}', html: html }]);
+          let sig = '', logo = '';
+          try{ sig = (await Inbox.getSetting('admin_signature_url')) || ''; }catch(e){}
+          try{ logo = (await Inbox.getSetting('logo_dark_url')) || ''; }catch(e){}
+          if (!logo) logo = '../' + ((SITE_CONFIG.logo && SITE_CONFIG.logo.dark) || 'assets/logos/logo-dark.png');
+          const dateTxt = new Date(billDateISO()).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+          const td = 'padding:8px;border-bottom:1px solid #cbd5e1;color:#0b1220;vertical-align:top;';
+          const rows = items.map((it) => '<tr><td style="' + td + '"><b>' + E(it.name) + '</b>' +
+              (it.model ? '<div style="font-size:11.5px;color:#475569">Model: ' + E(it.model) + '</div>' : '') +
+              (it.imei ? '<div style="font-size:11.5px;color:#475569">IMEI: ' + E(it.imei) + '</div>' : '') + '</td>' +
+            '<td style="' + td + 'text-align:center">' + it.qty + '</td>' +
+            '<td style="' + td + 'text-align:right">&#8377;' + it.price.toLocaleString('en-IN') + '</td>' +
+            '<td style="' + td + 'text-align:right">&#8377;' + (it.price * it.qty).toLocaleString('en-IN') + '</td></tr>').join('');
+          const th = 'padding:8px;background:#1e293b;color:#fff;';
+          const html = '<div class="mb-bill" style="max-width:640px;margin:0 auto;padding:22px;background:#fff;color:#0b1220;font-family:Inter,sans-serif">' +
+            '<div style="display:flex;align-items:center;gap:12px;border-bottom:2px solid #0b1220;padding-bottom:12px;margin-bottom:14px">' +
+              '<img src="' + E(logo) + '" alt="" style="height:48px;width:48px;object-fit:contain;border-radius:8px" onerror="this.style.display=\'none\'">' +
+              '<div style="flex:1"><div style="font-size:20px;font-weight:800;color:#0b1220">' + E(SITE_CONFIG.shopName) + '</div>' +
+              '<div style="font-size:11.5px;color:#475569">' + E((SITE_CONFIG.phones || []).join(' / ')) + '<br>' + E(SITE_CONFIG.address) + '</div></div>' +
+              '<div style="text-align:right;font-size:12px;color:#0b1220"><b>Date:</b> ' + E(dateTxt) + '<br><span style="color:#b45309;font-weight:700">PREVIEW &mdash; not saved</span></div>' +
+            '</div>' +
+            '<div style="font-size:13px;margin-bottom:14px;color:#0b1220"><div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:700">Billed to</div><b>' + E(name) + '</b><br>' + E(document.getElementById('mb-phone').value) + '<br>' + E(document.getElementById('mb-address').value) + '</div>' +
+            '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="' + th + 'text-align:left">Item</th><th style="' + th + '">Qty</th><th style="' + th + 'text-align:right">Price</th><th style="' + th + 'text-align:right">Total</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+            '<div style="display:flex;justify-content:space-between;font-weight:800;font-size:16px;padding:12px 8px;color:#0b1220;border-top:2px solid #0b1220;margin-top:6px"><span>Total</span><span>&#8377;' + total.toLocaleString('en-IN') + '</span></div>' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:30px;padding-top:14px;border-top:1px dashed #94a3b8">' +
+              '<div style="font-size:11px;color:#64748b;max-width:240px">System-generated bill from ' + E(SITE_CONFIG.shopName) + '.</div>' +
+              '<div style="text-align:center">' + (sig ? '<img src="' + E(sig) + '" alt="Signature" style="max-height:56px;max-width:170px;display:block;margin:0 auto 4px">' : '<div style="height:40px"></div>') +
+              '<div style="border-top:1px solid #334155;width:170px;padding-top:5px;font-size:11px;color:#334155">Authorised Signatory<br><b>' + E(SITE_CONFIG.adminName || '') + '</b></div></div>' +
+            '</div></div>';
+          if (window.AdminPreview && AdminPreview.open) AdminPreview.open('Bill preview', [{ label: 'Bill', css: 'html body{background:#f1f5f9!important;background-image:none!important;color:#0b1220!important}.mb-bill,.mb-bill *{color:inherit}.mb-bill{background:#fff!important;color:#0b1220!important}', html: html }]);
         });
       })();
 
@@ -1380,7 +1422,7 @@ App.boot('').then(() => {
         const order = {
           id: Utils.orderId(),
           userId: null, // counter sale — not tied to a website account
-          items: items.map(it => ({ id:it.id, name:it.name, price:it.price, qty:it.qty, type:it.type, color:it.color })),
+          items: items.map(it => ({ id:it.id, name:it.name, price:it.price, qty:it.qty, type:it.type, color:it.color, model:it.model || '', imei:it.imei || '' })),
           address: { name, phone: document.getElementById('mb-phone').value.trim(), line1: document.getElementById('mb-address').value.trim(), city:'', state:'', pincode:'' },
           paymentMethod: 'cod', // in-person / counter sale
           totals: { subtotal, discount:0, deliveryFee:0, cardSurcharge:0, total: subtotal },
@@ -1390,10 +1432,10 @@ App.boot('').then(() => {
           orderStatus: 'confirmed',
           screenshot: null,
           timeline: [
-            { status:'placed', at:new Date().toISOString(), note:'Manual bill — counter sale' },
-            { status:'confirmed', at:new Date().toISOString() }
+            { status:'placed', at:billDateISO(), note:'Manual bill — counter sale' },
+            { status:'confirmed', at:billDateISO() }
           ],
-          createdAt: new Date().toISOString(),
+          createdAt: billDateISO(),
           updatedAt: new Date().toISOString()
         };
         try{
@@ -1981,18 +2023,24 @@ App.boot('').then(() => {
 
   /* ---------------- logos ---------------- */
   function headerMock(src){
-    return '<header class="site-header" style="position:static"><div class="container" style="display:flex;align-items:center;gap:14px;padding:12px 16px"><a class="logo" style="display:flex;align-items:center;gap:10px;font-weight:800">' +
-      (src ? '<img class="logo-img" src="' + esc(src) + '" style="height:34px">' : '<span style="color:var(--text-dim)">no logo</span>') + '<span class="footer-brand-text" style="font-weight:800;letter-spacing:.06em">SM MOBILE DEALS</span></a>' +
-      '<nav style="display:flex;gap:16px;margin-left:auto;font-weight:600"><a>Home</a><a>Shop</a><a>Service</a><a>About</a></nav></div></header>' +
-      '<div class="container" style="padding:26px 16px"><p style="display:inline-block;background:var(--surface);padding:10px 14px;border-radius:10px">Idhu thaan header-la logo epdi theriyum nu preview.</p></div>';
+    return '<header class="site-header" style="position:static"><div class="container" style="display:flex;align-items:center;gap:12px;padding:12px 16px">' +
+      '<a class="logo" style="display:flex;align-items:center;gap:10px;font-weight:800;white-space:nowrap;min-width:0">' +
+      (src ? '<img class="logo-img" src="' + esc(src) + '" style="height:34px;width:auto;flex:none;border-radius:8px">' : '<span style="color:var(--text-dim)">no logo</span>') +
+      '<span class="footer-brand-text" style="font-weight:800;letter-spacing:.06em;overflow:hidden;text-overflow:ellipsis">SM MOBILE DEALS</span></a>' +
+      '<nav class="lp-nav" style="display:flex;gap:16px;margin-left:auto;font-weight:600;white-space:nowrap"><a>Home</a><a>Shop</a><a>Service</a><a>About</a></nav>' +
+      '<span class="lp-burger" style="display:none;margin-left:auto;font-size:20px"><i class="fa-solid fa-bars"></i></span></div></header>' +
+      '<div class="container" style="padding:22px 16px"><p style="margin:0;font-size:13px;color:var(--text-dim)">Header-la logo ippadi than theriyum.</p></div>';
   }
+  var LOGO_CSS = 'html body{background-image:none!important;background-color:var(--bg)!important}' +
+    '.site-header{position:static!important;background:var(--surface)!important;border-bottom:1px solid var(--border-soft)}' +
+    '@media (max-width:560px){.lp-nav{display:none!important}.lp-burger{display:inline-flex!important}}';
   async function previewLogos(){
     var lf = document.getElementById('logo-light-file'), df = document.getElementById('logo-dark-file');
     var lUrl = (lf && lf.files[0]) ? await readFile(lf.files[0]) : '', dUrl = (df && df.files[0]) ? await readFile(df.files[0]) : '';
     var curL = '', curD = ''; try{ curL = (await Inbox.getSetting('logo_light_url')) || ''; curD = (await Inbox.getSetting('logo_dark_url')) || ''; }catch(e){}
     // same rule as the live header: dark theme shows the "light" logo, light theme shows the "dark" logo
     var pick = function(theme){ return theme === 'light' ? (dUrl || curD || '../assets/logos/logo-dark.png') : (lUrl || curL || '../assets/logos/logo-light.png'); };
-    open('Logo preview', [{ label:'Header preview', html:function(theme){ return headerMock(pick(theme)); }, note:'Dark / Light button click panni rendu theme-layum logo epdi theriyum nu paarunga. Logo circle-a crop aagum.' }]);
+    open('Logo preview', [{ label:'Header preview', css:LOGO_CSS, html:function(theme){ return headerMock(pick(theme)); }, note:'Dark / Light button click panni rendu theme-layum logo epdi theriyum nu paarunga. Logo circle-a crop aagum.' }]);
   }
 
   /* ---------------- generic image ---------------- */
