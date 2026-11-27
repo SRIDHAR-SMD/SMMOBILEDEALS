@@ -46,7 +46,7 @@
 <main>
   <section class="page-hero container">
     <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Lucky Spin</span></div>
-    <h1 class="page-title">🎡 Lucky Spin Wheel</h1>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><h1 class="page-title" style="margin:0">🎡 Lucky Spin Wheel</h1><a href="wallet.html" class="btn btn-outline btn-sm" id="sw-wallet" title="My Wallet"><i class="fa-solid fa-wallet"></i> Wallet <b id="sw-coins" style="color:#f5b301"></b></a></div>
   </section>
   <section class="section container" style="padding-top:10px;max-width:640px;text-align:center;">
     <div class="sw-wrap">
@@ -60,22 +60,19 @@
       <h3 style="margin:0 0 6px;font-family:var(--font-display);">How it works</h3>
       <ul class="sw-list" style="list-style:none;margin:0;padding:0;">
         <li><span>🎡 Free spins</span><b>3 spins, then next free spin after 24 hours</b></li>
-        <li><span>💳 Extra spin</span><b>₹10 per spin (UPI)</b></li>
+        <li><span>🪙 Extra spin</span><b>10 coins (1 ₹ = 1 coin) from your Wallet</b></li>
         <li><span>🎧 10th paid spin</span><b>FREE Headphones gift</b></li>
         <li style="border:0"><span>🙂 All other spins</span><b>Better luck next time</b></li>
       </ul>
-      <p class="text-faint" style="font-size:11.5px;margin:10px 0 0;">Free spins give no prize. Only paid spins count: the 1st to 9th paid spin show "Better luck next time" and the 10th paid spin wins the headphones gift (10 paid spins = ₹100). The headphones are a free gift with the purchase of any product from SM Mobile Deals. Keep your UPI reference numbers (UTR): the shop verifies all 10 payments on WhatsApp before giving the gift. After the 10th paid spin, every spin shows "Better luck next time". Terms apply.</p>
+      <p class="text-faint" style="font-size:11.5px;margin:10px 0 0;">Add money in your <a href="wallet.html" style="text-decoration:underline">Wallet</a> to buy coins (₹10 to ₹99,999). Free spins give no prize. Only paid spins count: the 1st to 9th paid spin show "Better luck next time" and the 10th paid spin wins the headphones gift (10 paid spins = 100 coins). The headphones are a free gift with the purchase of any product from SM Mobile Deals. The shop confirms your spin history on WhatsApp before giving the gift. After the 10th paid spin, every spin shows "Better luck next time". Terms apply.</p>
     </div>
   </section>
 </main>
-<div class="sw-modal" id="sw-pay"><div style="max-width:380px;width:100%;background:var(--surface,#111);color:var(--text,#fff);border:1px solid var(--border,#333);border-radius:16px;padding:22px;text-align:center">
-  <h3 style="margin:0 0 4px;font-family:var(--font-display)">Pay ₹10 to spin</h3>
-  <p class="text-dim" style="font-size:13px;margin:0 0 12px">Pay on UPI, then enter the 12-digit UTR / reference number.</p>
-  <img id="sw-qr" alt="UPI QR" style="width:170px;max-width:60%;border-radius:10px;background:#fff;padding:6px;margin:0 auto 10px;display:none">
-  <a id="sw-upi" class="btn btn-primary" style="margin-bottom:10px"><i class="fa-solid fa-indian-rupee-sign"></i> Pay ₹10 with UPI app</a>
-  <input class="input" id="sw-utr" inputmode="numeric" maxlength="12" placeholder="12-digit UTR / Ref no." style="text-align:center;margin-bottom:6px">
-  <p id="sw-err" style="color:#ef4444;font-size:12.5px;min-height:16px;margin:0 0 8px"></p>
-  <div style="display:flex;gap:10px;justify-content:center"><button class="btn btn-primary" id="sw-go" type="button">I have paid - Spin</button><button class="btn btn-outline" id="sw-pcancel" type="button">Cancel</button></div></div></div>
+<div class="sw-modal" id="sw-pay"><div style="max-width:360px;width:100%;background:var(--surface,#111);color:var(--text,#fff);border:1px solid var(--border,#333);border-radius:16px;padding:22px;text-align:center">
+  <div style="font-size:40px">🪙</div>
+  <h3 id="sw-paytitle" style="margin:6px 0 6px;font-family:var(--font-display)">A spin costs 10 coins</h3>
+  <p id="sw-paymsg" class="text-dim" style="font-size:13.5px;margin:0 0 14px"></p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a class="btn btn-primary" id="sw-payhref" href="wallet.html"><i class="fa-solid fa-wallet"></i> Open Wallet</a><button class="btn btn-outline" id="sw-pcancel" type="button">Close</button></div></div></div>
 <div class="sw-modal" id="sw-modal"><div style="max-width:380px;width:100%;background:var(--surface,#111);color:var(--text,#fff);border:1px solid var(--border,#333);border-radius:16px;padding:24px;text-align:center">
   <div id="sw-ic" style="font-size:46px"></div><h3 id="sw-title" style="margin:8px 0 6px;font-family:var(--font-display)"></h3><p id="sw-msg" class="text-dim" style="font-size:14px;margin:0 0 16px"></p>
   <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a id="sw-claim" class="btn btn-primary" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Claim on WhatsApp</a><button class="btn btn-outline" id="sw-close" type="button">Close</button></div></div></div>
@@ -143,32 +140,39 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   draw();
   function today(){return new Date().toISOString().slice(0,10)}
-  var FREE_PER_DAY=3, PRICE=10, EVERY=10, K_FREE='smd_spin_free', K_PAID='smd_spin_paid';
+  var FREE_PER_DAY=3, PRICE=10, EVERY=10, K_FREE='smd_spin_free';
+  var ST={balance:null,spins:0,login:false};
   function jget(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
   function jset(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
   function freeStamps(){var a=jget(K_FREE,[]);if(!Array.isArray(a))a=[];var cut=Date.now()-24*3600*1000;return a.filter(function(t){return typeof t==='number'&&t>cut})}
   function freeUsed(){return freeStamps().length}
   function waitText(){var a=freeStamps().sort(),ms=a.length?(a[0]+24*3600*1000-Date.now()):0,m=Math.max(1,Math.ceil(ms/60000)),h=Math.floor(m/60);return (h?h+'h ':'')+(m%60)+'m'}
-  function paidList(){return jget(K_PAID,[])}
   function cfg(k,d){return (typeof SITE_CONFIG!=='undefined'&&SITE_CONFIG[k])||d}
+  function sbOk(){return typeof supabaseClient!=='undefined'&&typeof DB!=='undefined'&&DB.useSupabase&&DB.useSupabase()&&typeof Auth!=='undefined'&&Auth.isLoggedIn()}
   function refresh(){
-    var left=Math.max(0,FREE_PER_DAY-freeUsed()), paid=paidList().length;
-    document.getElementById('sw-note').textContent=left>0?('Free spins left: '+left+' of '+FREE_PER_DAY+'. After that, \u20B9'+PRICE+' per spin.'):('Free spins over. Next free spin opens in '+waitText()+'. Or spin now for \u20B9'+PRICE+'.');
+    var left=Math.max(0,FREE_PER_DAY-freeUsed()), paid=ST.spins;
+    document.getElementById('sw-note').textContent=left>0?('Free spins left: '+left+' of '+FREE_PER_DAY+'. After that, '+PRICE+' coins (\u20B9'+PRICE+') per spin.'):('Free spins over. Next free spin opens in '+waitText()+'. Or spin now for '+PRICE+' coins.');
     document.getElementById('sw-sub').textContent=paid>=EVERY?'Headphones offer completed. All further spins: better luck next time.':('Your paid spins: '+paid+' of '+EVERY+' \u2022 '+(EVERY-paid===1?'Your NEXT paid spin wins the FREE headphones gift!':(EVERY-paid)+' more paid spins to the FREE headphones gift'));
+    document.getElementById('sw-coins').textContent=ST.balance==null?'':('\u2022 '+ST.balance+' coins');
+  }
+  async function loadState(){
+    ST.login=sbOk();
+    if(ST.login){var r=await supabaseClient.rpc('wallet_state');if(!r.error&&r.data){ST.balance=Number(r.data.balance||0);ST.spins=Number(r.data.spins||0)}}
+    refresh();
   }
   refresh();
   function rnd(n){return Math.floor(Math.random()*n)}
-  function showResult(win,paid,utr){
-    var p=win?PRIZES[0]:PRIZES[1+rnd(N-1)];
-    var claim=document.getElementById('sw-claim'),left=Math.max(0,FREE_PER_DAY-freeUsed()),cnt=paidList().length;
+  function showResult(win,paid){
+    var p=PRIZES[0];
+    var claim=document.getElementById('sw-claim'),left=Math.max(0,FREE_PER_DAY-freeUsed()),cnt=ST.spins;
     if(win){
       claim.style.display='';
       document.getElementById('sw-ic').innerHTML='<img src="'+IMG_DIR+p.img+'" alt="" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid #f5b301">';
       document.getElementById('sw-title').textContent='You won FREE Headphones!';
-      document.getElementById('sw-msg').textContent='Free headphones gift with any product you buy. Tap below to claim on WhatsApp; the shop will verify your '+EVERY+' payments first.';
-      var refs=paidList().slice(-EVERY).map(function(x){return x.u}).join(', ');
+      document.getElementById('sw-msg').textContent='Free headphones gift with any product you buy. Tap below to claim on WhatsApp; the shop will check your spin history first.';
+      var em=(typeof Auth!=='undefined'&&Auth.currentUser&&(Auth.currentUser()||{}).email)||'';
       var num=cfg('whatsappNumber','918760633334');
-      claim.href='https://wa.me/'+num+'?text='+encodeURIComponent('Hi SM Mobile Deals, I completed '+EVERY+' paid Lucky Spins and won the FREE Headphones gift ('+today()+'). I want to buy a product and claim it. My UPI refs: '+refs+'. Please verify and confirm.');
+      claim.href='https://wa.me/'+num+'?text='+encodeURIComponent('Hi SM Mobile Deals, I won the FREE Headphones gift on my 10th paid Lucky Spin ('+today()+'). My account: '+em+'. I want to buy a product and claim it. Please confirm.');
     }else{
       claim.style.display='none';
       document.getElementById('sw-ic').innerHTML='<img src="'+IMG_DIR+'better-luck.png" alt="Better luck next time" style="width:100%;max-width:300px;height:auto;display:block;margin:0 auto;background:#fff;border-radius:12px;padding:6px">';
@@ -177,37 +181,36 @@ document.addEventListener('DOMContentLoaded', function(){
     }
     document.getElementById('sw-modal').style.display='flex';
   }
-  function doSpin(paid,utr){
+  function animate(win,paid){
     busy=true;
-    var win=false;
-    if(paid){var list=paidList();list.push({u:utr,t:Date.now()});jset(K_PAID,list);win=(list.length===EVERY);}
-    else{var fs=freeStamps();fs.push(Date.now());jset(K_FREE,fs);}
-    refresh();
     var i=win?0:1+rnd(N-1), center=i*SEG+SEG/2, jitter=(Math.random()-.5)*SEG*.6;
     rot+=360*6+((360-center+jitter)-(rot%360)+360)%360;
     document.getElementById('sw-wheel').style.transform='rotate('+rot+'deg)';
-    setTimeout(function(){busy=false;showResult(win,paid,utr);},5400);
+    setTimeout(function(){busy=false;showResult(win,paid);},5400);
   }
-  function openPay(){
-    var id=cfg('upiId',''),nm=cfg('upiPayeeName','SM Mobile Deals'),qr=cfg('upiQrImage','');
-    var q=document.getElementById('sw-qr');if(qr){q.src='../'+qr;q.style.display='block';}
-    document.getElementById('sw-upi').href=id?('upi://pay?pa='+encodeURIComponent(id)+'&pn='+encodeURIComponent(nm)+'&am='+PRICE+'&cu=INR&tn='+encodeURIComponent('Lucky Spin')):'#';
-    document.getElementById('sw-utr').value='';document.getElementById('sw-err').textContent='';
+  function needCoins(title,msg,href,label){
+    document.getElementById('sw-paytitle').textContent=title;document.getElementById('sw-paymsg').textContent=msg;
+    var a=document.getElementById('sw-payhref');a.href=href;a.innerHTML='<i class="fa-solid fa-wallet"></i> '+label;
     document.getElementById('sw-pay').style.display='flex';
   }
-  document.getElementById('sw-spin').addEventListener('click',function(){
+  document.getElementById('sw-spin').addEventListener('click',async function(){
     if(busy)return;
-    if(freeUsed()<FREE_PER_DAY)doSpin(false);else openPay();
-  });
-  document.getElementById('sw-go').addEventListener('click',function(){
-    var u=document.getElementById('sw-utr').value.replace(/\s/g,''),err=document.getElementById('sw-err');
-    if(!/^\d{12}$/.test(u)){err.textContent='Enter the 12-digit UTR / reference number from your UPI app.';return}
-    if(paidList().some(function(x){return x.u===u})){err.textContent='This reference number was already used.';return}
-    document.getElementById('sw-pay').style.display='none';doSpin(true,u);
+    if(freeUsed()<FREE_PER_DAY){var fs=freeStamps();fs.push(Date.now());jset(K_FREE,fs);refresh();animate(false,false);return}
+    if(!sbOk())return needCoins('Login to spin','Free spins are over. Login and add coins in your Wallet to spin (10 coins per spin).','login.html','Login');
+    busy=true;
+    var r=await supabaseClient.rpc('wallet_spin');
+    busy=false;
+    if(r.error||!r.data)return needCoins('Could not spin',(r.error&&r.error.message)||'Please try again.','wallet.html','Open Wallet');
+    if(!r.data.ok){
+      if(r.data.error==='insufficient'){ST.balance=Number(r.data.balance||0);refresh();return needCoins('Not enough coins','A spin costs '+PRICE+' coins. Your balance: '+ST.balance+' coins. Add money in your Wallet (1 \u20B9 = 1 coin).','wallet.html','Add coins')}
+      return needCoins('Could not spin',r.data.error||'Try again.','wallet.html','Open Wallet');
+    }
+    ST.balance=Number(r.data.balance);ST.spins=Number(r.data.spins);refresh();
+    animate(!!r.data.win,true);
   });
   document.getElementById('sw-pcancel').addEventListener('click',function(){document.getElementById('sw-pay').style.display='none'});
-  document.getElementById('sw-close').addEventListener('click',function(){document.getElementById('sw-modal').style.display='none'});
-  App.boot('shop');
+    document.getElementById('sw-close').addEventListener('click',function(){document.getElementById('sw-modal').style.display='none'});
+  App.boot('shop').then(loadState,loadState);
 });
 </script>
 <script src="../js/fast-nav.js"></script>

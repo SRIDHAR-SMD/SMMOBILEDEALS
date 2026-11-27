@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}try{if(sessionStorage.getItem('smd_splash'))document.documentElement.classList.add('no-splash');}catch(e){}setTimeout(function(){var e=document.getElementById('page-loader');if(e){e.classList.add('hide');setTimeout(function(){e.remove()},400)}},1800);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Wallet — SM Mobile Deals</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<link rel="stylesheet" href="../css/color-fix.css"><link rel="stylesheet" href="../css/final-fix.css">
+<link rel="stylesheet" href="../css/ultrawide.css">
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+<style>
+.wl-bal{font-size:44px;font-weight:800;font-family:var(--font-display);line-height:1}
+.wl-chip{padding:7px 14px;border-radius:999px;border:1px solid var(--border-soft,#444);background:transparent;color:inherit;cursor:pointer;font-size:13px}
+.wl-tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.wl-row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--border-soft,#333);font-size:13.5px}
+.wl-row:last-child{border:0}
+.wl-info li{margin:5px 0}
+</style>
+<main>
+  <section class="page-hero container">
+    <div class="breadcrumb"><a href="../index.html">Home</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Wallet</span></div>
+    <h1 class="page-title"><i class="fa-solid fa-wallet"></i> My Wallet</h1>
+  </section>
+  <section class="section container" style="padding-top:10px;max-width:680px;">
+
+    <div class="card" style="padding:18px;margin-bottom:14px;">
+      <h3 style="margin:0 0 8px;font-family:var(--font-display);">How coins work</h3>
+      <ul class="wl-info" style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.6">
+        <li><b>1 ₹ = 1 coin.</b> Add ₹10 to ₹99,999 to your wallet by UPI.</li>
+        <li>Coins are added <b>after the shop checks your UPI payment</b> (UTR number). Usually within a few hours during shop timings.</li>
+        <li><b>Lucky Spin:</b> 1 paid spin = 10 coins. The 10th paid spin wins a free headphones gift (with any product purchase).</li>
+        <li><b>Mobile recharge:</b> e.g. ₹349 recharge = 349 coins.</li>
+        <li><b>Buy a mobile:</b> e.g. a ₹15,000 mobile = 15,000 coins.</li>
+        <li>If the shop rejects a recharge / purchase request, your coins are returned to the wallet.</li>
+        <li>Coins are for use in SM Mobile Deals only. They cannot be withdrawn as cash or transferred. Terms apply.</li>
+      </ul>
+    </div>
+
+    <div id="wl-login" class="card" style="padding:18px;display:none;text-align:center">
+      <p style="margin:0 0 12px">Please login to use your wallet.</p>
+      <a class="btn btn-primary" href="login.html">Login</a>
+    </div>
+
+    <div id="wl-app" style="display:none">
+      <div class="card" style="padding:18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div><div class="text-dim" style="font-size:13px">Coin balance</div><div class="wl-bal"><i class="fa-solid fa-coins" style="color:#f5b301;font-size:30px"></i> <span id="wl-bal">0</span></div></div>
+        <a class="btn btn-outline" href="lucky-spin.html">🎡 Lucky Spin</a>
+      </div>
+
+      <div class="card" style="padding:18px;margin-bottom:14px;">
+        <h3 style="margin:0 0 10px;font-family:var(--font-display);">Add money (buy coins)</h3>
+        <div class="field"><label>Amount (₹10 to ₹99,999)</label><input class="input" id="wl-amt" type="number" inputmode="numeric" min="10" max="99999" placeholder="e.g. 500">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px" id="wl-chips"></div></div>
+        <div style="text-align:center;margin:8px 0">
+          <img id="wl-qr" alt="UPI QR" style="width:170px;max-width:60%;border-radius:10px;background:#fff;padding:6px;display:none;margin:0 auto 8px">
+          <a id="wl-upi" class="btn btn-primary" href="#"><i class="fa-solid fa-indian-rupee-sign"></i> Pay with UPI app</a>
+        </div>
+        <div class="field"><label>12-digit UTR / reference number (after paying)</label><input class="input" id="wl-utr" inputmode="numeric" maxlength="12" placeholder="e.g. 412345678901"></div>
+        <p id="wl-topmsg" style="min-height:18px;font-size:13px;margin:0 0 8px"></p>
+        <button class="btn btn-primary" id="wl-topup" type="button">I have paid - Add coins</button>
+      </div>
+
+      <div class="card" style="padding:18px;margin-bottom:14px;">
+        <h3 style="margin:0 0 10px;font-family:var(--font-display);">Use coins</h3>
+        <div class="wl-tabs"><button class="btn btn-primary btn-sm" id="wl-t1" type="button">📱 Mobile recharge</button><button class="btn btn-outline btn-sm" id="wl-t2" type="button">🛍️ Buy a mobile</button></div>
+        <div id="wl-f1">
+          <div class="field"><label>Mobile number to recharge</label><input class="input" id="rc-num" inputmode="numeric" maxlength="10" placeholder="10-digit number"></div>
+          <div class="field"><label>Operator</label><select class="input" id="rc-op"><option>Airtel</option><option>Jio</option><option>Vi</option><option>BSNL</option></select></div>
+          <div class="field"><label>Recharge amount (coins = ₹)</label><input class="input" id="rc-amt" type="number" inputmode="numeric" min="10" max="10000" placeholder="e.g. 349"></div>
+        </div>
+        <div id="wl-f2" style="display:none">
+          <div class="field"><label>Mobile name / model</label><input class="input" id="bm-name" placeholder="e.g. Samsung Galaxy S24 Ultra"></div>
+          <div class="field"><label>Price in coins (1 ₹ = 1 coin)</label><input class="input" id="bm-amt" type="number" inputmode="numeric" min="100" max="500000" placeholder="e.g. 15000"></div>
+          <div class="field"><label>Note (colour, storage, delivery area)</label><input class="input" id="bm-note" placeholder="optional"></div>
+        </div>
+        <p id="wl-usemsg" style="min-height:18px;font-size:13px;margin:0 0 8px"></p>
+        <button class="btn btn-primary" id="wl-use" type="button">Use coins</button>
+      </div>
+
+      <div class="card" style="padding:18px;">
+        <h3 style="margin:0 0 6px;font-family:var(--font-display);">History</h3>
+        <div id="wl-hist" class="text-dim" style="font-size:13px">Loading...</div>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="../js/vendor/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/webp-manifest.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+<script defer src="../js/smd-v29.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var $=function(i){return document.getElementById(i)};
+  var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+  var mode=1;
+  function cfg(k,d){return (typeof SITE_CONFIG!=='undefined'&&SITE_CONFIG[k])||d}
+  function setMsg(id,t,ok){var e=$(id);e.textContent=t||'';e.style.color=ok?'#22c55e':'#ef4444'}
+  [100,500,1000,5000,10000].forEach(function(v){var b=document.createElement('button');b.type='button';b.className='wl-chip';b.textContent='₹'+v;b.onclick=function(){$('wl-amt').value=v;upi()};$('wl-chips').appendChild(b)});
+  function upi(){
+    var a=parseInt($('wl-amt').value,10),id=cfg('upiId',''),nm=cfg('upiPayeeName','SM Mobile Deals'),qr=cfg('upiQrImage','');
+    if(qr){$('wl-qr').src='../'+qr;$('wl-qr').style.display='block'}
+    $('wl-upi').href=(id&&a>=10)?('upi://pay?pa='+encodeURIComponent(id)+'&pn='+encodeURIComponent(nm)+'&am='+a+'&cu=INR&tn='+encodeURIComponent('Wallet top-up')):'#';
+  }
+  $('wl-amt').addEventListener('input',upi);
+  $('wl-upi').addEventListener('click',function(e){var a=parseInt($('wl-amt').value,10);if(!(a>=10&&a<=99999)){e.preventDefault();setMsg('wl-topmsg','Enter an amount from ₹10 to ₹99,999 first.')}});
+  $('wl-t1').onclick=function(){mode=1;$('wl-f1').style.display='';$('wl-f2').style.display='none';$('wl-t1').className='btn btn-primary btn-sm';$('wl-t2').className='btn btn-outline btn-sm'};
+  $('wl-t2').onclick=function(){mode=2;$('wl-f2').style.display='';$('wl-f1').style.display='none';$('wl-t2').className='btn btn-primary btn-sm';$('wl-t1').className='btn btn-outline btn-sm'};
+  function sb(){return typeof supabaseClient!=='undefined'&&typeof DB!=='undefined'&&DB.useSupabase&&DB.useSupabase()}
+  async function refresh(){
+    var s=await supabaseClient.rpc('wallet_state');
+    if(!s.error&&s.data)$('wl-bal').textContent=Number(s.data.balance||0).toLocaleString('en-IN');
+    var l=await supabaseClient.from('wallet_ledger').select('*').order('created_at',{ascending:false}).limit(30);
+    var t=await supabaseClient.from('wallet_topups').select('*').order('created_at',{ascending:false}).limit(10);
+    var rq=await supabaseClient.from('wallet_requests').select('*').order('created_at',{ascending:false}).limit(10);
+    var h='';
+    (t.data||[]).filter(function(x){return x.status!=='approved'}).forEach(function(x){h+='<div class="wl-row"><span>Top-up ₹'+esc(x.amount)+' <span class="text-faint">(UTR '+esc(x.utr)+')</span></span><b>'+(x.status==='pending'?'⏳ Waiting for shop approval':'❌ Rejected')+'</b></div>'});
+    (rq.data||[]).filter(function(x){return x.status==='pending'}).forEach(function(x){h+='<div class="wl-row"><span>'+(x.kind==='recharge'?'Recharge':'Mobile purchase')+' request ('+esc(x.coins)+' coins)</span><b>⏳ Pending</b></div>'});
+    (l.data||[]).forEach(function(x){var d=new Date(x.created_at).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});h+='<div class="wl-row"><span>'+esc(x.note||x.kind)+' <span class="text-faint">'+esc(d)+'</span></span><b style="color:'+(x.delta>0?'#22c55e':'#ef4444')+'">'+(x.delta>0?'+':'')+esc(x.delta)+'</b></div>'});
+    $('wl-hist').innerHTML=h||'No transactions yet.';
+  }
+  $('wl-topup').addEventListener('click',async function(){
+    var a=parseInt($('wl-amt').value,10),u=$('wl-utr').value.replace(/\s/g,'');
+    if(!(a>=10&&a<=99999))return setMsg('wl-topmsg','Enter an amount from ₹10 to ₹99,999.');
+    if(!/^\d{12}$/.test(u))return setMsg('wl-topmsg','Enter the 12-digit UTR / reference number from your UPI app.');
+    var b=this;b.disabled=true;
+    var r=await supabaseClient.rpc('wallet_request_topup',{p_amount:a,p_utr:u});b.disabled=false;
+    if(r.error||!r.data||!r.data.ok)return setMsg('wl-topmsg',(r.data&&r.data.error)||(r.error&&r.error.message)||'Could not send. Try again.');
+    $('wl-utr').value='';setMsg('wl-topmsg','Sent! Your '+a+' coins will be added once the shop verifies the payment.',true);refresh();
+    try{if(typeof Inbox!=='undefined')Inbox.sendToAdmin('Wallet top-up request','₹'+a+' - UTR '+u)}catch(e){}
+  });
+  $('wl-use').addEventListener('click',async function(){
+    var kind,coins,det;
+    if(mode===1){
+      var n=$('rc-num').value.replace(/\D/g,''),c=parseInt($('rc-amt').value,10);
+      if(!/^[6-9]\d{9}$/.test(n))return setMsg('wl-usemsg','Enter a valid 10-digit mobile number.');
+      if(!(c>=10&&c<=10000))return setMsg('wl-usemsg','Recharge must be 10 to 10000 coins.');
+      kind='recharge';coins=c;det={mobile:n,operator:$('rc-op').value};
+    }else{
+      var nm=$('bm-name').value.trim(),p=parseInt($('bm-amt').value,10);
+      if(nm.length<3)return setMsg('wl-usemsg','Enter the mobile name / model.');
+      if(!(p>=100&&p<=500000))return setMsg('wl-usemsg','Price must be 100 to 500000 coins.');
+      kind='purchase';coins=p;det={product:nm,note:$('bm-note').value.trim()};
+    }
+    if(!confirm('Use '+coins+' coins for this '+(kind==='recharge'?'recharge':'purchase')+'?'))return;
+    var b=this;b.disabled=true;
+    var r=await supabaseClient.rpc('wallet_spend',{p_kind:kind,p_coins:coins,p_details:det});b.disabled=false;
+    if(r.error||!r.data||!r.data.ok)return setMsg('wl-usemsg',(r.data&&r.data.error)||(r.error&&r.error.message)||'Could not send. Try again.');
+    setMsg('wl-usemsg','Request sent! The shop will complete it soon. If rejected, your coins come back.',true);refresh();
+    try{if(typeof Inbox!=='undefined')Inbox.sendToAdmin('Wallet coins request',(kind==='recharge'?'Recharge ':'Purchase ')+coins+' coins')}catch(e){}
+  });
+  App.boot('shop').then(function(){
+    if(!sb()||typeof Auth==='undefined'||!Auth.isLoggedIn()){$('wl-login').style.display='';return}
+    $('wl-app').style.display='';refresh();
+  });
+});
+</script>
+<script src="../js/fast-nav.js"></script>
+</body>
+</html>

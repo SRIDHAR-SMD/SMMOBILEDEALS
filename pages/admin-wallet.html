@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script>(function(){try{document.documentElement.setAttribute('data-theme', localStorage.getItem('smd_theme') || 'dark');}catch(e){}try{if(sessionStorage.getItem('smd_splash'))document.documentElement.classList.add('no-splash');}catch(e){}setTimeout(function(){var e=document.getElementById('page-loader');if(e){e.classList.add('hide');setTimeout(function(){e.remove()},400)}},1800);})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="icon" type="image/png" href="../assets/icons/admin-icon-192.png">
+<link rel="apple-touch-icon" href="../assets/icons/admin-apple-touch-icon.png">
+<link rel="manifest" href="../manifest-admin.json">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wallet Requests — Admin</title>
+<link rel="manifest" href="../manifest.json">
+<meta name="theme-color" content="#000000">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap"></noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+<link rel="stylesheet" href="../css/variables.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/dark-mode.css">
+<link rel="stylesheet" href="../css/animations.css">
+<link rel="stylesheet" href="../css/responsive.css">
+<link rel="stylesheet" href="../css/color-fix.css"><link rel="stylesheet" href="../css/final-fix.css">
+<link rel="stylesheet" href="../css/ultrawide.css">
+</head>
+<body>
+<div id="page-loader">
+  <div class="pl-inner">
+    <div class="pl-mark"><span>S</span><span>M</span></div>
+    <div class="pl-title" id="pl-title" data-text="SM Mobile Deals"></div>
+    <div class="pl-sub">Genuine tech, honest prices.</div>
+    <div class="pl-bar"><div class="pl-bar-fill"></div></div>
+  </div>
+</div>
+<div id="site-header"></div>
+<main>
+  <section class="page-hero container"><div class="breadcrumb"><a href="admin.html">Admin</a> <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i> <span>Wallet</span></div>
+    <h1 class="page-title">Wallet Requests</h1></section>
+  <section class="section container" style="padding-top:10px;max-width:860px;">
+    <h3 style="margin:0 0 8px">1. Top-ups waiting for approval</h3>
+    <p class="text-dim" style="font-size:13px;margin:0 0 10px">Check the UTR and amount in your bank / UPI app, then Approve. Approve adds the coins (1 ₹ = 1 coin).</p>
+    <div id="wa-top"></div>
+    <h3 style="margin:22px 0 8px">2. Recharge / mobile purchase with coins</h3>
+    <p class="text-dim" style="font-size:13px;margin:0 0 10px">Coins are already deducted. Do the recharge / sale, then press Done. Reject refunds the coins.</p>
+    <div id="wa-req"></div>
+    <h3 style="margin:22px 0 8px">3. Recent wallet activity <span class="text-faint" style="font-size:12px">(spin #10 = headphones gift winner)</span></h3>
+    <div id="wa-led"></div>
+  </section>
+</main>
+<div id="site-footer"></div>
+
+<script>const ROOT_PREFIX = '../';</script>
+<script defer src="../js/vendor/supabase.min.js"></script>
+<script defer src="../js/supabase-client.js"></script>
+<script defer src="../js/config.js"></script>
+<script defer src="../js/webp-manifest.js"></script>
+<script defer src="../js/utils.js"></script>
+<script defer src="../js/data.js"></script>
+<script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
+<script defer src="../js/auth.js"></script>
+<script defer src="../js/cart.js"></script>
+<script defer src="../js/notifications.js"></script>
+<script defer src="../js/theme.js"></script>
+<script defer src="../js/loader.js"></script>
+<script defer src="../js/search.js"></script>
+<script defer src="../js/orders.js"></script>
+<script defer src="../js/reminders.js"></script>
+<script defer src="../js/inbox.js"></script>
+<script defer src="../js/branding.js"></script>
+
+<script defer src="../js/ui.js"></script>
+<script defer src="../js/app.js"></script>
+<script defer src="../js/smd-v29.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var $=function(i){return document.getElementById(i)}, esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+  var dt=function(s){return new Date(s).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})};
+  async function load(){
+    var t=await supabaseClient.from('wallet_topups').select('*').eq('status','pending').order('created_at',{ascending:true}).limit(200);
+    $('wa-top').innerHTML=(t.data||[]).length?t.data.map(function(r){return '<div class="card" style="padding:14px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>₹'+esc(r.amount)+' → '+esc(r.amount)+' coins</b><span class="text-faint">'+esc(dt(r.created_at))+'</span></div><div class="text-dim" style="font-size:13.5px;margin-top:4px">'+esc(r.user_email)+'<br>UTR: <b style="color:var(--text)">'+esc(r.utr)+'</b></div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary btn-sm" data-t="'+esc(r.id)+'" data-a="1">Approve</button><button class="btn btn-outline btn-sm" data-t="'+esc(r.id)+'" data-a="0">Reject</button></div></div>'}).join(''):'<div class="text-dim">No pending top-ups.</div>';
+    var q=await supabaseClient.from('wallet_requests').select('*').eq('status','pending').order('created_at',{ascending:true}).limit(200);
+    $('wa-req').innerHTML=(q.data||[]).length?q.data.map(function(r){var d=r.details||{};return '<div class="card" style="padding:14px;margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><b>'+(r.kind==='recharge'?'📱 Recharge':'🛍️ Mobile purchase')+' · '+esc(r.coins)+' coins</b><span class="text-faint">'+esc(dt(r.created_at))+'</span></div><div class="text-dim" style="font-size:13.5px;margin-top:4px">'+esc(r.user_email)+'<br>'+(r.kind==='recharge'?'Mobile: <b style="color:var(--text)">'+esc(d.mobile)+'</b> · '+esc(d.operator):'Product: <b style="color:var(--text)">'+esc(d.product)+'</b>'+(d.note?'<br>Note: '+esc(d.note):''))+'</div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn btn-primary btn-sm" data-r="'+esc(r.id)+'" data-a="1">Done</button><button class="btn btn-outline btn-sm" data-r="'+esc(r.id)+'" data-a="0">Reject + refund</button></div></div>'}).join(''):'<div class="text-dim">No pending requests.</div>';
+    var l=await supabaseClient.from('wallet_ledger').select('*').order('created_at',{ascending:false}).limit(60);
+    var em={};(t.data||[]).forEach(function(r){em[r.user_id]=r.user_email});(q.data||[]).forEach(function(r){em[r.user_id]=r.user_email});
+    $('wa-led').innerHTML=(l.data||[]).map(function(x){var win=/HEADPHONES/.test(x.note||'');return '<div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border-soft,#333);font-size:13px'+(win?';font-weight:700;color:#f5b301':'')+'"><span>'+(win?'🎧 ':'')+esc(x.note||x.kind)+' <span class="text-faint">'+esc(em[x.user_id]||String(x.user_id).slice(0,8))+' · '+esc(dt(x.created_at))+'</span></span><b>'+(x.delta>0?'+':'')+esc(x.delta)+'</b></div>'}).join('')||'<div class="text-dim">Nothing yet.</div>';
+  }
+  document.addEventListener('click',async function(e){
+    var b=e.target.closest('[data-a]');if(!b)return;b.disabled=true;
+    var r=b.dataset.t?await supabaseClient.rpc('wallet_review_topup',{p_id:b.dataset.t,p_approve:b.dataset.a==='1'}):await supabaseClient.rpc('wallet_review_request',{p_id:b.dataset.r,p_done:b.dataset.a==='1'});
+    if(r.error||!r.data||!r.data.ok){alert((r.data&&r.data.error)||(r.error&&r.error.message)||'Failed');}
+    load();
+  });
+  App.boot('shop').then(function(){ if(!Auth.isAdmin()){location.href='login.html';return} load(); });
+});
+</script>
+<script src="../js/fast-nav.js"></script>
+</body>
+</html>
