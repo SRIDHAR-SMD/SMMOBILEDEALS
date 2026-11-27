@@ -84,7 +84,7 @@
   }
 
   @media print{
-    .site-header, .site-footer, .announce-bar, .inv-actions, #page-loader{ display:none !important; }
+    .site-header, .site-footer, .announce-bar, .inv-actions, #page-loader, #smd-dock, #ai-fab, #chat-panel, #gps-toggle, #wa-chooser, #sat-notice, #smd-admin-gw, #qr-lightbox, .fab-badge, [class*="chatbot"], [class*="smd-dock"], [id*="chat"], [id*="fab"], [class*="fab"], .toast, .toast-wrap, #toast-wrap, #pwa-install{ display:none !important; }
     body{ background:#fff !important; }
     .inv-sheet{ box-shadow:none; border-radius:0; padding:0; }
     .inv-wrap{ max-width:100%; padding:0; }
@@ -123,7 +123,7 @@
 <script defer src="../js/webp-manifest.js"></script>
 <script defer src="../js/utils.js"></script>
 <script defer src="../js/data.js"></script>
-<script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
+<script defer src="../js/bill-lines.js"></script><script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
 <script defer src="../js/auth.js"></script>
 <script defer src="../js/cart.js"></script>
 <script defer src="../js/notifications.js"></script>
@@ -168,22 +168,18 @@ App.boot('shop').then(async () => {
 
   const rows = (order.items || []).map(item => {
     const p = products.find(pp => pp.id === item.id);
-    const specBits = [];
-    const pick = (a, b) => a || b || '';
-    const model = pick(item.model, p && p.modelName);
-    [['Model', model], ['Storage', pick(item.storage, p && p.storage)], ['RAM', pick(item.ram, p && p.ram)], ['Colour', pick(item.colorName, p && p.colorName)], ['Variant', p && p.variant], ['Warranty', item.warranty]]
-      .filter(([,v]) => v).forEach(([k,v]) => specBits.push(`${k}: ${v}`));
-    if (p && p.condition && p.condition !== 'new') specBits.push((DB.CONDITION_META[p.condition]||{}).label || p.condition);
-    const imeiLine = (item.imei ? `<div class="spec-line" style="font-family:var(--font-mono);font-weight:600;color:#1a1a1a;">IMEI 1: ${Utils.escapeHtml(item.imei)}</div>` : '') +
-      (item.imei2 ? `<div class="spec-line" style="font-family:var(--font-mono);font-weight:600;color:#1a1a1a;">IMEI 2: ${Utils.escapeHtml(item.imei2)}</div>` : '');
     const lineTotal = (item.price || 0) * (item.qty || 1);
+    const pr = BillLines.prices(item, p, Utils.formatINR);
     return `<tr>
-      <td>${Utils.escapeHtml(item.name)}${specBits.length ? `<div class="spec-line">${Utils.escapeHtml(specBits.join(' · '))}</div>` : ''}${imeiLine}</td>
+      <td>${Utils.escapeHtml(item.name)}${BillLines.detailHtml(item, p)}</td>
       <td style="text-align:center;">${item.qty}</td>
-      <td style="text-align:right;font-family:var(--font-mono);">${Utils.formatINR(item.price)}</td>
+      <td style="text-align:right;font-family:var(--font-mono);">${pr[0]}</td>
+      <td style="text-align:right;font-family:var(--font-mono);">${pr[1]}</td>
       <td style="text-align:right;font-family:var(--font-mono);font-weight:700;">${Utils.formatINR(lineTotal)}</td>
     </tr>`;
   }).join('');
+  const manualEntry = (order.timeline || []).find(x => /Manual bill/i.test(x.note || ''));
+  const billDate = (manualEntry && manualEntry.at) || order.createdAt;
 
   const t = order.totals || {};
   const isAdvanceOrder = order.paymentMethod === 'advance';
@@ -200,8 +196,8 @@ App.boot('shop').then(async () => {
         </div>
       </div>
       <div class="inv-meta">
-        <div><b>Invoice for Order ${Utils.escapeHtml(order.id)}</b></div>
-        <div>Date: ${Utils.formatDate(order.createdAt)}</div>
+        <div><b>${order.userId ? 'Invoice for Order' : 'Invoice No:'} ${Utils.escapeHtml(order.id)}</b></div>
+        <div>Date: ${Utils.formatDate(billDate)}</div>
         <div style="margin-top:6px;"><span class="inv-status ${fullyPaid?'inv-ok':'inv-warn'}">${statusLabel}</span></div>
       </div>
     </div>
@@ -226,7 +222,7 @@ App.boot('shop').then(async () => {
     </div>
 
     <table class="inv-table">
-      <thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price</th><th style="text-align:right;">Amount</th></tr></thead>
+      <thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Price</th><th style="text-align:right;">Discount Price</th><th style="text-align:right;">Amount</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
   const tableWrap = document.createElement('div');
@@ -275,6 +271,17 @@ App.boot('shop').then(async () => {
       </svg>
     </div>`);
 
+  /* hide every floating widget (chatbot, dock, WhatsApp, toasts...) while printing / saving PDF */
+  let hiddenFixed = [];
+  window.addEventListener('beforeprint', () => {
+    hiddenFixed = [];
+    document.querySelectorAll('body *').forEach(el => {
+      if (el.closest('#inv-root')) return;
+      const pos = getComputedStyle(el).position;
+      if (pos === 'fixed' || pos === 'sticky'){ hiddenFixed.push([el, el.style.display]); el.style.setProperty('display', 'none', 'important'); }
+    });
+  });
+  window.addEventListener('afterprint', () => { hiddenFixed.forEach(([el, d]) => { el.style.removeProperty('display'); if (d) el.style.display = d; }); hiddenFixed = []; });
   document.getElementById('inv-print-btn').addEventListener('click', () => window.print());
 });
 });

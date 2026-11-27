@@ -382,7 +382,7 @@
             </div>
             <div class="field"><label>Address <span class="text-faint" style="font-weight:400;">(optional)</span></label><input class="input" id="mb-address" placeholder="Line 1, City, State, Pincode"></div>
             <div class="flex gap-12" style="flex-wrap:wrap;">
-              <div class="field" style="flex:1;min-width:180px;max-width:260px;"><label>Invoice Number <span class="text-faint" style="font-weight:400;">(blank = auto)</span></label><input class="input" id="mb-invno" placeholder="e.g. SM-0001" maxlength="30" autocomplete="off"></div>
+              <div class="field" style="flex:1;min-width:180px;max-width:260px;"><label>Invoice Number <span class="text-faint" style="font-weight:400;">(auto line-by-line, editable)</span></label><input class="input" id="mb-invno" placeholder="SM-0001" maxlength="30" autocomplete="off"></div>
               <div class="field" style="flex:1;min-width:180px;max-width:220px;"><label>Bill Date</label><input class="input" type="date" id="mb-date"></div>
             </div>
           </div>
@@ -396,7 +396,7 @@
             <p class="text-faint" style="font-size:12px;margin:6px 0 16px;">Can't find it? Scroll to the bottom of the results to add a custom line item instead — price and description typed by hand.</p>
             <table style="width:100%;border-collapse:collapse;font-size:13px;" id="mb-items-table">
               <thead><tr style="text-align:left;border-bottom:1px solid var(--border-soft);">
-                <th style="padding:8px 6px;">Item</th><th style="padding:8px 6px;width:70px;">Qty</th><th style="padding:8px 6px;width:110px;">Price</th><th style="padding:8px 6px;width:110px;">Total</th><th></th>
+                <th style="padding:8px 6px;">Item</th><th style="padding:8px 6px;width:70px;">Qty</th><th style="padding:8px 6px;width:110px;">Discount Price</th><th style="padding:8px 6px;width:110px;">Total</th><th></th>
               </tr></thead>
               <tbody id="mb-items-body"></tbody>
             </table>
@@ -709,7 +709,7 @@
 <script defer src="../js/webp-manifest.js"></script>
 <script defer src="../js/utils.js"></script>
 <script defer src="../js/data.js"></script>
-<script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
+<script defer src="../js/bill-lines.js"></script><script defer src="../js/specs.js"></script><script defer src="../js/charging.js"></script><script defer src="../js/auto-specs.js"></script>
 <script defer src="../js/auth.js"></script>
 <script defer src="../js/cart.js"></script>
 <script defer src="../js/notifications.js"></script>
@@ -1289,10 +1289,20 @@ App.boot('').then(() => {
       const grandTotalEl = document.getElementById('mb-grand-total');
       let items = []; // { id|null, name, price, qty, type, color }
 
+      /* which detail boxes each kind of item gets (accessories: no RAM / ROM) */
+      function fieldsFor(k){
+        if (k === 'phone') return [['model','Mobile model name'],['brand','Brand'],['mrp','Price / MRP (before discount)'],['ram','RAM (e.g. 8GB)'],['storage','ROM (e.g. 256GB)'],['imei','IMEI 1 (15 digits)'],['imei2','IMEI 2 (dual SIM)'],['colorName','Colour'],['warranty','Warranty (e.g. 1 Year)']];
+        if (k === 'laptop') return [['model','Laptop model name'],['brand','Brand'],['mrp','Price / MRP (before discount)'],['ram','RAM (e.g. 16GB)'],['storage','ROM / SSD (e.g. 512GB)'],['serial','Serial number'],['colorName','Colour'],['warranty','Warranty (e.g. 1 Year)']];
+        if (k === 'watch') return [['brand','Brand (e.g. Apple, Samsung)'],['model','Model name'],['size','Size (e.g. 44mm)'],['mrp','Price / MRP (before discount)'],['specs','Spec details (non Apple / Samsung)']];
+        return [['brand','Brand'],['model','Model name'],['warranty','Warranty (e.g. 6 Months)']];
+      }
       function renderItems(){
         itemsBody.innerHTML = items.map((it, i) => `
           <tr>
-            <td style="padding:8px 6px 4px;">${Utils.escapeHtml(it.name)}${it.id ? '' : ' <span class="text-faint" style="font-size:11px;">(custom)</span>'}</td>
+            <td style="padding:8px 6px 4px;">${Utils.escapeHtml(it.name)}${it.id ? '' : ' <span class="text-faint" style="font-size:11px;">(custom)</span>'}
+              <select class="input" style="margin-top:6px;padding:4px 8px;font-size:12px;max-width:150px;" onchange="ManualBill.setKind(${i}, this.value)">
+                ${[['phone','Mobile'],['laptop','Laptop'],['watch','Watch'],['accessory','Accessory']].map(([v,l]) => `<option value="${v}" ${BillLines.kind(it) === v ? 'selected' : ''}>${l}</option>`).join('')}
+              </select></td>
             <td style="padding:8px 6px 4px;"><input class="input" type="number" min="1" value="${it.qty}" style="width:60px;padding:6px 8px;" onchange="ManualBill.setQty(${i}, this.value)"></td>
             <td style="padding:8px 6px 4px;"><input class="input" type="number" min="0" value="${it.price}" style="width:100px;padding:6px 8px;" onchange="ManualBill.setPrice(${i}, this.value)"></td>
             <td style="padding:8px 6px 4px;font-family:var(--font-mono);">${Utils.formatINR(it.price * it.qty)}</td>
@@ -1301,7 +1311,7 @@ App.boot('').then(() => {
           <tr style="border-bottom:1px solid var(--border-soft);">
             <td colspan="5" style="padding:0 6px 12px;">
               <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">
-                ${[['model','Mobile model name'],['imei','IMEI 1 (15 digits)'],['imei2','IMEI 2 (dual SIM)'],['storage','Storage (e.g. 256GB)'],['ram','RAM (e.g. 12GB)'],['colorName','Colour'],['warranty','Warranty (e.g. 1 Year)']].map(([k,ph]) => `<input class="input" placeholder="${ph}" value="${Utils.escapeHtml(it[k] || '')}" ${k.indexOf('imei')===0 ? 'inputmode="numeric" maxlength="17"' : ''} style="padding:6px 8px;${k.indexOf('imei')===0 ? 'font-family:var(--font-mono);' : ''}" onchange="ManualBill.setField(${i}, '${k}', this.value)">`).join('')}
+                ${fieldsFor(BillLines.kind(it)).map(([k,ph]) => `<input class="input" placeholder="${ph}" value="${Utils.escapeHtml(it[k] || '')}" ${k.indexOf('imei')===0 ? 'inputmode="numeric" maxlength="17"' : ''} style="padding:6px 8px;${(k.indexOf('imei')===0 || k==='serial') ? 'font-family:var(--font-mono);' : ''}" onchange="ManualBill.setField(${i}, '${k}', this.value)">`).join('')}
               </div>
             </td>
           </tr>`).join('');
@@ -1313,13 +1323,13 @@ App.boot('').then(() => {
       function addProduct(p){
         const existing = items.find(it => it.id === p.id);
         if (existing) existing.qty += 1;
-        else items.push({ id:p.id, name:p.name, price:p.price, qty:1, type:p.type, color:p.color, model:p.modelName || p.name, imei:'', imei2:'', storage:p.storage || '', ram:p.ram || '', colorName:p.colorName || '', warranty:[p.warrantyType, p.warrantyPeriod].filter(Boolean).join(' · ') });
+        else items.push({ id:p.id, name:p.name, price:p.price, mrp:p.mrp || '', brand:p.brand || '', category:p.category, kind:BillLines.kind({ category:p.category, type:p.type }, p), serial:'', size:'', specs:'', qty:1, type:p.type, color:p.color, model:p.modelName || p.name, imei:'', imei2:'', storage:p.storage || '', ram:p.ram || '', colorName:p.colorName || '', warranty:[p.warrantyType, p.warrantyPeriod].filter(Boolean).join(' · ') });
         renderItems();
         searchInput.value = '';
         suggestionsBox.style.display = 'none';
       }
       function addCustom(name){
-        items.push({ id:null, name: name || 'Custom item', price:0, qty:1, type:'accessory', color:'#4c8dff', model: name || '', imei:'', imei2:'', storage:'', ram:'', colorName:'', warranty:'' });
+        items.push({ id:null, name: name || 'Custom item', price:0, mrp:'', brand:'', kind:'accessory', serial:'', size:'', specs:'', qty:1, type:'accessory', color:'#4c8dff', model: name || '', imei:'', imei2:'', storage:'', ram:'', colorName:'', warranty:'' });
         renderItems();
         searchInput.value = '';
         suggestionsBox.style.display = 'none';
@@ -1354,14 +1364,27 @@ App.boot('').then(() => {
         setField: (i, k, v) => {
           v = String(v || '').trim();
           if (k === 'imei' || k === 'imei2') v = v.replace(/[^0-9A-Za-z]/g, '').slice(0, 17);
+          if (k === 'mrp') v = v === '' ? '' : String(Math.max(0, parseFloat(v) || 0));
           items[i][k] = v;
           if (k === 'imei' || k === 'imei2') renderItems();
         },
+        setKind: (i, v) => { items[i].kind = v; renderItems(); },
         remove: (i) => { items.splice(i, 1); renderItems(); }
       };
 
       /* default bill date = today */
       (function(){ const d = document.getElementById('mb-date'); if (d && !d.value){ const n = new Date(); d.value = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0'); } })();
+      /* invoice numbers run line by line: SM-0001, SM-0002 ... (admin can still overwrite) */
+      async function nextInvoiceNo(){
+        let max = 0;
+        const eat = (id) => { const m = /^SM-(\d+)$/i.exec(String(id || '')); if (m) max = Math.max(max, parseInt(m[1], 10)); };
+        try{ DB.getOrders().forEach(o => eat(o.id)); }catch(e){}
+        if (DB.useSupabase()){
+          try{ const { data } = await supabaseClient.from('orders').select('id').ilike('id', 'SM-%'); (data || []).forEach(o => eat(o.id)); }catch(e){}
+        }
+        return 'SM-' + String(max + 1).padStart(4, '0');
+      }
+      (async function(){ const f = document.getElementById('mb-invno'); if (f && !f.value) f.value = await nextInvoiceNo(); })();
       function invoiceNoValue(){ return String((document.getElementById('mb-invno') || {}).value || '').trim(); }
       function invoiceNoValid(v){ return /^[A-Za-z0-9_-]{1,30}$/.test(v); }
       function billDateISO(){
@@ -1392,15 +1415,11 @@ App.boot('').then(() => {
           if (!logo) logo = '../' + ((SITE_CONFIG.logo && SITE_CONFIG.logo.dark) || 'assets/logos/logo-dark.png');
           const dateTxt = new Date(billDateISO()).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
           const td = 'padding:8px;border-bottom:1px solid #cbd5e1;color:#0b1220;vertical-align:top;';
-          const detail = (it) => {
-            const bits = [['Model', it.model], ['Storage', it.storage], ['RAM', it.ram], ['Colour', it.colorName], ['Warranty', it.warranty]].filter(([,v]) => v).map(([k,v]) => k + ': ' + E(v)).join(' &middot; ');
-            return (bits ? '<div class="mb-sub" style="font-size:11.5px;color:#475569">' + bits + '</div>' : '') +
-              (it.imei ? '<div style="font-size:11.5px;color:#0b1220;font-weight:600">IMEI 1: ' + E(it.imei) + '</div>' : '') +
-              (it.imei2 ? '<div style="font-size:11.5px;color:#0b1220;font-weight:600">IMEI 2: ' + E(it.imei2) + '</div>' : '');
-          };
+          const detail = (it) => BillLines.detailHtml(it, null, { sub:'font-size:11.5px;color:#475569', id:'font-size:11.5px' });
           const rows = items.map((it) => '<tr><td style="' + td + '"><b>' + E(it.name) + '</b>' + detail(it) + '</td>' +
             '<td class="mb-num" style="' + td + 'text-align:center">' + it.qty + '</td>' +
-            '<td class="mb-num" style="' + td + 'text-align:right">&#8377;' + it.price.toLocaleString('en-IN') + '</td>' +
+            '<td class="mb-num" style="' + td + 'text-align:right">' + BillLines.prices(it, null, (n) => '&#8377;' + Number(n).toLocaleString('en-IN'))[0] + '</td>' +
+            '<td class="mb-num" style="' + td + 'text-align:right">' + BillLines.prices(it, null, (n) => '&#8377;' + Number(n).toLocaleString('en-IN'))[1] + '</td>' +
             '<td class="mb-num" style="' + td + 'text-align:right">&#8377;' + (it.price * it.qty).toLocaleString('en-IN') + '</td></tr>').join('');
           const th = 'padding:8px;background:#1e293b;color:#fff;';
           const html = '<div class="mb-bill" style="max-width:640px;margin:0 auto;padding:22px;background:#fff;color:#0b1220;font-family:Inter,sans-serif">' +
@@ -1411,7 +1430,7 @@ App.boot('').then(() => {
               '<div style="text-align:right;font-size:12px;color:#0b1220">' + (invoiceNoValue() ? '<b>Invoice No:</b> ' + E(invoiceNoValue()) + '<br>' : '') + '<b>Date:</b> ' + E(dateTxt) + '<br><span style="color:#b45309;font-weight:700">PREVIEW &mdash; not saved</span></div>' +
             '</div>' +
             '<div style="font-size:13px;margin-bottom:14px;color:#0b1220"><div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:700">Billed to</div><b>' + E(name) + '</b><br>' + E(document.getElementById('mb-phone').value) + '<br>' + E(document.getElementById('mb-address').value) + '</div>' +
-            '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="' + th + 'text-align:left">Item</th><th style="' + th + '">Qty</th><th style="' + th + 'text-align:right">Price</th><th style="' + th + 'text-align:right">Total</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+            '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="' + th + 'text-align:left">Item</th><th style="' + th + '">Qty</th><th style="' + th + 'text-align:right">Price</th><th style="' + th + 'text-align:right">Disc. Price</th><th style="' + th + 'text-align:right">Total</th></tr></thead><tbody>' + rows + '</tbody></table>' +
             '<div style="display:flex;justify-content:space-between;font-weight:800;font-size:16px;padding:12px 8px;color:#0b1220;border-top:2px solid #0b1220;margin-top:6px"><span>Total</span><span>&#8377;' + total.toLocaleString('en-IN') + '</span></div>' +
             '<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:30px;padding-top:14px;border-top:1px dashed #94a3b8">' +
               '<div style="font-size:12.5px;color:#111;font-weight:500;line-height:1.6;max-width:280px"><b style="font-size:11.5px;text-transform:uppercase;letter-spacing:.05em">Contact Us</b><br>Phone: ' + E((SITE_CONFIG.phones || []).join(' / ')) + '<br>Email: ' + E(SITE_CONFIG.email || '') + '<br><span style="font-size:11.5px;color:#333">System-generated bill from ' + E(SITE_CONFIG.shopName) + '.</span></div>' +
@@ -1427,7 +1446,8 @@ App.boot('').then(() => {
         if (!name){ Notify.toast("Enter the customer's name first.", 'error'); return; }
         if (!items.length){ Notify.toast('Add at least one product to the bill.', 'error'); return; }
 
-        const manualNo = invoiceNoValue();
+        let manualNo = invoiceNoValue();
+        if (!manualNo){ manualNo = await nextInvoiceNo(); }
         if (manualNo){
           if (!invoiceNoValid(manualNo)){ Notify.toast('Invoice number: only letters, numbers, - and _ (max 30).', 'error'); return; }
           let taken = DB.getOrders().some(o => o.id === manualNo);
@@ -1444,7 +1464,7 @@ App.boot('').then(() => {
         const order = {
           id: manualNo || Utils.orderId(),
           userId: null, // counter sale — not tied to a website account
-          items: items.map(it => ({ id:it.id, name:it.name, price:it.price, qty:it.qty, type:it.type, color:it.color, model:it.model || '', imei:it.imei || '', imei2:it.imei2 || '', storage:it.storage || '', ram:it.ram || '', colorName:it.colorName || '', warranty:it.warranty || '' })),
+          items: items.map(it => ({ id:it.id, name:it.name, price:it.price, mrp:Number(it.mrp) || 0, qty:it.qty, type:it.type, kind:BillLines.kind(it), category:it.category || '', color:it.color, brand:it.brand || '', model:it.model || '', imei:it.imei || '', imei2:it.imei2 || '', serial:it.serial || '', size:it.size || '', specs:it.specs || '', storage:it.storage || '', ram:it.ram || '', colorName:it.colorName || '', warranty:it.warranty || '' })),
           address: { name, phone: document.getElementById('mb-phone').value.trim(), line1: document.getElementById('mb-address').value.trim(), city:'', state:'', pincode:'' },
           paymentMethod: 'cod', // in-person / counter sale
           totals: { subtotal, discount:0, deliveryFee:0, cardSurcharge:0, total: subtotal },
