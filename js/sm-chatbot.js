@@ -78,6 +78,16 @@
   #smc-input{flex:1;background:#1b1f2a;color:#fff;border:1px solid #3a4152;border-radius:999px;padding:10px 14px;font-size:14px}
   #smc-input::placeholder{color:#9aa3b5}
   .smc-send{background:#2563eb;color:#fff;border:0;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:16px}
+  /* anti-fog overrides: stop page-level glass/blur/opacity styles from washing out the widget */
+  #smc-fab,#smc-panel *{opacity:1 !important;filter:none !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;text-shadow:none !important;mix-blend-mode:normal !important}
+  #smc-fab{background:#1d4ed8 !important;color:#fff !important;border:2px solid #fff !important;font-size:28px !important}
+  .smc-tabs{background:#fff !important;border-bottom:1px solid #d1d5db !important}
+  .smc-tab{background:#fff !important;color:#111827 !important;border:1.5px solid #6b7280 !important;font-weight:700 !important}
+  .smc-tab.active{background:#2563eb !important;color:#fff !important;border-color:#1d4ed8 !important}
+  .smc-hint{color:#1f2937 !important}
+  .smc-head h3{color:#fff !important}.smc-head p{color:#d1d5db !important}
+  .smc-chip{background:#2a3040 !important;color:#fff !important;border-color:#4b5568 !important}
+  .smc-chip.admin{color:#fcd34d !important;border-color:#f59e0b !important}
   @media (prefers-reduced-motion:no-preference){#smc-panel.open{animation:smcIn .18s ease-out}@keyframes smcIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}}
   `;
   const style = document.createElement('style'); style.textContent = css; document.head.appendChild(style);
