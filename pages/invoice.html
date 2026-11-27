@@ -23,7 +23,20 @@
   .inv-wrap{ max-width:820px; margin:0 auto; padding:30px 0 60px; }
   .inv-sheet{ background:#fff; color:#1a1a1a; border-radius:14px; padding:40px; box-shadow:var(--shadow-lg); }
   .inv-sheet *{ color:#1a1a1a; }
-  html[data-theme] .inv-sheet .empty-state, html[data-theme] .inv-sheet .empty-state *{ color:#1a1a1a !important; }
+  html[data-theme] .inv-sheet, html[data-theme] .inv-sheet *{ text-shadow:none !important; filter:none !important; opacity:1; }
+  html[data-theme] .inv-sheet :is(td,th,div,span,b,small,p,h1,h2,h3,h4,i):not([style*="color"]):not(.inv-status):not(.inv-seal){ color:#1a1a1a !important; -webkit-text-fill-color:#1a1a1a; }
+  html[data-theme] #inv-root .inv-table th{ background:#1e293b !important; color:#fff !important; -webkit-text-fill-color:#fff; border-bottom-color:#1e293b !important; }
+  html[data-theme] #inv-root .spec-line{ color:#555 !important; -webkit-text-fill-color:#555; }
+  html[data-theme] #inv-root .inv-meta, html[data-theme] #inv-root .inv-brand small{ color:#333 !important; }
+  html[data-theme] #inv-root .inv-seal{ color:#2555c4 !important; -webkit-text-fill-color:#2555c4; }
+  html[data-theme] #inv-root .inv-status.inv-ok{ background:#dcfce7 !important; color:#166534 !important; -webkit-text-fill-color:#166534; }
+  html[data-theme] #inv-root .inv-status.inv-warn{ background:#fef3c7 !important; color:#92400e !important; -webkit-text-fill-color:#92400e; }
+  html[data-theme] #inv-root .inv-ok-txt, html[data-theme] #inv-root .inv-ok-txt span{ color:#166534 !important; -webkit-text-fill-color:#166534; }
+  html[data-theme] #inv-root .inv-warn-txt, html[data-theme] #inv-root .inv-warn-txt span{ color:#92400e !important; -webkit-text-fill-color:#92400e; }
+  html[data-theme] #inv-root .inv-contact, html[data-theme] #inv-root .inv-contact div{ color:#111 !important; -webkit-text-fill-color:#111; }
+  html[data-theme] #inv-root .inv-contact-note{ color:#333 !important; -webkit-text-fill-color:#333; }
+  html[data-theme] #inv-root .inv-gst{ color:#333 !important; -webkit-text-fill-color:#333; }
+  html[data-theme] #inv-root .inv-table td{ border-bottom:1px solid #ddd !important; }
   .inv-head{ display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #1a1a1a; padding-bottom:18px; margin-bottom:22px; }
   .inv-brand{ font-family:var(--font-display); font-size:22px; font-weight:800; }
   .inv-brandrow{ display:flex; align-items:center; gap:14px; }
@@ -46,6 +59,10 @@
   .inv-sign-box img{ max-height:56px; max-width:180px; display:block; margin:0 auto 4px; }
   .inv-sign-line{ border-top:1px solid #333; width:180px; margin:0 auto; padding-top:6px; font-size:11px; color:#555; }
   .inv-seal{ width:104px; height:104px; border-radius:50%; border:3px double #2555c4; color:#2555c4; display:flex; align-items:center; justify-content:center; text-align:center; font-family:var(--font-display); font-weight:800; font-size:11.5px; line-height:1.25; transform:rotate(-8deg); opacity:.85; letter-spacing:.02em; }
+  .inv-contact{ font-size:13px; line-height:1.65; max-width:320px; font-weight:500; }
+  .inv-contact-title{ font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; font-weight:800; margin-bottom:3px; }
+  .inv-contact-note{ font-size:11.5px; margin-top:4px; }
+  .inv-gseal{ display:block; flex:none; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
   .inv-actions{ display:flex; gap:10px; justify-content:center; margin:22px 0; }
   .inv-table-wrap{ width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
 
@@ -59,7 +76,8 @@
     .inv-table{ min-width:480px; font-size:11.5px; }
     .inv-totals{ width:100%; max-width:260px; }
     .inv-footer{ flex-direction:column; align-items:flex-start; gap:18px; }
-    .inv-footer > div:last-child{ align-self:center; }
+    .inv-contact{ max-width:100%; }
+    .inv-footer > div:last-child, .inv-footer > .inv-gseal{ align-self:center; }
     .inv-sign-box{ align-self:center; }
     .inv-actions{ flex-direction:column; }
     .inv-actions .btn{ width:100%; justify-content:center; }
@@ -184,7 +202,7 @@ App.boot('shop').then(async () => {
       <div class="inv-meta">
         <div><b>Invoice for Order ${Utils.escapeHtml(order.id)}</b></div>
         <div>Date: ${Utils.formatDate(order.createdAt)}</div>
-        <div style="margin-top:6px;"><span class="inv-status" style="background:${fullyPaid?'#16a34a1a':'#f59e0b1a'};color:${fullyPaid?'#16a34a':'#b45309'};">${statusLabel}</span></div>
+        <div style="margin-top:6px;"><span class="inv-status ${fullyPaid?'inv-ok':'inv-warn'}">${statusLabel}</span></div>
       </div>
     </div>
 
@@ -194,7 +212,7 @@ App.boot('shop').then(async () => {
         <div style="font-size:13.5px;line-height:1.6;">
           ${Utils.escapeHtml(order.address?.name || '')}<br>
           ${Utils.escapeHtml(order.address?.line1 || '')}<br>
-          ${Utils.escapeHtml(order.address?.city || '')}, ${Utils.escapeHtml(order.address?.state || '')} ${Utils.escapeHtml(order.address?.pincode || '')}<br>
+          ${(() => { const a = order.address || {}; const l = [a.city, a.state].filter(Boolean).join(', ') + (a.pincode ? ' ' + a.pincode : ''); return l.trim() ? Utils.escapeHtml(l) + '<br>' : ''; })()}
           ${Utils.escapeHtml(order.address?.phone || '')}
         </div>
       </div>
@@ -223,22 +241,38 @@ App.boot('shop').then(async () => {
       ${t.cardSurcharge ? `<div class="row"><span>Card surcharge</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.cardSurcharge)}</span></div>` : ''}
       <div class="row grand"><span>Total</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.total)}</span></div>
       ${isAdvanceOrder ? `
-      <div class="row" style="color:#16a34a;"><span>Advance paid (non-refundable)</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.advanceAmount)}</span></div>
-      <div class="row" style="color:${balancePaid?'#16a34a':'#b45309'};"><span>Balance ${balancePaid?'paid':'due'}</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.balanceAmount)}</span></div>` : ''}
-      <div class="row" style="font-size:11px;color:#777;">Inclusive of ${Math.round((SITE_CONFIG.gstRate||0)*100)}% GST</div>
+      <div class="row inv-ok-txt"><span>Advance paid (non-refundable)</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.advanceAmount)}</span></div>
+      <div class="row ${balancePaid?'inv-ok-txt':'inv-warn-txt'}"><span>Balance ${balancePaid?'paid':'due'}</span><span style="font-family:var(--font-mono);">${Utils.formatINR(t.balanceAmount)}</span></div>` : ''}
+      <div class="row inv-gst" style="font-size:12px;">Inclusive of ${Math.round((SITE_CONFIG.gstRate||0)*100)}% GST</div>
     </div>
 
     <div class="inv-footer">
-      <div style="font-size:11px;color:#777;max-width:280px;">
-        This is a system-generated bill from ${SITE_CONFIG.shopName}.<br>
-        Contact: ${SITE_CONFIG.phones?.[0] || ''} · ${SITE_CONFIG.email || ''}
+      <div class="inv-contact">
+        <div class="inv-contact-title">Contact Us</div>
+        <div>${SITE_CONFIG.shopName}, ${SITE_CONFIG.address}</div>
+        <div>Phone: ${(SITE_CONFIG.phones || []).join(' / ')}</div>
+        <div>Email: ${SITE_CONFIG.email || ''}</div>
+        <div class="inv-contact-note">This is a system-generated bill from ${SITE_CONFIG.shopName}.</div>
       </div>
       <div class="inv-sign-box">
         <div style="font-size:11px;color:#555;margin-bottom:2px;">For ${SITE_CONFIG.shopName}</div>
         ${signatureUrl ? `<img src="${signatureUrl}" alt="Authorised signature">` : '<div style="height:44px;"></div>'}
         <div class="inv-sign-line">Authorised Signatory<br><b>Sridhar S</b></div>
       </div>
-      <div class="inv-seal">${SITE_CONFIG.shopName.toUpperCase()}<br>★ VERIFIED ★<br>DIGITAL SEAL</div>
+      <svg class="inv-gseal" viewBox="0 0 120 120" width="112" height="112" role="img" aria-label="Digital seal">
+        <defs>
+          <linearGradient id="gold-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6e27a"/><stop offset=".5" stop-color="#c9971c"/><stop offset="1" stop-color="#8a6508"/></linearGradient>
+          <path id="seal-arc-top" d="M 20 60 A 40 40 0 0 1 100 60"/>
+          <path id="seal-arc-bot" d="M 16 60 A 44 44 0 0 0 104 60"/>
+          <clipPath id="seal-clip"><circle cx="60" cy="60" r="26"/></clipPath>
+        </defs>
+        <circle cx="60" cy="60" r="57" fill="#fffdf5" stroke="url(#gold-g)" stroke-width="3"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="url(#gold-g)" stroke-width="1.2"/>
+        <circle cx="60" cy="60" r="30" fill="#fff" stroke="url(#gold-g)" stroke-width="2.5"/>
+        <text font-family="Inter,Arial,sans-serif" font-size="9.5" font-weight="800" letter-spacing="1.6" fill="#8a6508" text-anchor="middle"><textPath href="#seal-arc-top" startOffset="50%">${SITE_CONFIG.shopName.toUpperCase()}</textPath></text>
+        <text font-family="Inter,Arial,sans-serif" font-size="8" font-weight="800" letter-spacing="1.4" fill="#8a6508" text-anchor="middle"><textPath href="#seal-arc-bot" startOffset="50%" side="right">★ DIGITAL SEAL ★</textPath></text>
+        <image href="${Utils.escapeHtml(logoUrl)}" x="34" y="34" width="52" height="52" preserveAspectRatio="xMidYMid meet" clip-path="url(#seal-clip)"/>
+      </svg>
     </div>`);
 
   document.getElementById('inv-print-btn').addEventListener('click', () => window.print());

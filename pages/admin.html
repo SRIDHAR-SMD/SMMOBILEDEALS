@@ -381,7 +381,10 @@
               <div class="field" style="flex:1;min-width:180px;"><label>Phone</label><input class="input" id="mb-phone" placeholder="10-digit mobile"></div>
             </div>
             <div class="field"><label>Address <span class="text-faint" style="font-weight:400;">(optional)</span></label><input class="input" id="mb-address" placeholder="Line 1, City, State, Pincode"></div>
-            <div class="field" style="max-width:220px;"><label>Bill Date</label><input class="input" type="date" id="mb-date"></div>
+            <div class="flex gap-12" style="flex-wrap:wrap;">
+              <div class="field" style="flex:1;min-width:180px;max-width:260px;"><label>Invoice Number <span class="text-faint" style="font-weight:400;">(blank = auto)</span></label><input class="input" id="mb-invno" placeholder="e.g. SM-0001" maxlength="30" autocomplete="off"></div>
+              <div class="field" style="flex:1;min-width:180px;max-width:220px;"><label>Bill Date</label><input class="input" type="date" id="mb-date"></div>
+            </div>
           </div>
 
           <div class="card" style="padding:20px;max-width:820px;margin-bottom:20px;">
@@ -1359,6 +1362,8 @@ App.boot('').then(() => {
 
       /* default bill date = today */
       (function(){ const d = document.getElementById('mb-date'); if (d && !d.value){ const n = new Date(); d.value = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0'); } })();
+      function invoiceNoValue(){ return String((document.getElementById('mb-invno') || {}).value || '').trim(); }
+      function invoiceNoValid(v){ return /^[A-Za-z0-9_-]{1,30}$/.test(v); }
       function billDateISO(){
         const v = (document.getElementById('mb-date') || {}).value;
         if (!v) return new Date().toISOString();
@@ -1379,6 +1384,7 @@ App.boot('').then(() => {
           const name = document.getElementById('mb-name').value.trim();
           if (!name){ Notify.toast("Enter the customer's name first.", 'error'); return; }
           if (!items.length){ Notify.toast('Add at least one product to preview the bill.', 'error'); return; }
+          if (invoiceNoValue() && !invoiceNoValid(invoiceNoValue())){ Notify.toast('Invoice number: only letters, numbers, - and _ (max 30).', 'error'); return; }
           const total = items.reduce((t, it) => t + it.price * it.qty, 0);
           let sig = '', logo = '';
           try{ sig = (await Inbox.getSetting('admin_signature_url')) || ''; }catch(e){}
@@ -1401,14 +1407,14 @@ App.boot('').then(() => {
             '<div style="display:flex;align-items:center;gap:12px;border-bottom:2px solid #0b1220;padding-bottom:12px;margin-bottom:14px">' +
               '<img src="' + E(logo) + '" alt="" style="height:48px;width:48px;object-fit:contain;border-radius:8px" onerror="this.style.display=\'none\'">' +
               '<div style="flex:1"><div style="font-size:20px;font-weight:800;color:#0b1220">' + E(SITE_CONFIG.shopName) + '</div>' +
-              '<div style="font-size:11.5px;color:#475569">' + E((SITE_CONFIG.phones || []).join(' / ')) + '<br>' + E(SITE_CONFIG.address) + '</div></div>' +
-              '<div style="text-align:right;font-size:12px;color:#0b1220"><b>Date:</b> ' + E(dateTxt) + '<br><span style="color:#b45309;font-weight:700">PREVIEW &mdash; not saved</span></div>' +
+              '<div style="font-size:12.5px;color:#111;font-weight:500;line-height:1.55">' + E((SITE_CONFIG.phones || []).join(' / ')) + '<br>' + E(SITE_CONFIG.address) + '</div></div>' +
+              '<div style="text-align:right;font-size:12px;color:#0b1220">' + (invoiceNoValue() ? '<b>Invoice No:</b> ' + E(invoiceNoValue()) + '<br>' : '') + '<b>Date:</b> ' + E(dateTxt) + '<br><span style="color:#b45309;font-weight:700">PREVIEW &mdash; not saved</span></div>' +
             '</div>' +
             '<div style="font-size:13px;margin-bottom:14px;color:#0b1220"><div style="font-size:11px;text-transform:uppercase;color:#64748b;font-weight:700">Billed to</div><b>' + E(name) + '</b><br>' + E(document.getElementById('mb-phone').value) + '<br>' + E(document.getElementById('mb-address').value) + '</div>' +
             '<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="' + th + 'text-align:left">Item</th><th style="' + th + '">Qty</th><th style="' + th + 'text-align:right">Price</th><th style="' + th + 'text-align:right">Total</th></tr></thead><tbody>' + rows + '</tbody></table>' +
             '<div style="display:flex;justify-content:space-between;font-weight:800;font-size:16px;padding:12px 8px;color:#0b1220;border-top:2px solid #0b1220;margin-top:6px"><span>Total</span><span>&#8377;' + total.toLocaleString('en-IN') + '</span></div>' +
             '<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:30px;padding-top:14px;border-top:1px dashed #94a3b8">' +
-              '<div style="font-size:11px;color:#64748b;max-width:240px">System-generated bill from ' + E(SITE_CONFIG.shopName) + '.</div>' +
+              '<div style="font-size:12.5px;color:#111;font-weight:500;line-height:1.6;max-width:280px"><b style="font-size:11.5px;text-transform:uppercase;letter-spacing:.05em">Contact Us</b><br>Phone: ' + E((SITE_CONFIG.phones || []).join(' / ')) + '<br>Email: ' + E(SITE_CONFIG.email || '') + '<br><span style="font-size:11.5px;color:#333">System-generated bill from ' + E(SITE_CONFIG.shopName) + '.</span></div>' +
               '<div style="text-align:center">' + (sig ? '<img src="' + E(sig) + '" alt="Signature" style="max-height:56px;max-width:170px;display:block;margin:0 auto 4px">' : '<div style="height:40px"></div>') +
               '<div style="border-top:1px solid #334155;width:170px;padding-top:5px;font-size:11px;color:#334155">Authorised Signatory<br><b>Sridhar S</b></div></div>' +
             '</div></div>';
@@ -1421,13 +1427,22 @@ App.boot('').then(() => {
         if (!name){ Notify.toast("Enter the customer's name first.", 'error'); return; }
         if (!items.length){ Notify.toast('Add at least one product to the bill.', 'error'); return; }
 
+        const manualNo = invoiceNoValue();
+        if (manualNo){
+          if (!invoiceNoValid(manualNo)){ Notify.toast('Invoice number: only letters, numbers, - and _ (max 30).', 'error'); return; }
+          let taken = DB.getOrders().some(o => o.id === manualNo);
+          if (!taken && DB.useSupabase()){
+            try{ const { data: ex } = await supabaseClient.from('orders').select('id').eq('id', manualNo).maybeSingle(); taken = !!ex; }catch(e){}
+          }
+          if (taken){ Notify.toast('Invoice number "' + manualNo + '" already used. Use a different number.', 'error'); return; }
+        }
         const btn = document.getElementById('mb-generate-btn');
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Generating…';
 
         const subtotal = items.reduce((s,it) => s + it.price * it.qty, 0);
         const order = {
-          id: Utils.orderId(),
+          id: manualNo || Utils.orderId(),
           userId: null, // counter sale — not tied to a website account
           items: items.map(it => ({ id:it.id, name:it.name, price:it.price, qty:it.qty, type:it.type, color:it.color, model:it.model || '', imei:it.imei || '', imei2:it.imei2 || '', storage:it.storage || '', ram:it.ram || '', colorName:it.colorName || '', warranty:it.warranty || '' })),
           address: { name, phone: document.getElementById('mb-phone').value.trim(), line1: document.getElementById('mb-address').value.trim(), city:'', state:'', pincode:'' },
@@ -1452,7 +1467,7 @@ App.boot('').then(() => {
             if (chkErr || !chk) throw new Error('Database rejected the bill (admin insert permission missing) - run supabase/admin-manual-bill.sql once in the Supabase SQL Editor.');
           }
           Notify.toast('Bill generated.', 'success');
-          window.location.href = `invoice.html?order=${order.id}`;
+          window.location.href = `invoice.html?order=${encodeURIComponent(order.id)}`;
         }catch(err){
           Notify.toast('Could not generate the bill: ' + (err.message || 'unknown error'), 'error');
           btn.disabled = false;
