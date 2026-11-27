@@ -171,6 +171,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(r.error||!r.data||!r.data.ok)return setMsg('wl-topmsg',(r.data&&r.data.error)||(r.error&&r.error.message)||'Could not send. Try again.');
     $('wl-utr').value='';setMsg('wl-topmsg','Sent! Your '+a+' coins will be added once the shop verifies the payment.',true);refresh();
     try{if(typeof Inbox!=='undefined')Inbox.sendToAdmin('Wallet top-up request','₹'+a+' - UTR '+u)}catch(e){}
+    try{AdminAlert.send('topup')}catch(e){}
   });
   $('wl-use').addEventListener('click',async function(){
     var kind,coins,det;
@@ -191,6 +192,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(r.error||!r.data||!r.data.ok)return setMsg('wl-usemsg',(r.data&&r.data.error)||(r.error&&r.error.message)||'Could not send. Try again.');
     setMsg('wl-usemsg','Request sent! The shop will complete it soon. If rejected, your coins come back.',true);refresh();
     try{if(typeof Inbox!=='undefined')Inbox.sendToAdmin('Wallet coins request',(kind==='recharge'?'Recharge ':'Purchase ')+coins+' coins')}catch(e){}
+    try{AdminAlert.send('wallet_request')}catch(e){}
   });
   App.boot('shop').then(function(){
     if(!sb()||typeof Auth==='undefined'||!Auth.isLoggedIn()){$('wl-login').style.display='';return}
