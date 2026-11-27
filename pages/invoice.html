@@ -149,13 +149,13 @@ App.boot('shop').then(async () => {
   const rows = (order.items || []).map(item => {
     const p = products.find(pp => pp.id === item.id);
     const specBits = [];
-    if (p){
-      [['Model', p.modelName], ['Storage', p.storage], ['RAM', p.ram], ['Color', p.colorName], ['Variant', p.variant]]
-        .filter(([,v]) => v).forEach(([k,v]) => specBits.push(`${k}: ${v}`));
-      if (p.condition && p.condition !== 'new') specBits.push((DB.CONDITION_META[p.condition]||{}).label || p.condition);
-    }
-    if (item.model && !(p && p.modelName === item.model)) specBits.unshift(`Model: ${item.model}`);
-    const imeiLine = item.imei ? `<div class="spec-line" style="font-family:var(--font-mono);font-weight:600;">IMEI: ${Utils.escapeHtml(item.imei)}</div>` : '';
+    const pick = (a, b) => a || b || '';
+    const model = pick(item.model, p && p.modelName);
+    [['Model', model], ['Storage', pick(item.storage, p && p.storage)], ['RAM', pick(item.ram, p && p.ram)], ['Colour', pick(item.colorName, p && p.colorName)], ['Variant', p && p.variant], ['Warranty', item.warranty]]
+      .filter(([,v]) => v).forEach(([k,v]) => specBits.push(`${k}: ${v}`));
+    if (p && p.condition && p.condition !== 'new') specBits.push((DB.CONDITION_META[p.condition]||{}).label || p.condition);
+    const imeiLine = (item.imei ? `<div class="spec-line" style="font-family:var(--font-mono);font-weight:600;color:#1a1a1a;">IMEI 1: ${Utils.escapeHtml(item.imei)}</div>` : '') +
+      (item.imei2 ? `<div class="spec-line" style="font-family:var(--font-mono);font-weight:600;color:#1a1a1a;">IMEI 2: ${Utils.escapeHtml(item.imei2)}</div>` : '');
     const lineTotal = (item.price || 0) * (item.qty || 1);
     return `<tr>
       <td>${Utils.escapeHtml(item.name)}${specBits.length ? `<div class="spec-line">${Utils.escapeHtml(specBits.join(' · '))}</div>` : ''}${imeiLine}</td>
