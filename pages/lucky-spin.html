@@ -59,12 +59,12 @@
     <div class="card" style="padding:18px;text-align:left;">
       <h3 style="margin:0 0 6px;font-family:var(--font-display);">How it works</h3>
       <ul class="sw-list" style="list-style:none;margin:0;padding:0;">
-        <li><span>🎡 Free spins</span><b>3 per day (no prize, just for fun)</b></li>
-        <li><span>💳 Paid spin</span><b>₹10 per spin (UPI)</b></li>
-        <li><span>🎧 Every 10th paid spin</span><b>FREE Headphones</b></li>
-        <li style="border:0"><span>🙂 Other spins</span><b>Better luck next time</b></li>
+        <li><span>🎡 Free spins</span><b>3 spins, then next free spin after 24 hours</b></li>
+        <li><span>💳 Extra spin</span><b>₹10 per spin (UPI)</b></li>
+        <li><span>🎧 10th paid spin</span><b>FREE Headphones gift</b></li>
+        <li style="border:0"><span>🙂 All other spins</span><b>Better luck next time</b></li>
       </ul>
-      <p class="text-faint" style="font-size:11.5px;margin:10px 0 0;">Only paid spins count towards the headphones (10 paid spins = ₹100). The 1st to 9th paid spins show "Better luck next time" and the 10th paid spin wins the headphones. Keep your UPI payment reference numbers (UTR): the shop verifies all 10 payments on WhatsApp before giving the headphones. Terms apply.</p>
+      <p class="text-faint" style="font-size:11.5px;margin:10px 0 0;">Free spins give no prize. Only paid spins count: the 1st to 9th paid spin show "Better luck next time" and the 10th paid spin wins the headphones gift (10 paid spins = ₹100). The headphones are a free gift with the purchase of any product from SM Mobile Deals. Keep your UPI reference numbers (UTR): the shop verifies all 10 payments on WhatsApp before giving the gift. After the 10th paid spin, every spin shows "Better luck next time". Terms apply.</p>
     </div>
   </section>
 </main>
@@ -146,13 +146,15 @@ document.addEventListener('DOMContentLoaded', function(){
   var FREE_PER_DAY=3, PRICE=10, EVERY=10, K_FREE='smd_spin_free', K_PAID='smd_spin_paid';
   function jget(k,d){try{var v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}}
   function jset(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-  function freeUsed(){var o=jget(K_FREE,{});return o.d===today()?(o.n||0):0}
+  function freeStamps(){var a=jget(K_FREE,[]);if(!Array.isArray(a))a=[];var cut=Date.now()-24*3600*1000;return a.filter(function(t){return typeof t==='number'&&t>cut})}
+  function freeUsed(){return freeStamps().length}
+  function waitText(){var a=freeStamps().sort(),ms=a.length?(a[0]+24*3600*1000-Date.now()):0,m=Math.max(1,Math.ceil(ms/60000)),h=Math.floor(m/60);return (h?h+'h ':'')+(m%60)+'m'}
   function paidList(){return jget(K_PAID,[])}
   function cfg(k,d){return (typeof SITE_CONFIG!=='undefined'&&SITE_CONFIG[k])||d}
   function refresh(){
-    var left=Math.max(0,FREE_PER_DAY-freeUsed()), paid=paidList().length, toWin=EVERY-(paid%EVERY);
-    document.getElementById('sw-note').textContent=left>0?('Free spins left today: '+left+' of '+FREE_PER_DAY+'. After that, \u20B9'+PRICE+' per spin.'):('Free spins over for today. Each extra spin costs \u20B9'+PRICE+'.');
-    document.getElementById('sw-sub').textContent='Your paid spins: '+paid+' \u2022 '+(toWin===1?'Your NEXT paid spin wins FREE headphones!':toWin+' more paid spins to FREE headphones');
+    var left=Math.max(0,FREE_PER_DAY-freeUsed()), paid=paidList().length;
+    document.getElementById('sw-note').textContent=left>0?('Free spins left: '+left+' of '+FREE_PER_DAY+'. After that, \u20B9'+PRICE+' per spin.'):('Free spins over. Next free spin opens in '+waitText()+'. Or spin now for \u20B9'+PRICE+'.');
+    document.getElementById('sw-sub').textContent=paid>=EVERY?'Headphones offer completed. All further spins: better luck next time.':('Your paid spins: '+paid+' of '+EVERY+' \u2022 '+(EVERY-paid===1?'Your NEXT paid spin wins the FREE headphones gift!':(EVERY-paid)+' more paid spins to the FREE headphones gift'));
   }
   refresh();
   function rnd(n){return Math.floor(Math.random()*n)}
@@ -163,23 +165,23 @@ document.addEventListener('DOMContentLoaded', function(){
       claim.style.display='';
       document.getElementById('sw-ic').innerHTML='<img src="'+IMG_DIR+p.img+'" alt="" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid #f5b301">';
       document.getElementById('sw-title').textContent='You won FREE Headphones!';
-      document.getElementById('sw-msg').textContent='Tap below to claim on WhatsApp. The shop will verify your '+EVERY+' payments first.';
+      document.getElementById('sw-msg').textContent='Free headphones gift with any product you buy. Tap below to claim on WhatsApp; the shop will verify your '+EVERY+' payments first.';
       var refs=paidList().slice(-EVERY).map(function(x){return x.u}).join(', ');
       var num=cfg('whatsappNumber','918760633334');
-      claim.href='https://wa.me/'+num+'?text='+encodeURIComponent('Hi SM Mobile Deals, I completed '+EVERY+' paid Lucky Spins and won the FREE Headphones ('+today()+'). My UPI refs: '+refs+'. Please verify and confirm.');
+      claim.href='https://wa.me/'+num+'?text='+encodeURIComponent('Hi SM Mobile Deals, I completed '+EVERY+' paid Lucky Spins and won the FREE Headphones gift ('+today()+'). I want to buy a product and claim it. My UPI refs: '+refs+'. Please verify and confirm.');
     }else{
       claim.style.display='none';
       document.getElementById('sw-ic').innerHTML='<img src="'+IMG_DIR+'better-luck.png" alt="Better luck next time" style="width:100%;max-width:300px;height:auto;display:block;margin:0 auto;background:#fff;border-radius:12px;padding:6px">';
       document.getElementById('sw-title').textContent='Better luck next time!';
-      document.getElementById('sw-msg').textContent=paid?('No prize on this spin. '+(EVERY-(cnt%EVERY))+' more paid spin(s) to FREE headphones.'):('Free spin used. Free spins left today: '+left+'.');
+      document.getElementById('sw-msg').textContent=paid?(cnt<EVERY?('No prize on this spin. '+(EVERY-cnt)+' more paid spin(s) to the FREE headphones gift.'):'No prize on this spin. Better luck next time.'):('Free spin used. Free spins left: '+left+'.'+(left===0?' Next free spin opens in '+waitText()+'.':''));
     }
     document.getElementById('sw-modal').style.display='flex';
   }
   function doSpin(paid,utr){
     busy=true;
     var win=false;
-    if(paid){var list=paidList();list.push({u:utr,t:Date.now()});jset(K_PAID,list);win=(list.length%EVERY===0);}
-    else{jset(K_FREE,{d:today(),n:freeUsed()+1});}
+    if(paid){var list=paidList();list.push({u:utr,t:Date.now()});jset(K_PAID,list);win=(list.length===EVERY);}
+    else{var fs=freeStamps();fs.push(Date.now());jset(K_FREE,fs);}
     refresh();
     var i=win?0:1+rnd(N-1), center=i*SEG+SEG/2, jitter=(Math.random()-.5)*SEG*.6;
     rot+=360*6+((360-center+jitter)-(rot%360)+360)%360;
