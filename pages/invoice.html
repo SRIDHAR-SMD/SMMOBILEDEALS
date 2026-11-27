@@ -23,6 +23,7 @@
   .inv-wrap{ max-width:820px; margin:0 auto; padding:30px 0 60px; }
   .inv-sheet{ background:#fff; color:#1a1a1a; border-radius:14px; padding:40px; box-shadow:var(--shadow-lg); }
   .inv-sheet *{ color:#1a1a1a; }
+  html[data-theme] .inv-sheet .empty-state, html[data-theme] .inv-sheet .empty-state *{ color:#1a1a1a !important; }
   .inv-head{ display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid #1a1a1a; padding-bottom:18px; margin-bottom:22px; }
   .inv-brand{ font-family:var(--font-display); font-size:22px; font-weight:800; }
   .inv-brandrow{ display:flex; align-items:center; gap:14px; }
@@ -125,9 +126,10 @@
 document.addEventListener('DOMContentLoaded', function(){
 App.boot('shop').then(async () => {
   if (!Auth.isLoggedIn()){ window.location.href = 'login.html'; return; }
-  await Orders.refresh();
   const orderId = Utils.qs('order');
-  const order = Orders.byId(orderId);
+  const localCopy = Orders.byId(orderId); // keep the just-created bill in case the server list does not have it yet
+  await Orders.refresh();
+  const order = Orders.byId(orderId) || localCopy;
   const root = document.getElementById('inv-root');
   if (!order){
     root.innerHTML = `<div class="empty-state" style="color:#1a1a1a;"><i class="fa-solid fa-circle-exclamation"></i><h3>Order not found</h3></div>`;

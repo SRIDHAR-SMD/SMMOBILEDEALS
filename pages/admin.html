@@ -1447,6 +1447,10 @@ App.boot('').then(() => {
         };
         try{
           await DB.saveOrder(order);
+          if (DB.useSupabase()){
+            const { data: chk, error: chkErr } = await supabaseClient.from('orders').select('id').eq('id', order.id).maybeSingle();
+            if (chkErr || !chk) throw new Error('Database rejected the bill (admin insert permission missing) - run supabase/admin-manual-bill.sql once in the Supabase SQL Editor.');
+          }
           Notify.toast('Bill generated.', 'success');
           window.location.href = `invoice.html?order=${order.id}`;
         }catch(err){
