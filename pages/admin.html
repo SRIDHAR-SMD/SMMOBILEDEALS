@@ -375,6 +375,16 @@
           <p class="text-dim" style="font-size:13.5px;margin:0 0 20px;">For a walk-in / counter sale that wasn't placed on the website. Search a product to auto-fill its price and specs — the printed bill still carries your signature, the store seal and all store details automatically, exactly like an online order's bill.</p>
 
           <div class="card" style="padding:20px;max-width:640px;margin-bottom:20px;">
+            <h4 style="font-family:var(--font-display);margin:0 0 6px;">Find Existing Bill</h4>
+            <p class="text-faint" style="font-size:12.5px;margin:0 0 10px;">Type an invoice number to load that bill — customer, products, IMEI / serial and date fill in automatically. Then print it again (returns) or correct it and update.</p>
+            <div class="flex gap-12" style="flex-wrap:wrap;align-items:center;">
+              <input class="input" id="mb-find" placeholder="Invoice number e.g. SM-100501" autocomplete="off" style="flex:1;min-width:200px;">
+              <button type="button" class="btn btn-primary" id="mb-find-btn"><i class="fa-solid fa-magnifying-glass"></i> Find Bill</button>
+            </div>
+            <div id="mb-edit-note" style="display:none;margin-top:12px;font-size:13px;"></div>
+          </div>
+
+          <div class="card" style="padding:20px;max-width:640px;margin-bottom:20px;">
             <h4 style="font-family:var(--font-display);margin:0 0 12px;">Customer Details</h4>
             <div class="flex gap-12" style="flex-wrap:wrap;">
               <div class="field" style="flex:1;min-width:180px;"><label>Name</label><input class="input" id="mb-name" placeholder="Customer name"></div>
@@ -1372,12 +1382,70 @@ App.boot('').then(() => {
         remove: (i) => { items.splice(i, 1); renderItems(); }
       };
 
+      /* ---- Find an existing bill by invoice number, load it, print / correct it ---- */
+      let editingId = null, editingOrder = null;
+      const pad2 = (n) => String(n).padStart(2, '0');
+      const dayOf = (d) => d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate());
+      async function lookupOrder(q){
+        const norm = (x) => String(x || '').trim().toLowerCase();
+        const find = () => { const l = DB.getOrders(); return l.find(o => norm(o.id) === norm(q)) || (() => { const m = l.filter(o => norm(o.id).includes(norm(q))); return m.length === 1 ? m[0] : null; })(); };
+        let o = find();
+        if (!o){ try{ await Orders.refresh(); }catch(e){} o = find(); }
+        return o;
+      }
+      function loadBill(o){
+        editingId = o.id; editingOrder = JSON.parse(JSON.stringify(o));
+        const me = (o.timeline || []).find(x => /Manual bill/i.test(x.note || ''));
+        const at = new Date((me && me.at) || o.createdAt);
+        editingOrder._billAt = at.toISOString(); editingOrder._billDay = dayOf(at);
+        const a = o.address || {};
+        document.getElementById('mb-name').value = a.name || '';
+        document.getElementById('mb-phone').value = a.phone || '';
+        document.getElementById('mb-address').value = [a.line1, a.city, a.state, a.pincode].filter(Boolean).join(', ');
+        const inv = document.getElementById('mb-invno'); inv.value = o.id; inv.readOnly = true;
+        document.getElementById('mb-date').value = editingOrder._billDay;
+        const prods = DB.getProducts();
+        items = (o.items || []).map(it => {
+          const p = prods.find(pp => pp.id === it.id) || {};
+          const base = { id:it.id || null, name:it.name, price:Number(it.price) || 0, mrp:it.mrp || p.mrp || '', qty:it.qty || 1, type:it.type || p.type || 'accessory', color:it.color || '#4c8dff', category:it.category || p.category || '',
+            brand:it.brand || p.brand || '', model:it.model || '', imei:it.imei || '', imei2:it.imei2 || '', serial:it.serial || '', size:it.size || '', specs:it.specs || '', storage:it.storage || p.storage || '', ram:it.ram || p.ram || '', colorName:it.colorName || '', warranty:it.warranty || '' };
+          base.kind = BillLines.kind(it, p);
+          return base;
+        });
+        renderItems();
+        const gen = document.getElementById('mb-generate-btn');
+        gen.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Update Bill';
+        const note = document.getElementById('mb-edit-note');
+        note.style.display = 'block';
+        note.innerHTML = '<span style="color:var(--success,#16a34a);font-weight:700;"><i class="fa-solid fa-circle-check"></i> Loaded ' + Utils.escapeHtml(o.id) + '</span> &nbsp; <a class="btn btn-outline btn-sm" href="invoice.html?order=' + encodeURIComponent(o.id) + '"><i class="fa-solid fa-print"></i> Open / Print Bill</a> &nbsp; <button type="button" class="btn btn-ghost btn-sm" id="mb-new-btn"><i class="fa-solid fa-plus"></i> New Bill</button> <div class="text-faint" style="font-size:12px;margin-top:6px;">Correct anything below and press <b>Update Bill</b> to save it — the invoice number stays the same.</div>';
+        document.getElementById('mb-new-btn').addEventListener('click', async () => {
+          editingId = null; editingOrder = null; items = []; renderItems();
+          ['mb-name','mb-phone','mb-address','mb-find'].forEach(id => { document.getElementById(id).value = ''; });
+          inv.readOnly = false; inv.value = await nextInvoiceNo();
+          document.getElementById('mb-date').value = dayOf(new Date());
+          gen.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Generate Bill'; note.style.display = 'none';
+        });
+      }
+      async function runFind(){
+        const q = document.getElementById('mb-find').value.trim();
+        if (!q){ Notify.toast('Enter an invoice number to search.', 'error'); return; }
+        const btn = document.getElementById('mb-find-btn');
+        btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Searching…';
+        const o = await lookupOrder(q);
+        btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Find Bill';
+        if (!o){ Notify.toast('No bill found for "' + q + '".', 'error'); return; }
+        loadBill(o);
+        Notify.toast('Bill ' + o.id + ' loaded.', 'success');
+      }
+      document.getElementById('mb-find-btn').addEventListener('click', runFind);
+      document.getElementById('mb-find').addEventListener('keydown', (e) => { if (e.key === 'Enter'){ e.preventDefault(); runFind(); } });
+
       /* default bill date = today */
       (function(){ const d = document.getElementById('mb-date'); if (d && !d.value){ const n = new Date(); d.value = n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0'); } })();
       /* invoice numbers run line by line: SM-0001, SM-0002 ... (admin can still overwrite) */
       async function nextInvoiceNo(){
         let max = 0;
-        const eat = (id) => { const m = /^SM-(\d+)$/i.exec(String(id || '')); if (m) max = Math.max(max, parseInt(m[1], 10)); };
+        const eat = (id) => { const m = /^SM-(\d{1,4})$/i.exec(String(id || '')); if (m) max = Math.max(max, parseInt(m[1], 10)); };
         try{ DB.getOrders().forEach(o => eat(o.id)); }catch(e){}
         if (DB.useSupabase()){
           try{ const { data } = await supabaseClient.from('orders').select('id').ilike('id', 'SM-%'); (data || []).forEach(o => eat(o.id)); }catch(e){}
@@ -1390,6 +1458,7 @@ App.boot('').then(() => {
       function billDateISO(){
         const v = (document.getElementById('mb-date') || {}).value;
         if (!v) return new Date().toISOString();
+        if (editingOrder && editingOrder._billDay === v && editingOrder._billAt) return editingOrder._billAt;
         const now = new Date(), [y,m,d] = v.split('-').map(Number);
         return new Date(y, m-1, d, now.getHours(), now.getMinutes(), now.getSeconds()).toISOString();
       }
@@ -1446,12 +1515,12 @@ App.boot('').then(() => {
         if (!name){ Notify.toast("Enter the customer's name first.", 'error'); return; }
         if (!items.length){ Notify.toast('Add at least one product to the bill.', 'error'); return; }
 
-        let manualNo = invoiceNoValue();
+        let manualNo = editingId || invoiceNoValue();
         if (!manualNo){ manualNo = await nextInvoiceNo(); }
         if (manualNo){
           if (!invoiceNoValid(manualNo)){ Notify.toast('Invoice number: only letters, numbers, - and _ (max 30).', 'error'); return; }
-          let taken = DB.getOrders().some(o => o.id === manualNo);
-          if (!taken && DB.useSupabase()){
+          let taken = !editingId && DB.getOrders().some(o => o.id === manualNo);
+          if (!taken && !editingId && DB.useSupabase()){
             try{ const { data: ex } = await supabaseClient.from('orders').select('id').eq('id', manualNo).maybeSingle(); taken = !!ex; }catch(e){}
           }
           if (taken){ Notify.toast('Invoice number "' + manualNo + '" already used. Use a different number.', 'error'); return; }
@@ -1462,10 +1531,11 @@ App.boot('').then(() => {
 
         const subtotal = items.reduce((s,it) => s + it.price * it.qty, 0);
         const order = {
+          ...(editingOrder ? Object.assign({}, editingOrder, { _billAt: undefined, _billDay: undefined }) : {}),
           id: manualNo || Utils.orderId(),
-          userId: null, // counter sale — not tied to a website account
+          userId: editingOrder ? editingOrder.userId : null, // counter sale — not tied to a website account
           items: items.map(it => ({ id:it.id, name:it.name, price:it.price, mrp:Number(it.mrp) || 0, qty:it.qty, type:it.type, kind:BillLines.kind(it), category:it.category || '', color:it.color, brand:it.brand || '', model:it.model || '', imei:it.imei || '', imei2:it.imei2 || '', serial:it.serial || '', size:it.size || '', specs:it.specs || '', storage:it.storage || '', ram:it.ram || '', colorName:it.colorName || '', warranty:it.warranty || '' })),
-          address: { name, phone: document.getElementById('mb-phone').value.trim(), line1: document.getElementById('mb-address').value.trim(), city:'', state:'', pincode:'' },
+          address: Object.assign({ city:'', state:'', pincode:'' }, editingOrder && editingOrder.address ? { city:'', state:'', pincode:'' } : {}, { name, phone: document.getElementById('mb-phone').value.trim(), line1: document.getElementById('mb-address').value.trim() }),
           paymentMethod: 'cod', // in-person / counter sale
           totals: { subtotal, discount:0, deliveryFee:0, cardSurcharge:0, total: subtotal },
           amountDueNow: subtotal,
