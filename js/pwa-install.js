@@ -29,6 +29,8 @@
     return null;
   }
   function isStandalone() {
+    // inside our own Android APK (WebView) we are already "the app"
+    if (/SMMobileApp\/|; wv\)/i.test(navigator.userAgent || '')) return true;
     try {
       return (window.matchMedia && (matchMedia('(display-mode: standalone)').matches ||
               matchMedia('(display-mode: window-controls-overlay)').matches ||
@@ -39,6 +41,8 @@
   var IS_IOS = /iphone|ipad|ipod/i.test(UA) || (/Macintosh/i.test(UA) && navigator.maxTouchPoints > 1);
   var IS_SAFARI = /safari/i.test(UA) && !/chrome|crios|fxios|edg|opr|android/i.test(UA);
   var IS_MAC_SAFARI = !IS_IOS && /Macintosh/i.test(UA) && IS_SAFARI;
+  var IS_ANDROID = /android/i.test(UA);   // any Android browser (Chrome, Opera, Firefox, Samsung, UC...) can download the APK
+  var APK_URL = ROOT + 'downloads/SM-Mobile-Deals.apk';
   var IS_FIREFOX_DESKTOP = /firefox/i.test(UA) && !/android/i.test(UA);
 
   function snoozed() {
@@ -48,7 +52,7 @@
   function snooze() { ls(SNOOZE_KEY, String(Date.now())); }
 
   function canInstallManually() { return IS_IOS || IS_MAC_SAFARI; }   // no prompt API, show steps
-  function isInstallable() { return !!deferred || canInstallManually(); }
+  function isInstallable() { return !!deferred || canInstallManually() || (IS_ANDROID && !IS_ADMIN_PAGE); }
 
   function addHead(tag, attrs) {
     var el = document.createElement(tag);
@@ -101,6 +105,7 @@
       '#smd-install-card button{border:0;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation}' +
       '#smd-install-card .smd-go{background:#1d6bff !important;color:#fff !important;border:0 !important;opacity:1 !important}' +
       '#smd-install-card.admin .smd-go{background:#f59e0b !important;color:#0c111c !important}' +
+      '#smd-install-card a.smd-apk{display:inline-block;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;text-decoration:none;background:#16a34a !important;color:#fff !important;touch-action:manipulation}' +
       '#smd-install-card .smd-no{background:transparent !important;color:#0b1220 !important;opacity:.75}' +
       '#smd-install-card.admin .smd-no{color:#fff !important}' +
       '#smd-install-card .smd-x{position:absolute;top:6px;right:8px;background:none !important;color:#0b1220 !important;opacity:.55;font-size:16px;padding:4px 8px}' +
@@ -139,15 +144,21 @@
                  ? (fromGoogle ? 'Thanks for finding us on Google! ' : '') + 'Get the <b>SM Mobile Deals app</b> for faster shopping, latest offers and 1-day delivery updates - free, no Play Store needed.'
                  : 'Shop faster. Get the app on your phone or computer - works like a normal app.');
     var manual = !deferred && canInstallManually();
-    var unsupported = !deferred && !manual;
+    var apkOffer = IS_ANDROID && !admin;               // customer app: APK download works in every Android browser
+    var unsupported = !deferred && !manual && !apkOffer;
     var body = manual ? steps() : (unsupported
-      ? '<p>This browser cannot install apps. Please open this site in <b>Chrome</b> or <b>Edge</b> to install.</p>' : '<p>' + text + '</p>');
+      ? '<p>This browser cannot install apps. Please open this site in <b>Chrome</b> or <b>Edge</b> to install.</p>'
+      : (!deferred && apkOffer
+          ? '<p>Download the <b>SM Mobile Deals Android app</b> (APK) &mdash; works from any browser on Android 5.0 and above.</p>' +
+            '<p style="font-size:11.5px">If Android says &ldquo;install blocked&rdquo;, tap <b>Settings</b> and allow <b>Install unknown apps</b> for this browser once, then open the downloaded file and tap <b>Install</b>.</p>'
+          : '<p>' + text + '</p>'));
     var c = document.createElement('div');
     c.id = 'smd-install-card'; c.className = admin ? 'admin' : '';
     c.setAttribute('role', 'dialog'); c.setAttribute('aria-label', 'Install app');
     c.innerHTML = '<button class="smd-x" aria-label="Close">&times;</button><img alt="" src="' + icon + '">' +
       '<div><h4>' + title + '</h4>' + body + '<div class="smd-row">' +
       (deferred ? '<button class="smd-go">Install</button>' : '') +
+      (apkOffer ? '<a class="smd-apk" href="' + APK_URL + '" download="SM-Mobile-Deals.apk">' + (deferred ? 'Download APK' : '&#11015; Download App (APK)') + '</a>' : '') +
       '<button class="smd-no">' + ((manual || unsupported) ? 'Got it' : 'Not now') + '</button></div></div>';
     document.body.appendChild(c);
 
