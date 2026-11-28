@@ -23,6 +23,7 @@ const A_PASS = env('MASTER_ADMIN_PASS');
 const S_USER = env('MASTER_STAFF_USER').toLowerCase();
 const S_PASS = env('MASTER_STAFF_PASS');
 const OTP_TO = env('OTP_TO');
+const STAFF_OTP_TO = env('STAFF_OTP_TO') || OTP_TO;   // staff login OTP goes here (set STAFF_OTP_TO secret to the staff email)
 const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' };
 const json = (b: unknown, s = 200) => new Response(JSON.stringify(b), { status: s, headers: { ...cors, 'Content-Type': 'application/json' } });
 const enc = new TextEncoder();
@@ -54,13 +55,13 @@ async function tooManyFails(req: Request) {
   return (count ?? 0) >= 8;
 }
 
-async function sendOtp(code: string) {
+async function sendOtp(code: string, to: string = OTP_TO, who: string = 'Admin 1') {
   const host = env('SMTP_HOST'), user = env('SMTP_USER'), pass = env('SMTP_PASS'), port = Number(env('SMTP_PORT', '465'));
-  if (!host || !user || !pass || !OTP_TO) throw new Error('SMTP not configured');
+  if (!host || !user || !pass || !to) throw new Error('SMTP not configured');
   const c = new SMTPClient({ connection: { hostname: host, port, tls: port === 465, auth: { username: user, password: pass } } });
   await c.send({
-    from: env('MAIL_FROM') || user, to: OTP_TO, subject: 'SM Mobile Deals — Admin login OTP', content: 'auto',
-    html: `<div style="font-family:Arial;max-width:420px;margin:auto;padding:24px;border:1px solid #e5e7eb;border-radius:12px"><h3>Master Gateway — Admin 1</h3><p>Your one-time code (valid 5 minutes):</p><p style="font-size:32px;letter-spacing:6px;font-weight:700">${code}</p><p style="color:#2555c4;font-size:12px">If this wasn't you, someone knows the admin password — change it now.</p></div>`,
+    from: env('MAIL_FROM') || user, to, subject: `SM Mobile Deals — ${who} login OTP`, content: 'auto',
+    html: `<div style="font-family:Arial;max-width:420px;margin:auto;padding:24px;border:1px solid #e5e7eb;border-radius:12px"><h3>Master Gateway — ${who}</h3><p>Your one-time code (valid 5 minutes):</p><p style="font-size:32px;letter-spacing:6px;font-weight:700">${code}</p><p style="color:#2555c4;font-size:12px">If this wasn't you, someone knows the admin password — change it now.</p></div>`,
   });
   await c.close();
 }
@@ -96,9 +97,23 @@ Deno.serve(async (req) => {
       return json({ ok: true, role: 'admin', token: await makeToken('admin') });
     }
 
-    if (b.action === 'staff') {
+    if (b.action === 'start_staff') {
       const ok = (await same(String(b.username || '').toLowerCase(), S_USER)) && (await same(String(b.password || ''), S_PASS));
       if (!ok) { await sleep(700); await logEvent('gateway_fail', req, { user_email: String(b.username || '').slice(0, 80), note: 'staff bad credentials', ...geo }); return json({ error: 'Invalid credentials' }, 401); }
+      const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0');
+      const id = crypto.randomUUID();
+      // 'staff' is mixed into the hash so a staff challenge can never be used to get an admin token (and vice versa)
+      await SB.from('master_otps').insert({ id, otp_hash: await sha(id + code + SECRET + 'staff'), expires_at: new Date(Date.now() + 5 * 60e3).toISOString() });
+      try { await sendOtp(code, STAFF_OTP_TO, 'Staff'); } catch (e) { await SB.from('master_otps').delete().eq('id', id); return json({ error: 'Could not send OTP email: ' + (e as Error).message }, 502); }
+      return json({ ok: true, challenge: id });
+    }
+
+    if (b.action === 'verify_staff') {
+      const { data: row } = await SB.from('master_otps').select('*').eq('id', String(b.challenge || '')).maybeSingle();
+      if (!row || row.used || new Date(row.expires_at) < new Date() || row.attempts >= 5) return json({ error: 'OTP expired. Start again.' }, 401);
+      await SB.from('master_otps').update({ attempts: row.attempts + 1 }).eq('id', row.id);
+      if ((await sha(row.id + String(b.otp || '').trim() + SECRET + 'staff')) !== row.otp_hash) { await sleep(500); await logEvent('gateway_fail', req, { user_email: S_USER, note: 'staff bad OTP', ...geo }); return json({ error: 'Wrong OTP' }, 401); }
+      await SB.from('master_otps').update({ used: true }).eq('id', row.id);
       await logEvent('gateway_ok', req, { user_email: S_USER, note: 'staff login', ...geo });
       return json({ ok: true, role: 'staff', token: await makeToken('staff') });
     }
