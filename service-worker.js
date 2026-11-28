@@ -3,7 +3,7 @@
    Bump CACHE_NAME whenever assets change so old caches get cleaned up.
    ========================================================================== */
 
-const CACHE_NAME = 'smd-cache-v85';
+const CACHE_NAME = 'smd-cache-v86';
 
 // Heavy / rarely-needed files (catalog-seed.js, chatbot.js, admin.js, ...) are NOT precached — they load on demand.
 const APP_SHELL = [
@@ -73,6 +73,7 @@ self.addEventListener('fetch', (event) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+  if (/\.apk$/i.test(url.pathname)) return;   // APK downloads go straight to the network, never cached
 
   if (req.mode === 'navigate'){
     event.respondWith(
