@@ -129,6 +129,8 @@ const Auth = (() => {
   // Fire-and-forget: asks the send-email edge function to mail the CURRENT
   // user ('welcome' once after signup, 'login_alert' on every login).
   function sendMail(kind){
+    // a customer just logged in / finished signup -> pwa-install.js shows the "install the app" card on the next page
+    try{ localStorage.setItem('smd_install_after_login', '1'); }catch(e){}
     if (!useSupabase()) return;
     try{
       supabaseClient.functions.invoke('send-email', { body:{ kind } })

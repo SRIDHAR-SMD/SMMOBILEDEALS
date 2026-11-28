@@ -44,6 +44,8 @@
   var IS_ANDROID = /android/i.test(UA);   // any Android browser (Chrome, Opera, Firefox, Samsung, UC...) can download the APK
   var APK_URL = ROOT + 'downloads/SM-Mobile-Deals.apk';
   var IS_FIREFOX_DESKTOP = /firefox/i.test(UA) && !/android/i.test(UA);
+  var IS_DESKTOP = !IS_ANDROID && !IS_IOS;          // laptop / PC (Windows, Mac, Linux, ChromeOS)
+  var POST_LOGIN_KEY = 'smd_install_after_login';   // set by auth.js after a successful customer login/signup
 
   function snoozed() {
     var t = parseInt(ls(SNOOZE_KEY) || '0', 10);
@@ -132,21 +134,30 @@
     return '';
   }
 
+  // Laptop / PC: browsers cannot run an APK, so the customer installs the web app (PWA) instead.
+  function desktopSteps() {
+    return '<ol><li>Click the <b>Install</b> icon (a small screen with a down-arrow) at the right end of the address bar</li>' +
+           '<li>Or open the browser menu <b>&#8942;</b> &rarr; <b>Install SM Mobile Deals</b> (Edge: <b>Apps</b> &rarr; <b>Install this site as an app</b>)</li>' +
+           '<li>Click <b>Install</b> &mdash; the app opens in its own window and gets a desktop shortcut</li></ol>';
+  }
+
   function showCard(opts) {
     css(); removeCard();
     var admin = !!opts.admin;
     var icon = ROOT + 'assets/icons/' + (admin ? 'admin-icon-192.png' : 'icon-192.png');
     var fromGoogle = /(^|\.)google\.[a-z.]+/i.test((function(){ try { return new URL(document.referrer).hostname; } catch (e) { return ''; } })());
     var title = admin ? 'Install SM Admin &amp; Staff app'
-              : (opts.welcome ? 'Welcome to SM Mobile Deals! &#128075;' : 'Install SM Mobile Deals app');
+              : (opts.afterLogin ? 'Login successful! Install the SM Mobile Deals app'
+              : opts.welcome ? 'Welcome to SM Mobile Deals! &#128075;' : 'Install SM Mobile Deals app');
     var text = admin ? 'Open the dashboard like a real app on this phone or computer - one tap, no browser bar.'
              : (opts.welcome
                  ? (fromGoogle ? 'Thanks for finding us on Google! ' : '') + 'Get the <b>SM Mobile Deals app</b> for faster shopping, latest offers and 1-day delivery updates - free, no Play Store needed.'
                  : 'Shop faster. Get the app on your phone or computer - works like a normal app.');
     var manual = !deferred && canInstallManually();
     var apkOffer = IS_ANDROID && !admin;               // customer app: APK download works in every Android browser
-    var unsupported = !deferred && !manual && !apkOffer;
-    var body = manual ? steps() : (unsupported
+    var deskSteps = !admin && !deferred && !manual && IS_DESKTOP && !IS_FIREFOX_DESKTOP;   // Chrome/Edge without a ready prompt: show the manual way
+    var unsupported = !deferred && !manual && !apkOffer && !deskSteps;
+    var body = manual ? steps() : (deskSteps ? desktopSteps() : unsupported
       ? '<p>This browser cannot install apps. Please open this site in <b>Chrome</b> or <b>Edge</b> to install.</p>'
       : (!deferred && apkOffer
           ? '<p>Download the <b>SM Mobile Deals Android app</b> (APK) &mdash; works from any browser on Android 5.0 and above.</p>' +
@@ -159,7 +170,7 @@
       '<div><h4>' + title + '</h4>' + body + '<div class="smd-row">' +
       (deferred ? '<button class="smd-go">Install</button>' : '') +
       (apkOffer ? '<a class="smd-apk" href="' + APK_URL + '" download="SM-Mobile-Deals.apk">' + (deferred ? 'Download APK' : '&#11015; Download App (APK)') + '</a>' : '') +
-      '<button class="smd-no">' + ((manual || unsupported) ? 'Got it' : 'Not now') + '</button></div></div>';
+      '<button class="smd-no">' + ((manual || unsupported || deskSteps) ? 'Got it' : 'Not now') + '</button></div></div>';
     document.body.appendChild(c);
 
     c.querySelector('.smd-x').onclick = c.querySelector('.smd-no').onclick = function () { snooze(); removeCard(); };
@@ -211,6 +222,28 @@
   function initCustomer() {
     if (isStandalone()) return;
     mountHeaderButton();
+
+    // ---- right after a customer logs in / signs up: ask them to install the app for THEIR device ----
+    //   Android -> APK   |   iPhone/iPad -> Add to Home Screen steps   |   Laptop/PC -> install web app
+    var pending = ls(POST_LOGIN_KEY) === '1';
+    if (pending) {
+      var tries = 0, doneLogin = false;
+      var tl = setInterval(function () {
+        if (doneLogin || ++tries > 40) return clearInterval(tl);            // wait up to ~20 s for login state
+        var u = (typeof Auth !== 'undefined' && Auth.currentUser) ? Auth.currentUser() : null;
+        if (!u) return;
+        if (isPanelUser()) { doneLogin = true; clearInterval(tl); ls(POST_LOGIN_KEY, '0'); return; }   // never for admin/staff
+        // on laptop/PC give the browser a moment to fire its own install prompt
+        if (IS_DESKTOP && !deferred && tries < 6) return;
+        doneLogin = true; clearInterval(tl);
+        ls(POST_LOGIN_KEY, '0');
+        showCard({ admin: false, afterLogin: true });
+      }, 500);
+      document.addEventListener('smd:installable', function () {            // prompt arrived late -> upgrade card to the real Install button
+        if (document.getElementById('smd-install-card') && doneLogin) showCard({ admin: false, afterLogin: true });
+      });
+      return;                                                               // skip the normal homepage welcome card this time
+    }
     if (!IS_HOME) return;                                  // welcome card: homepage only
     var shown = false, SS = 'smd_pwa_welcome_shown';
     function maybe() {
