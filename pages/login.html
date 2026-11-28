@@ -155,8 +155,12 @@ App.boot('').then(() => {
     const r = await Auth.verifyLoginOtp(otpState.email, new FormData(otpForm).get('code'), otpState.type);
     b.disabled = false; b.innerHTML = h;
     if (!r.ok){ otpErr.textContent = r.error; otpErr.style.display = 'block'; return; }
+    if (r.user && (r.user.role === 'admin' || r.user.role === 'staff')){        // customer app: admin/staff must use the Admin login
+      try{ await Auth.logout(); }catch(e){}
+      otpErr.textContent = 'Admin / Staff accounts cannot log in here. Please use the Admin login.'; otpErr.style.display = 'block'; return;
+    }
     Notify.toast(`Welcome, ${r.user.name}!`, 'success');
-    setTimeout(() => { window.location.href = (r.user.role === 'admin' || r.user.role === 'staff') ? 'admin.html' : 'profile.html'; }, 600);
+    setTimeout(() => { window.location.href = 'profile.html'; }, 600);
   });
   document.getElementById('otp-resend').addEventListener('click', async (e) => {
     e.preventDefault();
@@ -190,8 +194,14 @@ App.boot('').then(() => {
       btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Login';
       return;
     }
+    if (result.user && (result.user.role === 'admin' || result.user.role === 'staff')){   // customer app: admin/staff must use the Admin login
+      try{ await Auth.logout(); }catch(e){}
+      errorBox.textContent = 'Admin / Staff accounts cannot log in here. Please use the Admin login.'; errorBox.style.display = 'block';
+      btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Login';
+      return;
+    }
     Notify.toast(`Welcome, ${result.user.name}!`, 'success');
-    setTimeout(() => { window.location.href = (result.user.role === 'admin' || result.user.role === 'staff') ? 'admin.html' : 'profile.html'; }, 600);
+    setTimeout(() => { window.location.href = 'profile.html'; }, 600);
   });
 });
 });

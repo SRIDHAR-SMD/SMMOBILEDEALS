@@ -763,10 +763,14 @@ App.boot('').then(() => {
   // Friendly access control: instead of silently bouncing to the home page, explain what is needed.
   if (!Auth.hasPanelAccess()){
     // Logged out -> go straight to the home page (no login-page jump, no blank dashboard)
-    if (!Auth.isLoggedIn()){ window.location.replace('../index.html'); return; }
+    if (!Auth.isLoggedIn()){
+      // installed Admin app -> Admin login screen; plain browser visit -> home page
+      var inApp = /source=pwa/.test(location.search) || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+      window.location.replace(inApp ? 'sri-login.html' : '../index.html'); return;
+    }
     const root = document.getElementById('admin-root');
     const who = Auth.isLoggedIn() ? 'You are logged in as a customer — this area is only for the store Admin / Staff.' : 'Please log in with your Admin or Staff account to continue.';
-    root.innerHTML = `<div class="card admin-denied"><h2>🔒 Admin access only</h2><p class="text-dim">${who}</p><div class="row"><a class="btn btn-primary" href="login.html">Admin Login</a><a class="btn btn-outline" href="../index.html">Back to Home</a></div></div>`;
+    root.innerHTML = `<div class="card admin-denied"><h2>🔒 Admin access only</h2><p class="text-dim">${who}</p><div class="row"><a class="btn btn-primary" href="sri-login.html">Admin Login</a><a class="btn btn-outline" href="../index.html">Back to Home</a></div></div>`;
     return;
   }
   if (Auth.requirePanel('../index.html')){
