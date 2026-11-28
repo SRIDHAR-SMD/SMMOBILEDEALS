@@ -16,7 +16,8 @@ const MasterGateway = (() => {
   }
   const startAdmin  = (email, password, geo) => call({ action:'start_admin', email, password, geo });
   const verifyAdmin = (challenge, otp, geo)   => call({ action:'verify_admin', challenge, otp, geo });
-  const staff       = (username, password, geo) => call({ action:'staff', username, password, geo });
+  const startStaff  = (username, password, geo) => call({ action:'start_staff', username, password, geo });
+  const verifyStaff = (challenge, otp, geo)   => call({ action:'verify_staff', challenge, otp, geo });
   const check       = (token) => call({ action:'check', token });
-  return { startAdmin, verifyAdmin, staff, check };
+  return { startAdmin, verifyAdmin, startStaff, verifyStaff, check };
 })();
