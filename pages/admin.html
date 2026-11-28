@@ -465,6 +465,15 @@
             <button class="btn btn-primary btn-block" id="inv-signature-save"><i class="fa-solid fa-floppy-disk"></i> Save Signature</button>
           </div>
 
+          <div class="card" style="padding:20px;max-width:480px;margin-bottom:20px;">
+            <h4 style="font-family:var(--font-display);margin:0 0 6px;"><i class="fa-solid fa-mobile-screen"></i> Mobile Number Login</h4>
+            <p class="text-dim" style="font-size:12.5px;margin:0 0 14px;">Temporary switch. <b>OFF</b> (default): customers log in only with their <b>email</b> &mdash; password, or email + OTP. <b>ON</b>: customers can also log in with their 10-digit mobile number (login, OTP login and forgot password).</p>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:600;">
+              <input type="checkbox" id="mobile-login-toggle" style="width:20px;height:20px;">
+              <span id="mobile-login-label">Loading…</span>
+            </label>
+          </div>
+
           <div class="card" style="padding:20px;max-width:480px;">
             <h4 style="font-family:var(--font-display);margin:0 0 6px;"><i class="fa-solid fa-indian-rupee-sign"></i> Razorpay Payment Link</h4>
             <p class="text-dim" style="font-size:12.5px;margin:0 0 14px;">Paste a Payment Link created from your Razorpay Dashboard (Payment Links → Create; choose "Customer can enter amount" so it works for every order). Once saved it becomes the main "Pay via Razorpay" button on checkout automatically; until then QR / GPay / PhonePe keep working. Clear the box and save to go back to QR only. It appears as a "Pay via Razorpay" option on the customer payment page, alongside UPI/GPay/PhonePe. Leave blank to hide it.</p>
@@ -1230,6 +1239,20 @@ App.boot('').then(() => {
         }
         saveBtn.disabled = false;
         saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Signature';
+      });
+
+      // ---- Mobile number login switch ----
+      const mlToggle = document.getElementById('mobile-login-toggle');
+      const mlLabel = document.getElementById('mobile-login-label');
+      const mlShow = (on) => { mlToggle.checked = on; mlLabel.textContent = on ? 'Mobile number login is ON' : 'Mobile number login is OFF (email login only)'; };
+      mlShow(await Auth.mobileLoginEnabled(true));
+      mlToggle.addEventListener('change', async () => {
+        const want = mlToggle.checked; mlToggle.disabled = true;
+        const res = await Auth.setMobileLoginEnabled(want);
+        mlToggle.disabled = false;
+        if (!res.ok){ Notify.toast('Could not save: ' + (res.error || 'unknown error'), 'error'); mlShow(!want); return; }
+        mlShow(want);
+        Notify.toast(want ? 'Mobile number login enabled.' : 'Mobile number login disabled — email login only.', 'success');
       });
 
       // ---- Razorpay payment link ----

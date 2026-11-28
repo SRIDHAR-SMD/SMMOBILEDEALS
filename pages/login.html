@@ -54,7 +54,7 @@
       </div>
       <form id="otp-start-form" style="display:none;">
         <div id="otp-start-error" style="display:none;background:#dce4f8;border:1px solid #adc1ef;color:#214aac;border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:14px;"></div>
-        <div class="field"><label>Phone number or email</label><input class="input" name="email" type="text" inputmode="email" required autocomplete="username" placeholder="10-digit phone or email"><span class="text-faint" style="font-size:11.5px;">The OTP is sent to your registered email.</span></div>
+        <div class="field id-field"><label>Email address</label><input class="input" name="email" type="email" required autocomplete="username" placeholder="Enter your registered email"><span class="text-faint" style="font-size:11.5px;">A one-time code (OTP) is sent to your registered email.</span></div>
         <button class="btn btn-primary btn-block btn-lg" type="submit"><i class="fa-solid fa-paper-plane"></i> Send OTP</button>
       </form>
       <form id="otp-form" style="display:none;">
@@ -66,7 +66,7 @@
       </form>
       <form id="login-form">
         <div id="login-error" style="display:none;background:#dce4f8;border:1px solid #adc1ef;color:#214aac;border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:14px;"></div>
-        <div class="field"><label>Phone number or email</label><input class="input" name="email" type="text" inputmode="email" required autocomplete="username" placeholder="10-digit phone or email"></div>
+        <div class="field id-field"><label>Email address</label><input class="input" name="email" type="email" required autocomplete="username" placeholder="Enter your registered email"></div>
         <div class="field"><label>Password</label><input class="input" name="password" type="password" required></div>
         <div style="text-align:right;margin:-4px 0 14px;"><a href="forgot-password.html" class="text-accent" style="font-size:13px;">Forgot password?</a></div>
         <button class="btn btn-primary btn-block btn-lg" type="submit" disabled id="login-submit-btn"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
@@ -112,6 +112,13 @@ document.addEventListener('DOMContentLoaded', function(){
 App.boot('').then(() => {
   Walkthrough.mount(document.getElementById('walkthrough'));
   document.getElementById('login-submit-btn').disabled = false;
+  // Mobile-number login is OFF unless the admin switches it on (Admin -> Branding & Invoice).
+  Auth.mobileLoginEnabled().then(on => {
+    document.querySelectorAll('.id-field').forEach(f => {
+      const lab = f.querySelector('label'), inp = f.querySelector('input');
+      if (on){ if (lab) lab.textContent = 'Phone number or email'; inp.placeholder = '10-digit phone or email'; inp.type = 'text'; inp.inputMode = 'email'; }
+    });
+  });
   let otpState = null;
   const loginForm = document.getElementById('login-form'), startForm = document.getElementById('otp-start-form');
   const tabs = document.getElementById('login-tabs');
@@ -161,7 +168,7 @@ App.boot('').then(() => {
     const fd = new FormData(e.target);
     const result = await Auth.login({ email: fd.get('email'), password: fd.get('password') });
     if (!result.ok){
-      errorBox.textContent = result.error || 'Incorrect phone/email or password. Please check and try again.';
+      errorBox.textContent = result.error || 'Incorrect email or password. Please check and try again.';
       errorBox.style.display = 'block';
       Notify.toast(result.error, 'error');
       btn.disabled = false;

@@ -58,7 +58,7 @@
       <form id="register-form">
         <div id="register-error" style="display:none;background:#dce4f8;border:1px solid #adc1ef;color:#214aac;border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:14px;"></div>
         <div class="field"><label>Full Name</label><input class="input" name="name" required></div>
-        <div class="field"><label>Phone Number <span style="color:var(--danger)">*</span></label><input class="input" name="phone" type="tel" inputmode="numeric" required pattern="[6-9][0-9]{9}" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel-national"><span class="text-faint" style="font-size:11.5px;">You will log in with this number.</span></div>
+        <div class="field"><label>Phone Number <span style="color:var(--danger)">*</span></label><input class="input" name="phone" type="tel" inputmode="numeric" required pattern="[6-9][0-9]{9}" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel-national"><span class="text-faint" id="phone-hint" style="font-size:11.5px;">Used for order &amp; delivery updates.</span></div>
         <div class="field"><label>Email <span style="color:var(--danger)">*</span></label><input class="input" name="email" type="email" required autocomplete="email"><span class="text-faint" style="font-size:11.5px;">A one-time code (OTP) is emailed here to verify your account.</span></div>
         <div class="field"><label>Password</label><input class="input" name="password" type="password" minlength="6" required><span class="text-faint" style="font-size:11.5px;">At least 6 characters</span></div>
 
@@ -116,6 +116,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function(){
 App.boot('').then(() => {
+  Auth.mobileLoginEnabled().then(on => { if (on){ const h = document.getElementById('phone-hint'); if (h) h.textContent = 'You can log in with this number.'; } });
   Walkthrough.mount(document.getElementById('walkthrough'));
   document.getElementById('register-submit-btn').disabled = false;
   document.getElementById('reg-pincode').addEventListener('input', Utils.debounce(async (e) => {
