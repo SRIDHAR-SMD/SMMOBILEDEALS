@@ -98,25 +98,18 @@ document.addEventListener('DOMContentLoaded', async function(){
     e.preventDefault(); $('e1').textContent = ''; $('b1').disabled = true;
     const g = await geo();
     const u = $('u').value.trim(), p = $('p').value;
-    if (role === 'admin'){
-      const r = await MasterGateway.startAdmin(u, p, g);
-      $('b1').disabled = false;
-      if (!r.ok) return $('e1').textContent = r.error || 'Invalid credentials';
-      challenge = r.challenge; pwd = p; mail = u;
-      $('f-cred').classList.add('hide'); $('f-otp').classList.remove('hide'); $('o').focus();
-    } else {
-      const r = await MasterGateway.staff(u, p, g);
-      $('b1').disabled = false;
-      if (!r.ok) return $('e1').textContent = r.error || 'Invalid credentials';
-      await enter(r, {});
-    }
+    const r = role === 'admin' ? await MasterGateway.startAdmin(u, p, g) : await MasterGateway.startStaff(u, p, g);
+    $('b1').disabled = false;
+    if (!r.ok) return $('e1').textContent = r.error || 'Invalid credentials';
+    challenge = r.challenge; pwd = p; mail = u;                    // admin AND staff both get an emailed OTP now
+    $('f-cred').classList.add('hide'); $('f-otp').classList.remove('hide'); $('o').focus();
   };
   $('f-otp').onsubmit = async (e) => {
     e.preventDefault(); $('e2').textContent = ''; $('b2').disabled = true;
-    const r = await MasterGateway.verifyAdmin(challenge, $('o').value.trim(), await geo());
+    const r = role === 'admin' ? await MasterGateway.verifyAdmin(challenge, $('o').value.trim(), await geo()) : await MasterGateway.verifyStaff(challenge, $('o').value.trim(), await geo());
     $('b2').disabled = false;
     if (!r.ok) return $('e2').textContent = r.error || 'Wrong OTP';
-    await enter(r, { email: mail, password: pwd });
+    await enter(r, role === 'admin' ? { email: mail, password: pwd } : {});
   };
 });
 </script>
