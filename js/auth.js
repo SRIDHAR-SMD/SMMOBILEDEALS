@@ -23,10 +23,43 @@ const Auth = (() => {
   function normPhone(v){ const d = String(v||'').replace(/\D/g,''); return d.length > 10 ? d.slice(-10) : d; }
   function validPhone(v){ return /^[6-9]\d{9}$/.test(normPhone(v)); }
   function validEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v||'').trim()); }
+  /* ---- Mobile-number login switch (admin dashboard -> Branding & Invoice -> "Mobile Number Login") ----
+     OFF by default: customers log in with EMAIL (password, or email + OTP) only.
+     When the admin switches it ON, the 10-digit phone number is accepted again. */
+  let _mobLoginCache = null;
+  async function mobileLoginEnabled(force){
+    if (_mobLoginCache !== null && !force) return _mobLoginCache;
+    let on = false;
+    try{
+      if (useSupabase()){
+        const r = await withTimeout(supabaseClient.from('store_settings').select('value').eq('key','mobile_login_enabled').maybeSingle(), 3000, { data:null });
+        on = !!(r && r.data && String(r.data.value) === '1');
+      } else {
+        on = DB.read('smd_mobile_login_enabled', '0') === '1';
+      }
+    }catch(e){ on = false; }
+    _mobLoginCache = on;
+    return on;
+  }
+  async function setMobileLoginEnabled(on){
+    _mobLoginCache = null;
+    if (!useSupabase()){ DB.write('smd_mobile_login_enabled', on ? '1' : '0'); _mobLoginCache = !!on; return { ok:true }; }
+    try{
+      const { error } = await supabaseClient.from('store_settings').upsert({ key:'mobile_login_enabled', value: on ? '1' : '0', updated_at:new Date().toISOString() });
+      if (error) return { ok:false, error:error.message };
+      _mobLoginCache = !!on;
+      return { ok:true };
+    }catch(err){ return { ok:false, error: err.message || 'Save failed' }; }
+  }
+
   // identifier = phone number OR email -> the account's email (needed by Supabase Auth)
   async function resolveEmail(identifier){
     const id = String(identifier||'').trim();
-    if (id.includes('@')) return { ok:true, email:id };
+    if (id.includes('@')){
+      if (!validEmail(id)) return { ok:false, error:'Please enter a valid email address.' };
+      return { ok:true, email:id.toLowerCase() };
+    }
+    if (!(await mobileLoginEnabled())) return { ok:false, error:'Mobile number login is currently turned off. Please log in with your email address.' };
     if (!validPhone(id)) return { ok:false, error:'Enter your 10-digit phone number or your email.' };
     const ph = normPhone(id);
     if (useSupabase()){
@@ -248,6 +281,15 @@ const Auth = (() => {
     }
   }
 
+  // Turn raw Supabase OTP-mail errors into something a customer (and the admin) can act on.
+  function otpMailError(msg){
+    msg = String(msg||'');
+    if (/not found|signups not allowed|user not found/i.test(msg)) return 'No account found with this email.';
+    if (/rate limit|too many|seconds|after \d+/i.test(msg)) return 'Too many OTP requests. Please wait a minute and try again.';
+    if (/error sending|smtp|sending (magic|confirmation|recovery)/i.test(msg)) return 'The OTP email could not be sent right now (mail server problem). Please try again in a few minutes or contact the store.';
+    return msg || 'Could not send the OTP email.';
+  }
+
   /* ---------------- signup OTP ---------------- */
   async function finishSignup(user, details){
     try{
@@ -270,7 +312,7 @@ const Auth = (() => {
     const r = (type === 'signup')
       ? await supabaseClient.auth.resend({ type:'signup', email })
       : await supabaseClient.auth.signInWithOtp({ email, options:{ shouldCreateUser:false } });
-    return r.error ? { ok:false, error:r.error.message } : { ok:true };
+    return r.error ? { ok:false, error:otpMailError(r.error.message) } : { ok:true };
   }
 
   /* ---------------- register ---------------- */
@@ -328,7 +370,7 @@ const Auth = (() => {
   /* ---------------- login ---------------- */
   async function login({ email, password }){
     // `email` may be a phone number — resolve to the account email first.
-    if (!String(email||'').includes('@')){
+    {
       const r = await resolveEmail(email);
       if (!r.ok) return r;
       email = r.email;
@@ -385,8 +427,8 @@ const Auth = (() => {
         if (r.error){
           console.warn('[Auth] signInWithOtp failed:', r.error.status, r.error.message);
           return { ok:false, error: /rate limit|too many|seconds/i.test(r.error.message)
-            ? 'Password correct, but the OTP email limit is reached. Wait ~1 hour or set up custom SMTP in Supabase (Auth -> SMTP).'
-            : 'Password correct, but the OTP email could not be sent: ' + r.error.message };
+            ? 'Password correct, but the OTP email limit is reached. Please wait a few minutes and try again.'
+            : 'Password correct, but ' + otpMailError(r.error.message).charAt(0).toLowerCase() + otpMailError(r.error.message).slice(1) };
         }
         return { ok:true, needsOtp:true, otpType:'email', email };
       } catch(err){
@@ -413,10 +455,10 @@ const Auth = (() => {
   async function startOtpLogin(email){
     email = String(email||'').trim();
     if (!email) return { ok:false, error:'Please enter your registered phone number or email.' };
-    if (!email.includes('@')){ const r = await resolveEmail(email); if (!r.ok) return r; email = r.email; }
+    { const r = await resolveEmail(email); if (!r.ok) return r; email = r.email; }
     if (!useSupabase()) return { ok:false, error:'OTP login is not available right now. Please use your password.' };
     const { error } = await supabaseClient.auth.signInWithOtp({ email, options:{ shouldCreateUser:false } });
-    if (error) return { ok:false, error: /not found|signups not allowed/i.test(error.message) ? 'No account found with this email.' : error.message };
+    if (error) return { ok:false, error: otpMailError(error.message) };
     return { ok:true, email, otpType:'email' };
   }
 
@@ -460,10 +502,10 @@ const Auth = (() => {
   async function sendResetOtp(email){
     email = String(email||'').trim();
     if (!email) return { ok:false, error:'Please enter your registered phone number or email.' };
-    if (!email.includes('@')){ const r = await resolveEmail(email); if (!r.ok) return r; email = r.email; }
+    { const r = await resolveEmail(email); if (!r.ok) return r; email = r.email; }
     if (!useSupabase()) return { ok:false, error:'Password reset by email is not available right now. Please contact the store.' };
     const { error } = await supabaseClient.auth.signInWithOtp({ email, options:{ shouldCreateUser:false } });
-    if (error) return { ok:false, error: /not found|signups not allowed/i.test(error.message) ? 'No account found with this email.' : error.message };
+    if (error) return { ok:false, error: otpMailError(error.message) };
     return { ok:true, email };
   }
   async function verifyResetOtp(email, code){
@@ -669,5 +711,5 @@ const Auth = (() => {
     return data && data.ok ? { ok:true } : { ok:false, error:(data && data.error) || 'Could not delete this account.' };
   }
 
-  return { listManagedAccounts, adminDeleteAccount, resolveEmail, normPhone, init, register, login, logout, requestDeleteOtp, confirmDeleteAccount, canSelfDelete, grantTempAdmin, revokeTempAdmin, listTempAdmins, expireTemp, currentUser, isLoggedIn, isAdmin, updateProfile, requireLogin, requireAdmin, masterGrant, isStaff, hasPanelAccess, requirePanel, verifySignupOtp, startOtpLogin, verifyLoginOtp, resendOtp, sendResetOtp, verifyResetOtp, setNewPassword, findByEmail, setRole, listAdmins };
+  return { listManagedAccounts, adminDeleteAccount, resolveEmail, mobileLoginEnabled, setMobileLoginEnabled, normPhone, init, register, login, logout, requestDeleteOtp, confirmDeleteAccount, canSelfDelete, grantTempAdmin, revokeTempAdmin, listTempAdmins, expireTemp, currentUser, isLoggedIn, isAdmin, updateProfile, requireLogin, requireAdmin, masterGrant, isStaff, hasPanelAccess, requirePanel, verifySignupOtp, startOtpLogin, verifyLoginOtp, resendOtp, sendResetOtp, verifyResetOtp, setNewPassword, findByEmail, setRole, listAdmins };
 })();
